@@ -1,0 +1,99 @@
+[
+    {
+        "id": 8,
+        "date": "Mar 29, 2023",
+        "version":"2.1.1",
+        "new": false,
+        "fixed": false,
+        "updated": [
+            "Added composition API"
+        ]
+    },
+    {
+        "id": 7,
+        "date": "Jan 3, 2023",
+        "version":"2.1.0",
+        "new": [
+            "Added DayJS (Removed Momentjs)"
+        ],
+        "fixed": [
+            "NPM errors and warnings",
+            "Fixed minor style issue"
+        ],
+        "updated": [
+            "Updated VueJS",
+            "Updated NPM packages compatible with latest VueJS",
+            "Updated Ant Design from 2.2.2 to 3.2.15"
+
+        ]
+    },
+    {
+        "id": 6,
+        "date": "Jan 23, 2022",
+        "version":"2.0.0",
+        "new": [
+            "Migration from Vue2 to Vue3",
+            "Added defineComponents"
+        ],
+        "fixed": [
+            "Style issues"
+        ],
+        "updated": [
+            "NPM packages"
+        ]
+    },
+    {
+        "id": 5,
+        "date": "Sep 29, 2021",
+        "version":"1.0.4",
+        "new": false,
+        "fixed": [
+            "Styled-component issue"
+        ],
+        "updated": false
+    },
+    {
+        "id": 4,
+        "date": "Jul 15, 2021",
+        "version":"1.0.3",
+        "new": [
+            "Added XD design files"
+        ],
+        "fixed": [
+            "Minor css issue"
+        ],
+        "updated": false
+    },
+    {
+        "id": 3,
+        "date": "Jun 14, 2021",
+        "version":"1.0.2",
+        "new": false,
+        "fixed": false,
+        "updated": [
+            "Updated files and npm packages"
+        ]
+    },
+    {
+        "id": 2,
+        "date": "Jun 8, 2021",
+        "version":"1.0.1",
+        "new": false,
+        "fixed": [
+            "Minor style issue"
+        ],
+        "updated": false
+    },
+    {
+        "id": 1,
+        "date": "May 9, 2021",
+        "version":"1.0.0",
+        "new":
+        [
+            "Initial Release"
+        ],
+        "fixed": false,
+        "updated": false
+    }
+]
+

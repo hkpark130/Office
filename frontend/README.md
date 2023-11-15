@@ -1,4 +1,4 @@
-# frontend
+# antd-vue
 
 ## Project setup
 ```
