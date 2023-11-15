@@ -1,44 +1,30 @@
 export default {
-  firebaseLoginBegin(state) {
+  keycloakLoginBegin(state) {
     state.loading = true;
   },
 
-  firebaseLoginSuccess(state, uid) {
+  keycloakLoginSuccess(state, uid) {
     state.loading = false;
     state.isLogin = true;
     state.uid = uid;
   },
 
-  firebaseLoginErr(state, err) {
+  keycloakLoginErr(state, err) {
     state.loading = false;
     state.error = err;
   },
 
-  firebaseLogOutBegin(state) {
+  keycloakLogOutBegin(state) {
     state.loading = true;
   },
 
-  firebaseLogOutSuccess(state) {
+  keycloakLogOutSuccess(state) {
     state.loading = false;
     state.isLogout = true;
     state.isLogin = false;
   },
 
-  firebaseLogOutErr(state, err) {
-    state.loading = false;
-    state.error = err;
-  },
-  firebaseSignUpBegin(state) {
-    state.loading = true;
-  },
-
-  firebaseSignUpSuccess(state, uid) {
-    state.loading = false;
-    state.isLogin = true;
-    state.uid = uid;
-  },
-
-  firebaseSignUpErr(state, err) {
+  keycloakLogOutErr(state, err) {
     state.loading = false;
     state.error = err;
   },

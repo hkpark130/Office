@@ -158,7 +158,7 @@
       const fileUploadProps = {
         name: "file",
         multiple: true,
-        action: "http://localhost:8080",
+        action: "http://localhost",
         onChange(info) {
           const { status } = info.file;
           if (status !== "uploading") {

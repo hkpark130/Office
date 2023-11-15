@@ -14,7 +14,12 @@ export default [
     path: '/add-approval',
     component: () => import(/* webpackChunkName: "AddApproval" */ '@/view/pages/AddApproval.vue'),
   },
-
+  
+  {
+    name: 'forbidden',
+    path: '/403',
+    component: () => import(/* webpackChunkName: "403" */ '@/view/pages/403.vue'),
+  },
   {
     path: '/:catchAll(.*)',
     component: () => import(/* webpackChunkName: "404" */ '@/view/pages/404.vue'),

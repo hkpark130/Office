@@ -35,7 +35,8 @@ export default defineComponent({
     ThemeProvider,
   },
   setup() {
-    const { state, dispatch } = useStore();
+    // const { state, dispatch } = useStore();
+    const { state } = useStore();
     const rtl = computed(() => state.themeLayout.rtlData);
     const isLoading = computed(() => state.themeLayout.loading);
     const darkMode = computed(() => state.themeLayout.data);
@@ -43,7 +44,8 @@ export default defineComponent({
     const isFbAuthLoading = computed(() => state.firebase.loading);
 
     onMounted(() => {
-      dispatch("firebaseAuthGetUid");
+      // dispatch("firebaseAuthGetUid");
+
     });
 
     return {
