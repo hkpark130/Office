@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import adminRoutes from './AdminRoutes';
 import authRoutes from './authRoutes';
-import store from '@/vuex/store';
+// import store from '@/vuex/store';
 
 const routes = [
   {
@@ -34,14 +34,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   
-  if (to.meta.auth && store.state.auth.login) {
-    next({ to: '/' });
-  } else if (!to.meta.auth && !store.state.auth.login) {
-    next({ name: 'login' });
-  } else {    
-    next();
-  }
-
+  // if (to.meta.auth && store.state.auth.login) {
+  //   next({ to: '/' });
+  // } else if (!to.meta.auth && !store.state.auth.login) {
+  //   next({ name: 'login' });
+  // } else {
+  //   next();
+  // }
+  next();
   window.scrollTo(0,0);
 });
 
