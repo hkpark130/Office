@@ -141,6 +141,7 @@
   import { AddProductForm } from "./style";
   import { ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
+  import { useRouter } from 'vue-router';
   
   const fileList = [
     // {
@@ -153,10 +154,10 @@
   ];
   
   const AddProduct = defineComponent({
-    props: ['deviceId'],
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
-    setup(props) {
+    setup() {
+      const router = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
@@ -192,7 +193,7 @@
       };
   
       const formState = reactive({
-        deviceId: props.deviceId,
+        deviceId: router.currentRoute.value.hash,
         name: "",
         category: "",
         price: 0,
