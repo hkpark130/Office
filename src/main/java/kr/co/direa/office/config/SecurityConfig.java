@@ -1,5 +1,6 @@
 package kr.co.direa.office.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,27 +24,33 @@ import java.util.Set;
 
 @Configuration
 public class SecurityConfig {
+    @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.oauth2Client(Customizer.withDefaults());
         http.oauth2Login(it -> it.tokenEndpoint(Customizer.withDefaults())
-                .userInfoEndpoint(Customizer.withDefaults()));
+                .userInfoEndpoint(Customizer.withDefaults())
+        );
 
         http.cors(Customizer.withDefaults());
 //        http.cors(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers(HttpMethod.GET, "/oauth2/**", "/login", "/api/health", "/").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/test", "/test/admin/**").hasAuthority("Admin")
-                                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-                                .anyRequest().authenticated()
+                        auth.requestMatchers(
+//                                HttpMethod.GET, "/oauth2/**", "/login", "/login/oauth2/**", "/api/health", "/").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/api/test", "/test/admin/**").hasAuthority("Admin")
+//                                .requestMatchers(HttpMethod.POST, "/logout").authenticated()
+//                                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+//                                .anyRequest().authenticated()
+                                HttpMethod.GET, "/**").permitAll()
         );
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
         http.logout(logout -> logout.logoutSuccessHandler(logoutSuccessHandler()));
+
 
         return http.build();
     }
@@ -77,19 +84,4 @@ public class SecurityConfig {
             return mappedAuthorities;
         };
     }
-//
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration config = new CorsConfiguration();
-//
-//        config.setAllowCredentials(true);
-//        config.setAllowedOrigins(List.of("http://192.168.2.110:8080", "http://192.168.2.110", "http://192.168.2.111:8080"));
-//        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-//        config.setAllowedHeaders(List.of("*"));
-//        config.setExposedHeaders(List.of("*"));
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
-//    }
 }

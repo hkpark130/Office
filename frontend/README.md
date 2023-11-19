@@ -22,3 +22,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### sdFeatherIcons 아이콘 종류 참고
+https://feathericons.com/

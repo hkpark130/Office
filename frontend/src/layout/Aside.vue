@@ -38,57 +38,86 @@
         </a>
       </a-menu-item>
     </a-sub-menu>
+
+    <a-sub-menu key="devices">
+      <template v-slot:title
+        ><sdFeatherIcons type="hard-drive" /><span>장비관리</span></template
+      >
+      <a-menu-item @click="toggleCollapsed" key="device">
+        <router-link to="/">
+          <sdFeatherIcons type="airplay" />
+          <span> 가용장비 대시보드 </span>
+        </router-link>
+      </a-menu-item>
+      <a-menu-item @click="toggleCollapsed" key="deviceList">
+        <router-link to="/deviceList"> 
+          <sdFeatherIcons type="list" />
+          <span> 가용장비 리스트 </span> 
+        </router-link>
+      </a-menu-item>
+      <a-menu-item @click="toggleCollapsed" key="purchase">
+        <router-link to="/purchase"> 
+          <sdFeatherIcons type="dollar-sign" />
+          <span> 구매신청 </span>
+        </router-link>
+      </a-menu-item>
+    </a-sub-menu>
     
     <a-menu-item-group key="pages">
       <template v-slot:title>
         <p class="sidebar-nav-title">Pages</p>
       </template>
-      <a-menu-item @click="toggleCollapsed" key="device">
-        <router-link to="/">
-          <sdFeatherIcons type="airplay" />
-          <span> 장비 현황 </span>
+
+      <a-menu-item @click="toggleCollapsed" key="addDevice">
+        <router-link to="/blank">
+          <sdFeatherIcons type="plus-square" />
+          <span> 장비 등록 </span>
+        </router-link>
+      </a-menu-item>
+
+      <a-sub-menu key="manageDevice">
+        <template v-slot:title
+          ><sdFeatherIcons type="server" /><span>장비 관리 대장</span></template
+        >
+        <a-menu-item @click="toggleCollapsed" key="write">
+          <router-link to="/add-approval">
+            <sdFeatherIcons type="list" />
+            <span> 장비 리스트 </span>
+          </router-link>
+        </a-menu-item>
+        <a-menu-item @click="toggleCollapsed" key="view">
+          <router-link to="#">
+            <sdFeatherIcons type="trash-2" />
+            <span> 폐기 장비 리스트 </span>
+          </router-link>
+        </a-menu-item>
+      </a-sub-menu>
+
+      <a-menu-item @click="toggleCollapsed" key="deviceHistory">
+        <router-link to="/blank">
+          <sdFeatherIcons type="book" />
+          <span> 장비 변경 이력 </span>
+        </router-link>
+      </a-menu-item>
+
+      <a-menu-item @click="toggleCollapsed" key="devicePosition">
+        <router-link to="/blank">
+          <sdFeatherIcons type="map-pin" />
+          <span> 장비 지도 </span>
         </router-link>
       </a-menu-item>
 
       <a-sub-menu key="users">
         <template v-slot:title
-          ><sdFeatherIcons type="users" /><span>Users</span></template
+          ><sdFeatherIcons type="user" /><span>마이 페이지</span></template
         >
         <a-menu-item @click="toggleCollapsed" key="team">
-          <router-link to="/app/users/team"> Team </router-link>
+          <router-link to="/app/users/team"> 나의 장비 </router-link>
         </a-menu-item>
         <a-menu-item @click="toggleCollapsed" key="dataTable">
-          <router-link to="/app/users/dataTable"> Users table </router-link>
+          <router-link to="/app/users/dataTable"> 신청 내역 </router-link>
         </a-menu-item>
       </a-sub-menu>
-      
-      <a-sub-menu key="pricing">
-        <template v-slot:title
-          ><sdFeatherIcons type="dollar-sign" /><span>결재</span></template
-        >
-        <a-menu-item @click="toggleCollapsed" key="write">
-          <router-link to="/add-approval">
-            신청
-          </router-link>
-        </a-menu-item>
-        <a-menu-item @click="toggleCollapsed" key="view">
-          <router-link to="#">
-            확인
-          </router-link>
-        </a-menu-item>
-        <a-menu-item @click="toggleCollapsed" key="return">
-          <router-link to="#">
-            반려
-          </router-link>
-        </a-menu-item>
-      </a-sub-menu>
-
-      <a-menu-item @click="toggleCollapsed" key="blank">
-        <router-link to="/blank">
-          <sdFeatherIcons type="circle" />
-          <span> Blank Page </span>
-        </router-link>
-      </a-menu-item>
 
     </a-menu-item-group>
   </a-menu>

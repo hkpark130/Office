@@ -27,12 +27,13 @@ spring:
       client:
         provider:
           external:
-            issuer-uri: http://192.168.2.111:8080/realms/sso-test
+            issuer-uri: http://172.30.1.72:8080/realms/sso-test
         registration:
           external:
             provider: external
             client-name: back-office-api
             client-id: back-office-api
-            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
+#            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
+            client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code

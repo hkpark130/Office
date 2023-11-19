@@ -1719,6 +1719,16 @@ const FileCardWrapper = Styled.div`
 `;
 
 const TableWrapper = Styled.div`
+    .spnTooltip {
+        z-index:10;display:none; padding:14px 20px;
+        margin-top:-30px; margin-left:28px;
+        width:300px; line-height:16px;
+    }
+    td:hover .spnTooltip{
+        display:inline; position:absolute; color:#111;
+        border:1px solid #DCA; background:#fffAF0;
+    }
+    
     .ant-pagination-prev, .ant-pagination-next {
         line-height: 28px !important;
         transform: rotateY(${({ theme }) => (theme.rtl ? '180deg' : '0deg')})

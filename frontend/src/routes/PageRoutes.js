@@ -2,9 +2,26 @@ export default [
   {
     path: '/',
     alias: ['/index.html'],
-    name: 'devicelist',
+    name: 'index',
     component: () => import(/* webpackChunkName: "DeviceList" */ '@/view/pages/DeviceList.vue'),
   },
+  {
+    path: '/deviceList',
+    name: 'devicelist',
+    component: () => import(/* webpackChunkName: "AvailableDeviceList" */ '@/view/devices/AvailableDeviceList.vue'),
+  },
+  {
+    name: 'device-application',
+    path: '/device-application',
+    props: true,
+    component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/DeviceApplication.vue'),
+  },
+  {
+    name: 'purchase',
+    path: '/purchase',
+    component: () => import(/* webpackChunkName: "Purchase" */ '@/view/pages/Purchase.vue'),
+  },
+  
   {
     path: '/blank',
     name: 'starter',
