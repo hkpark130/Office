@@ -1,5 +1,5 @@
 <template>
-    <sdPageHeader title="장비 사용 신청"></sdPageHeader>
+    <sdPageHeader title="결재 처리"></sdPageHeader>
     <Main>
       <a-row :gutter="15">
         <a-col :xs="24">
@@ -20,109 +20,87 @@
                         <a-row :gutter="15">
                           <a-col :xs="24">
                             <div class="add-product-content">
-                              <sdCards title="장비 사용 신청">
+                              <sdCards title="결재 처리">
                                 <a-form-item label="관리번호">
-                                  <a-input v-model:value="formState.deviceId" />
+                                  <a-input v-model:value="getApprovalObj.deviceId" />
                                 </a-form-item>
 
-                                <a-form-item
-                                  name="category"
-                                  initialValue=""
-                                  label="품목"
-                                >
-                                  <a-select
-                                    v-model:value="formState.category"
-                                    style="width: 100%"
-                                  >
-                                    <a-select-option value=""
-                                      >Please Select</a-select-option
-                                    >
-                                    <a-select-option value="wearingClothes"
-                                      >노트북</a-select-option
-                                    >
-                                    <a-select-option value="sunglasses"
-                                      >Sunglasses</a-select-option
-                                    >
-                                    <a-select-option value="t-shirt"
-                                      >T-Shirt</a-select-option
-                                    >
-                                  </a-select>
+                                <a-form-item label="품목">
+                                  <a-input v-model:value="getApprovalObj.category" />
                                 </a-form-item>
 
                                 <a-form-item label="신청자">
-                                  <a-input v-model:value="formState.name" />
-                                  <a-radio-group v-model:value="formState.level" label="test">
-                                    <a-radio value="normal">직접 입력</a-radio>
-                                    <a-radio value="urgent">자동 입력</a-radio>
-                                  </a-radio-group>
+                                  <a-input v-model:value="getApprovalObj.user" />
                                 </a-form-item>
-                                
 
                                 <a-form-item
-                                  name="manage-dep"
-                                  initialValue=""
+                                  name="manageDep"
                                   label="관리부서"
                                 >
                                   <a-select
-                                    v-model:value="formState.purpose"
+                                    v-model:value="getApprovalObj.manageDep"
                                     style="width: 100%"
                                   >
                                     <a-select-option value=""
-                                      >개발</a-select-option
+                                      >경영관리부</a-select-option
                                     >
-                                    <a-select-option value="sunglasses"
-                                      >ETC</a-select-option
+                                    <a-select-option value="wearingClothes"
+                                      >제품2팀</a-select-option
                                     >
                                   </a-select>
                                 </a-form-item>
 
                                 <a-form-item
                                   name="project"
-                                  initialValue=""
                                   label="프로젝트"
                                 >
                                   <a-select
-                                    v-model:value="formState.project"
+                                    v-model:value="getApprovalObj.project"
                                     style="width: 100%"
                                   >
                                     <a-select-option value=""
                                       >스마트로</a-select-option
                                     >
-                                    <a-select-option value="sunglasses"
-                                      >ETC</a-select-option
-                                    >
                                   </a-select>
                                 </a-form-item>
 
-  
                                 <a-form-item
-                                  name="description"
+                                  name="reason"
                                   label="신청사유"
-                                  required
                                 >
                                   <a-textarea
                                     v-model:value="formState.description"
                                     :rows="5"
                                   />
                                 </a-form-item>
+
+                                <a-form-item
+                                  name="refuseReason"
+                                  label="반려사유"
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                  />
+                                </a-form-item>                                
                               </sdCards>
                             </div>
                           </a-col>
                         </a-row>
                       </div>
-
+                      
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
-                            Cancel
-                          </sdButton>
                           <sdButton
                             size="large"
                             htmlType="submit"
-                            type="primary"
+                            type="success"
                             raised
                           >
-                            Save
+                            승인
+                          </sdButton>
+                          <sdButton type="danger" size="large">
+                            반려
                           </sdButton>
                         </a-form-item>
                       </div>
@@ -154,19 +132,23 @@
   ];
   
   const AddProduct = defineComponent({
+    props: ['deviceId'],
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
-    setup() {
+    setup(props) {
       const router = useRouter();
+      const getApprovalObj = reactive(router.currentRoute.value.query);
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
+
+      console.log(getApprovalObj);
   
       const fileUploadProps = {
         name: "file",
         multiple: true,
-        action: "http://192.168.2.110",
+        action: "http://localhost",
         onChange(info) {
           const { status } = info.file;
           if (status !== "uploading") {
@@ -193,8 +175,7 @@
       };
   
       const formState = reactive({
-        deviceId: router.currentRoute.value.params.deviceId,
-        name: "",
+        name: props.deviceId,
         category: "",
         price: 0,
         level: "normal",
@@ -230,6 +211,7 @@
       };
   
       return {
+        getApprovalObj,
         fileList,
         fileUploadProps,
         rules,

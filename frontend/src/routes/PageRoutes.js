@@ -12,14 +12,25 @@ export default [
   },
   {
     name: 'device-application',
-    path: '/device-application',
+    path: '/device-application/:deviceId',
     props: true,
     component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/DeviceApplication.vue'),
+  },
+  {
+    name: 'approval-process',
+    path: '/approval-process',
+    props: true,
+    component: () => import(/* webpackChunkName: "ApprovalProcess" */ '@/view/pages/ApprovalProcess.vue'),
   },
   {
     name: 'purchase',
     path: '/purchase',
     component: () => import(/* webpackChunkName: "Purchase" */ '@/view/pages/Purchase.vue'),
+  },
+  {
+    path: '/user/myList',
+    name: 'myList',
+    component: () => import(/* webpackChunkName: "MyList" */ '@/view/user/MyList.vue'),
   },
   
   {
@@ -31,6 +42,16 @@ export default [
     name: 'add-approval',
     path: '/add-approval',
     component: () => import(/* webpackChunkName: "AddApproval" */ '@/view/pages/AddApproval.vue'),
+  },
+  {
+    name: 'add-device',
+    path: '/add-device',
+    component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDevice.vue'),
+  },
+  {
+    name: 'add-device-list',
+    path: '/add-device-list',
+    component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDeviceList.vue'),
   },
   
   {

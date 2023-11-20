@@ -5,22 +5,42 @@ const response = [
     "deviceId": "DIR-N-106",
     "category": "노트북",
     "purpose": "개발",
-    "user": "Kellie Marquot",
-    "status": "Shipped",
-    "info": "승인대기",
-    "tag": "$4,248.66",
-    "memo": "January 20, 2021"
+    "user": "김철수",
+    "status": "progress",
+    "level": "urgent",
+    "info": "진행중",
+    "date": "January 20, 2021"
   },
   {
     "deviceId": "DIR-N-107",
     "category": "모니터",
     "purpose": "개발",
-    "user": "Carroll Maharry",
-    "status": "Awaiting Shipment",
-    "info": "반납예정(20231120)",
-    "tag": "$14,248.61",
-    "memo": "January 28, 2021"
-  }
+    "user": "김철수",
+    "status": "delete",
+    "level": "normal",
+    "info": "반납",
+    "date": "January 28, 2021"
+  },
+  {
+    "deviceId": "DIR-N-108",
+    "category": "모니터",
+    "purpose": "개발",
+    "user": "김철수",
+    "status": "complete",
+    "level": "normal",
+    "info": "완료",
+    "date": "January 28, 2021"
+  },
+  {
+    "deviceId": "DIR-N-109",
+    "category": "모니터",
+    "purpose": "개발",
+    "user": "김철수",
+    "status": "return",
+    "level": "normal",
+    "info": "반려",
+    "date": "January 28, 2021"
+  },
 ];
 
 const state = () => ({

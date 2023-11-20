@@ -3,6 +3,7 @@ import themeLayout from './modules/themeLayout/actionCreator';
 import headerSearchData from './modules/headerSearch/actionCreator';
 import auth from './modules/authentication/axios/actionCreator';
 import devices from './modules/devices/actionCreator';
+import myList from './modules/myList/actionCreator';
 
 export default createStore({
   modules: {
@@ -10,5 +11,6 @@ export default createStore({
     headerSearchData,
     auth,
     devices,
+    myList,
   },
 });

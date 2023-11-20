@@ -69,9 +69,16 @@
       </template>
 
       <a-menu-item @click="toggleCollapsed" key="addDevice">
-        <router-link to="/blank">
+        <router-link to="/add-device">
           <sdFeatherIcons type="plus-square" />
           <span> 장비 등록 </span>
+        </router-link>
+      </a-menu-item>
+
+      <a-menu-item @click="toggleCollapsed" key="addDeviceList">
+        <router-link to="/add-device-list">
+          <sdFeatherIcons type="file-plus" />
+          <span> 장비 일괄 등록 </span>
         </router-link>
       </a-menu-item>
 
@@ -112,10 +119,10 @@
           ><sdFeatherIcons type="user" /><span>마이 페이지</span></template
         >
         <a-menu-item @click="toggleCollapsed" key="team">
-          <router-link to="/app/users/team"> 나의 장비 </router-link>
+          <router-link to="/user/myDevice"> 나의 장비 </router-link>
         </a-menu-item>
-        <a-menu-item @click="toggleCollapsed" key="dataTable">
-          <router-link to="/app/users/dataTable"> 신청 내역 </router-link>
+        <a-menu-item @click="toggleCollapsed" key="myList">
+          <router-link to="/user/myList"> 신청 내역 </router-link>
         </a-menu-item>
       </a-sub-menu>
 

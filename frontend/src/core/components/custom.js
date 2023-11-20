@@ -11,6 +11,7 @@ import Heading from '../../components/heading/Heading';
 import AutoComplete from '../../components/autoComplete/autoComplete';
 import Dropdown from '../../components/dropdown/Dropdown';
 import Popover from '../../components/popup/Popup';
+import Modal from '../../components/modals/Modals';
 
 [
   Heading,
@@ -24,7 +25,8 @@ import Popover from '../../components/popup/Popup';
   AutoComplete,
   Dropdown,
   Popover,
-  FeatherIcons
+  FeatherIcons,
+  Modal,
 ].map((c) => {
   app.component(`sd${c.name}`, c);
 });

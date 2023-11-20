@@ -84,16 +84,16 @@ const CardFrame = Styled(Card, props)`
         text-transform: uppercase;
         font-size: 10px;
         color: #fff;
-        &.early{
+        &.progress{
           background: ${({ theme }) => theme['primary-color']};
         }
-        &.late{
+        &.return{ // 컴포넌트 CSS
           background: ${({ theme }) => theme['warning-color']};
         }
         &.complete{
           background: ${({ theme }) => theme['success-color']};
         }
-        &.progress{
+        &.delete{
           background: ${({ theme }) => theme['danger-color']};
         }
       }

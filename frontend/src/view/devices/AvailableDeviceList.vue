@@ -104,10 +104,9 @@
     name: 'Orders',
     components: { TopToolBox, Main, TableWrapper },
   
-    
     setup() {
       const { state, dispatch } = useStore();
-      const deviceId = ref(1);
+      const deviceId = ref(null);
       const searchData = computed(() => state.headerSearchData);
       const orders = computed(() => state.devices.data);
   

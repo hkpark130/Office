@@ -9,7 +9,7 @@
       </a-checkable-tag>
     </template>
   </div>
-  <a-tag v-if="tagType == 'colorful'" :color="color">{{ color }}</a-tag>
+  <a-tag v-if="tagType == 'colorful'" :color="color" :data="data" style="text-align: center;">{{ data }}</a-tag>
   <div class="sDash-dynamic-tag" v-if="tagType == 'dynamicTag'">
     <template v-for="(tag, index) in tags" :key="index">
       <a-tooltip v-if="tag.length > 20" :title="tag">
