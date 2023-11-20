@@ -34,6 +34,7 @@
                                 </a-upload-dragger>
                               </sdCards>
                             </div>
+
                           </a-col>
                         </a-row>
                       </div>
@@ -68,51 +69,45 @@
   import { ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
   
-  const fileList = [
-    // {
-    //   uid: "1",
-    //   name: "1.png",
-    //   status: "done",
-    //   url: require("@/static/img/products/1.png"),
-    //   thumbUrl: require("@/static/img/products/1.png"),
-    // },
-  ];
-  
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
     setup() {
       const file = ref(null);
-      const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
   
       const fileUploadProps = {
         name: "file",
-        multiple: true,
+        maxCount: 1, // 1개만 표시 되도록
+        multiple: false, // 1개만 업로드 되도록
         action: "http://localhost",
+        beforeUpload(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              
+              const fileContent = e.target.result;
+              if (checkCSV(fileContent)) {
+                resolve(file);
+              } else {
+                reject(false);
+                throw new Error("Invalid CSV file.")
+              }
+            };
+            reader.readAsText(file); // FileReader에 직접 파일 전달
+          });
+        },
         onChange(info) {
           const { status } = info.file;
           if (status !== "uploading") {
             file.value = info.file;
-            list.value = info.fileList;
           }
           if (status === "done") {
             message.success(`${info.file.name} file uploaded successfully.`);
           } else if (status === "error") {
             message.error(`${info.file.name} file upload failed.`);
           }
-        },
-        listType: "picture",
-        defaultFileList: fileList,
-        showUploadList: {
-          showRemoveIcon: true,
-          removeIcon: (
-            <sdFeatherIcons
-              type="trash-2"
-              onClick={(e) => console.log(e, "custom removeIcon event")}
-            />
-          ),
         },
       };
   
@@ -124,6 +119,13 @@
         description: "",
         layout: "vertical",
       });
+
+      const checkCSV = (csvContent) => {
+        const lines = csvContent.split('\r\n');
+        const headers = lines[0].split(',');
+
+        return headers.includes("host") && headers.includes("ip");
+      }
   
       const handleFinish = () => {
         console.log(formState);
@@ -152,11 +154,9 @@
       };
   
       return {
-        fileList,
         fileUploadProps,
         rules,
         file,
-        list,
         resetForm,
         submitValues,
         formState,
