@@ -42,6 +42,7 @@
                 :dataSource="dataSource"
                 :columns="columns"
                 :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+                :rowClassName="(record) => record.level === 'urgent' ? 'urgent-row' : ''"
               />
             </TableWrapper>
           </a-col>
@@ -196,6 +197,7 @@
             user: <span class="customer-name">{user}</span>,
             info: <a-tag class={status}>{info}</a-tag>,
             date: <span class="ordered-date">{date}</span>,
+            level: level,
             action: (
               <div class="table-actions">
                 <>

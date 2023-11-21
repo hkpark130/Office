@@ -24,9 +24,9 @@
                 <a-col :xxl="4" :xs="24">
                   <div class="table-toolbox-actions">
                     <sdButton size="small" type="secondary" transparented> Export </sdButton>
-                    <router-link :to="`/add-device`">
+                    <router-link :to="`/device-application/${deviceId}`">
                       <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
-                      장비등록
+                      사용신청
                       </sdButton>
                     </router-link>
                   </div>
@@ -56,6 +56,7 @@
   import { Main, TableWrapper } from '../styled';
   import { computed, ref, defineComponent } from 'vue';
   import { useStore } from 'vuex';
+  import * as FontAwesomeIcon from '@fortawesome/free-solid-svg-icons';
   
   const columns = [
     {
@@ -115,7 +116,7 @@
     },
   ];
   
-  const Orders = defineComponent({
+  const Orders = defineComponent({ 
     name: 'Orders',
     components: { TopToolBox, Main, TableWrapper },
   
@@ -123,9 +124,9 @@
       const { state, dispatch } = useStore();
       const deviceId = ref(null);
       const searchData = computed(() => state.headerSearchData);
-      const orders = computed(() => state.devicesAdmin.data);
+      const orders = computed(() => state.disposeDevicesAdmin.data);
   
-      const item = computed(() => state.devicesAdmin.data);
+      const item = computed(() => state.disposeDevicesAdmin.data);
       const stateValue = ref('');
       const filterKey = ref(['Shipped', 'Awaiting Shipment', 'Canceled']);
   
@@ -152,9 +153,8 @@
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
                 <span class="spnTooltip">
-                    <strong>CPU: </strong>12C<br />
-                    <strong>RAM: </strong>32G<br />
-                    테스트 툴팁
+                    <strong>CPU: </strong>12C<br/>
+                    <strong>RAM: </strong>32G<br/>
                 </span>
               </div>
             ),
@@ -167,11 +167,8 @@
             action: (
               <div class="table-actions">
                 <>
-                  <sdButton class="btn-icon" type="info" to="#" shape="circle">
-                    <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
-                  </sdButton>
-                  <sdButton class="btn-icon" onClick={() => removeItem(deviceId)} type="danger" to="#" shape="circle">
-                    <sdFeatherIcons type="trash-2" size={16} title="폐기" />
+                  <sdButton class="btn-icon" onClick={() => removeItem(deviceId)} type="info" to="#" shape="circle">
+                    <font-awesome-icon icon={FontAwesomeIcon["faRecycle"]} size={16} title="복구" />
                   </sdButton>
                 </>
               </div>

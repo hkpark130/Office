@@ -5,6 +5,12 @@
         <a-col :xs="24">
           <sdCards headless>
             <a-row :gutter="25" justify="center">
+              <div><h3>예시 양식</h3>
+                <img
+                  :src="require(`@/static/img/format.png`)"
+                  alt=''
+                />
+              </div>
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
                 <AddProductForm>
                   <a-form
@@ -21,6 +27,7 @@
                           <a-col :xs="24">
                             <div class="add-product-content">
                               <sdCards title="CSV 파일">
+                                
                                 <a-upload-dragger v-bind="fileUploadProps">
                                   <p class="ant-upload-drag-icon">
                                     <sdFeatherIcons type="upload" size="50" />
@@ -28,8 +35,8 @@
                                   <sdHeading as="h4" class="ant-upload-text">
                                     CSV 파일
                                   </sdHeading>
-                                  <p class="ant-upload-hint">
-                                    <span>양식: </span> {}
+                                  <p class="ant-upload-hint" style="width: 10px; display:inline;">
+                                    <span>위 양식을 지켜주세요.</span> 
                                   </p>
                                 </a-upload-dragger>
                               </sdCards>

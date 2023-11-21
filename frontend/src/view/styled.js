@@ -1719,6 +1719,10 @@ const FileCardWrapper = Styled.div`
 `;
 
 const TableWrapper = Styled.div`
+    .urgent-row {
+        background-color: pink;
+    }
+
     .spnTooltip {
         z-index:10;display:none; padding:14px 20px;
         margin-top:-30px; margin-left:28px;
