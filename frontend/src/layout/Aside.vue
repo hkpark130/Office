@@ -86,14 +86,14 @@
         <template v-slot:title
           ><sdFeatherIcons type="server" /><span>장비 관리 대장</span></template
         >
-        <a-menu-item @click="toggleCollapsed" key="write">
-          <router-link to="/add-approval">
+        <a-menu-item @click="toggleCollapsed" key="DevicelistAdmin">
+          <router-link to="/devicelist-admin">
             <sdFeatherIcons type="list" />
             <span> 장비 리스트 </span>
           </router-link>
         </a-menu-item>
-        <a-menu-item @click="toggleCollapsed" key="view">
-          <router-link to="#">
+        <a-menu-item @click="toggleCollapsed" key="DisposeDevicelistAdmin">
+          <router-link to="/dispose-devicelist-admin">
             <sdFeatherIcons type="trash-2" />
             <span> 폐기 장비 리스트 </span>
           </router-link>

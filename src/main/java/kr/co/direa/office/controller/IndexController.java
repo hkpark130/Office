@@ -19,8 +19,8 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-//@CrossOrigin(origins = {"http://192.168.2.110:8080", "http://192.168.2.110", "http://192.168.2.111:8080"}) // 개발용
-@CrossOrigin(origins = {"http://172.30.1.30:8080", "http://172.30.1.30"})
+@CrossOrigin(origins = {"http://192.168.2.110:8080", "http://192.168.2.110", "http://192.168.2.111:8080"}) // 개발용
+//@CrossOrigin(origins = {"http://172.30.1.30:8080", "http://172.30.1.30"})
 public class IndexController {
     @GetMapping("/health")
     public String status() {
@@ -30,6 +30,15 @@ public class IndexController {
     @GetMapping(value = "/devices")
     ResponseEntity<?> echoReturn() throws IOException {
         Path filePath = Path.of(System.getProperty("user.dir") + "/test3.json");
+        String jsonContent = Files.readString(filePath);
+        return ResponseEntity.ok(
+                jsonContent
+        );
+    }
+
+    @GetMapping(value = "/devicelist-admin")
+    ResponseEntity<?> deviceListAdmin() throws IOException {
+        Path filePath = Path.of(System.getProperty("user.dir") + "/test.json");
         String jsonContent = Files.readString(filePath);
         return ResponseEntity.ok(
                 jsonContent

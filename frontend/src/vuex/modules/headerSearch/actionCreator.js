@@ -1,7 +1,7 @@
 import initialState from '../../../demoData/header-search.json';
 import mutations from './mutations';
 
-const state = () => initialState;
+const state = () => initialState; // 검색창 리스트 <- 수정필요
 
 const actions = {
   async headerSearchAction({ commit }, searchData) {

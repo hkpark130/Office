@@ -143,12 +143,12 @@
       const submitValues = ref({});
       const formRef = ref();
 
-      console.log(getApprovalObj);
+      const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
   
       const fileUploadProps = {
         name: "file",
         multiple: true,
-        action: "http://localhost",
+        action: API_ENDPOINT,
         onChange(info) {
           const { status } = info.file;
           if (status !== "uploading") {

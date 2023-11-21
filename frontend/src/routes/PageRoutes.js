@@ -53,6 +53,11 @@ export default [
     path: '/add-device-list',
     component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDeviceList.vue'),
   },
+  {
+    name: 'deviceListForAdmin',
+    path: '/devicelist-admin',
+    component: () => import(/* webpackChunkName: "DeviceListAdmin" */ '@/view/devices/DeviceListAdmin.vue'),
+  },
   
   {
     name: 'forbidden',

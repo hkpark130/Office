@@ -29,7 +29,6 @@
         };
     },
   });
-  console.log(response.data);
   export default SocialMediaOverview;
   </script>
   

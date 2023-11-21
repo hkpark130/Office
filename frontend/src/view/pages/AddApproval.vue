@@ -145,6 +145,8 @@
     //   thumbUrl: require("@/static/img/products/1.png"),
     // },
   ];
+
+  const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -158,7 +160,7 @@
       const fileUploadProps = {
         name: "file",
         multiple: true,
-        action: "http://localhost",
+        action: API_ENDPOINT,
         onChange(info) {
           const { status } = info.file;
           if (status !== "uploading") {
