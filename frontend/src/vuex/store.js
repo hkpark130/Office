@@ -6,6 +6,7 @@ import devices from './modules/devices/actionCreator';
 import disposeDevicesAdmin from './modules/disposeDevicesAdmin/actionCreator';
 import devicesAdmin from './modules/devicesAdmin/actionCreator';
 import myList from './modules/myList/actionCreator';
+import myDevice from './modules/myDevice/actionCreator';
 
 export default createStore({
   modules: {
@@ -16,5 +17,6 @@ export default createStore({
     devicesAdmin,
     disposeDevicesAdmin,
     myList,
+    myDevice,
   },
 });

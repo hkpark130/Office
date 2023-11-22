@@ -63,6 +63,16 @@ export default [
     path: '/dispose-devicelist-admin',
     component: () => import(/* webpackChunkName: "DisposeDeviceListAdmin" */ '@/view/devices/DisposeDeviceListAdmin.vue'),
   },
+  {
+    name: 'activity',
+    path: '/activity',
+    component: () => import(/* webpackChunkName: "Activity" */ '@/view/pages/Activity.vue'),
+  },
+  {
+    name: 'myDevice',
+    path: '/user/myDevice',
+    component: () => import(/* webpackChunkName: "MyDevice" */ '@/view/user/MyDevice.vue'),
+  },
   
   {
     name: 'forbidden',

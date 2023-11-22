@@ -6,9 +6,10 @@
           <sdCards headless>
             <a-row :gutter="25" justify="center">
               <div><h3>예시 양식</h3>
-                <img
-                  :src="require(`@/static/img/format.png`)"
-                  alt=''
+                <a-table
+                  :columns="formatKeys"
+                  :dataSource="formatData"
+                  :pagination="false"
                 />
               </div>
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
@@ -73,7 +74,7 @@
   <script lang="jsx">
   import { Main, BasicFormWrapper } from "../styled";
   import { AddProductForm } from "./style";
-  import { ref, reactive, defineComponent } from "vue";
+  import { computed, ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
   
   const AddProduct = defineComponent({
@@ -180,6 +181,105 @@
       const resetForm = () => {
         formRef.value.ruleformState.resetFields();
       };
+
+      const formatKeys = [
+        {
+          title: 'deviceId',
+          dataIndex: 'deviceId',
+          key: 'deviceId',
+        },
+        {
+          title: 'category',
+          dataIndex: 'category',
+          key: 'category',
+        },
+        {
+          title: 'user',
+          dataIndex: 'user',
+          key: 'user',
+        },
+        {
+          title: 'manageDep',
+          dataIndex: 'manageDep',
+          key: 'manageDep',
+        },
+        {
+          title: 'project',
+          dataIndex: 'project',
+          key: 'project',
+        },
+        {
+          title: 'purpose',
+          dataIndex: 'purpose',
+          key: 'purpose',
+        },
+        {
+          title: 'spec',
+          dataIndex: 'spec',
+          key: 'spec',
+        },
+        {
+          title: 'price',
+          dataIndex: 'price',
+          key: 'price',
+        },
+        {
+          title: 'model',
+          dataIndex: 'model',
+          key: 'model',
+        },
+        {
+          title: 'company',
+          dataIndex: 'company',
+          key: 'company',
+        },
+        {
+          title: 'sn',
+          dataIndex: 'sn',
+          key: 'sn',
+        },
+        {
+          title: 'description',
+          dataIndex: 'description',
+          key: 'description',
+        },
+      ];
+
+      const formatState = computed(() => [{
+        "deviceId": "DIR-N-107",
+        "category": "노트북",
+        "purpose": "사무",
+        "user": "김철수",
+        "manageDep": "경영지원부",
+        "project": "농협",
+        "spec": "RAM: 16G\nCPU: 8core",
+        "price": "80,000",
+        "model": "LSBX2433",
+        "company": "SAMSUNG",
+        "sn": "ND6179NBK",
+        "description": "부팅 느림"
+      }]);
+
+      const formatData = computed(() =>
+        formatState.value.map((value) => {
+          const { deviceId, category, purpose, user, manageDep, spec, price, model, description, project, sn, company } = value;
+          return {
+            key: deviceId,
+            deviceId: <span>{deviceId}</span>,
+            category: <span>{category}</span>,
+            purpose: <span>{purpose}</span>,
+            user: <span>{user}</span>,
+            manageDep: <span>{manageDep}</span>,
+            spec: <span>{spec}</span>,
+            price: <span>{price}</span>,
+            model: <span>{model}</span>,
+            description: <span>{description}</span>,
+            project: <span>{project}</span>,
+            company: <span>{company}</span>,
+            sn: <span>{sn}</span>,
+          };
+        })
+      );
   
       return {
         fileUploadProps,
@@ -192,6 +292,8 @@
         handleFinishFailed,
         handleSubmit,
         formRef,
+        formatData,
+        formatKeys,
       };
     },
   });

@@ -39,8 +39,6 @@
           <a-col :md="24">
             <TableWrapper class="table-order table-responsive">
               <a-table
-                :type="radio"
-                :rowSelection="rowSelection"
                 :dataSource="dataSource"
                 :columns="columns"
                 :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
@@ -56,18 +54,17 @@
   import { Main, TableWrapper } from '../styled';
   import { computed, ref, defineComponent } from 'vue';
   import { useStore } from 'vuex';
-  import * as FontAwesomeIcon from '@fortawesome/free-solid-svg-icons';
   
   const columns = [
     {
-      title: '품목',
-      dataIndex: 'category',
-      key: 'category',
+      title: 'Product',
+      dataIndex: 'product',
+      key: 'product',
     },
     {
-      title: '관리번호',
-      dataIndex: 'id',
-      key: 'id',
+      title: '사용자',
+      dataIndex: 'user',
+      key: 'user',
     },
     {
       title: '용도',
@@ -75,29 +72,19 @@
       key: 'purpose',
     },
     {
-      title: '구입일자',
-      dataIndex: 'purchaseDate',
-      key: 'purchaseDate',
-    },
-    {
-      title: '모델명',
-      dataIndex: 'model',
-      key: 'model',
-    },
-    {
-      title: '제조사',
-      dataIndex: 'company',
-      key: 'company',
-    },
-    {
-      title: 'S/N',
-      dataIndex: 'sn',
-      key: 'sn',
+      title: '프로젝트',
+      dataIndex: 'project',
+      key: 'project',
     },
     {
       title: '비고',
       dataIndex: 'description',
       key: 'description',
+    },
+    {
+      title: '관리부서',
+      dataIndex: 'manageDep',
+      key: 'manageDep',
     },
     {
       title: 'Action',
@@ -106,7 +93,7 @@
     },
   ];
   
-  const Orders = defineComponent({ 
+  const Orders = defineComponent({
     name: 'Orders',
     components: { TopToolBox, Main, TableWrapper },
   
@@ -114,52 +101,58 @@
       const { state, dispatch } = useStore();
       const deviceId = ref(null);
       const searchData = computed(() => state.headerSearchData);
-      const orders = computed(() => state.disposeDevicesAdmin.data);
+      const orders = computed(() => state.myDevice.data);
   
-      const item = computed(() => state.disposeDevicesAdmin.data);
+      const item = computed(() => state.myDevice.data);
       const stateValue = ref('');
       const filterKey = ref(['Shipped', 'Awaiting Shipment', 'Canceled']);
   
       const handleChangeForFilter = (e) => {
         dispatch('orderFilter', { column: 'status', value: e.target.value });
       };
-
-      const removeItem = (deviceId) => {
-        const index = orders.value.findIndex((item) => item.deviceId === deviceId);
-        if (index !== -1) {
-          orders.value.splice(index, 1);
-        }
-      };
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { category, manageDep, project, purpose, model, user, deviceId, company, sn, purchaseDate, description } = value;
+          const { category, purpose, project, manageDep, user, deviceId, description, img } = value;
           return {
-            key: deviceId, // radio 선택시 기준 값
-            id: <span class="order-id">{deviceId}</span>,
-            category: <span class="customer-name">{category}</span>,
+            product: (
+              <div class="user-info">
+                <figure>
+                    <img style={{ width: '50px' }} src={require(`@/static/img/${img}`)} alt="" />
+                </figure>
+                <figcaption>
+                    <sdHeading as="h6">
+                        {deviceId}
+                    </sdHeading>
+                    <span class="user-designation">{category}</span>
+                </figcaption>
+              </div>
+            ),
             user: <span class="customer-name">{user}</span>,
+            manageDep: <span class="customer-name">{manageDep}</span>,
+            project: <span class="customer-name">{project}</span>,
             purpose: (
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
                 <span class="spnTooltip">
-                    <strong>CPU: </strong>12C<br/>
-                    <strong>RAM: </strong>32G<br/>
+                    <strong>CPU: </strong>12C<br />
+                    <strong>RAM: </strong>32G<br />
+                    테스트 툴팁
                 </span>
               </div>
             ),
-            manageDep: <span class="ordered-amount">{manageDep}</span>,
-            project: <span class="ordered-amount">{project}</span>,
-            model: <span class="ordered-amount">{model}</span>,
-            company: <span class="ordered-amount">{company}</span>,
-            sn: <span class="ordered-amount">{sn}</span>,
-            purchaseDate: <span class="ordered-date">{purchaseDate}</span>,
             description: <span class="ordered-date">{description}</span>,
             action: (
               <div class="table-actions">
                 <>
-                  <sdButton class="btn-icon" onClick={() => removeItem(deviceId)} type="info" to="#" shape="circle">
-                    <font-awesome-icon icon={FontAwesomeIcon["faRecycle"]} size={16} title="복구" />
+                  <sdButton class="btn-icon" type="link" to="#" shape="circle">
+                    <sdFeatherIcons type="edit" size={16} title="수정" />
+                  </sdButton>
+                  <sdButton class="btn-icon" type="primary" to="#" shape="circle" >
+                    <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
+                  </sdButton>
+                  <sdButton class="btn-icon" type="danger" to="#" shape="circle">
+                    <sdFeatherIcons type="trash-2" size={16} title="폐기" />
                   </sdButton>
                 </>
               </div>
@@ -167,17 +160,9 @@
           };
         }),
       );
-
-      const rowSelection = {
-        onChange: (selectedRowKeys) => {
-          deviceId.value = selectedRowKeys[0];
-        },
-        type: "radio", //기본값이 체크박스
-      };
       
       return {
         deviceId,
-        rowSelection,
         dataSource,
         handleChangeForFilter,
         filterKey,

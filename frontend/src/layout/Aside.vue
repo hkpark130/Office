@@ -43,7 +43,7 @@
       <template v-slot:title
         ><sdFeatherIcons type="hard-drive" /><span>장비관리</span></template
       >
-      <a-menu-item @click="toggleCollapsed" key="device">
+      <a-menu-item @click="toggleCollapsed" key="home">
         <router-link to="/">
           <sdFeatherIcons type="airplay" />
           <span> 가용장비 대시보드 </span>
@@ -100,8 +100,8 @@
         </a-menu-item>
       </a-sub-menu>
 
-      <a-menu-item @click="toggleCollapsed" key="deviceHistory">
-        <router-link to="/blank">
+      <a-menu-item @click="toggleCollapsed" key="Activity">
+        <router-link to="/activity">
           <sdFeatherIcons type="book" />
           <span> 장비 변경 이력 </span>
         </router-link>
@@ -167,11 +167,12 @@ export default defineComponent({
     const router = computed(() => useRoute());
     const state = reactive({
       selectedKeys: ["home"],
-      openKeys: ["dashboard"],
-      preOpenKeys: ["dashboard"],
+      openKeys: ["devices"],
+      preOpenKeys: ["devices"],
     });
 
-    watchEffect(() => {
+    console.log(router.value.matched);
+    watchEffect(() => { // 얘가 문제임
       if (router.value.matched.length) {
         if (router.value.matched.length > 2) {
           state.selectedKeys = [router.value.matched[2].name];

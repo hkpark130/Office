@@ -752,6 +752,115 @@ const FaqWrapper = Styled.div`
   }
 `;
 
+const ActivityContents = Styled.div`
+    .ant-card-body{
+        padding: 25px 0 !important;
+    }
+
+    .sDash_empty-task{
+        min-height: 215px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        span{
+            font-size: 18px;
+            font-weight: 500;
+            color: ${({ theme }) => theme['light-color']}; 
+        }
+    }
+
+    .activity-list{
+        margin: 0;
+        .activity-list__single{
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            .activity-icon{
+                width: 31px;
+                height: 31px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #00000015;
+                ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 15px;
+                &.primary{
+                    background-color: ${({ theme }) => theme['primary-color']}15;
+                    color: ${({ theme }) => theme['primary-color']};
+                }
+                &.secondary{
+                    background-color: ${({ theme }) => theme['secondary-color']}15;
+                    color: ${({ theme }) => theme['secondary-color']};
+                }
+                &.success{
+                    background-color: ${({ theme }) => theme['success-color']}15;
+                    color: ${({ theme }) => theme['success-color']};
+                }
+                &.info{
+                    background-color: ${({ theme }) => theme['info-color']}15;
+                    color: ${({ theme }) => theme['info-color']};
+                }
+                &.danger{
+                    background-color: ${({ theme }) => theme['danger-color']}15;
+                    color: ${({ theme }) => theme['danger-color']};
+                }
+                &.warning{
+                    background-color: ${({ theme }) => theme['warning-color']}15;
+                    color: ${({ theme }) => theme['warning-color']};
+                }
+                i{
+                    line-height: 0;
+                }
+            }
+            .more{
+                visibility: hidden;
+            }
+            &:hover{
+                box-shadow: 0 15px 50px #88888820;
+                .more{
+                    visibility: visible;
+                }
+            }
+            .activity-content{
+                flex: auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .activity-info{
+                display: flex;
+                align-items: center;
+                img{
+                    max-width: 40px;
+                    border-radius: 50%;
+                    ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 20px;
+                }
+                p{
+                    margin-bottom: 0;
+                    font-size: 14px;
+                    color: ${({ theme }) => theme['gray-color']};
+                    .inline-text{
+                        font-weight: 500;
+                        display: inline;
+                    }
+                    .hour{
+                        display: block;
+                        margin-top: 3px;
+                        color: ${({ theme }) => theme['extra-light-color']};
+                    }
+                }
+            }
+            .activity-more{
+                svg,
+                i{
+                    color: ${({ theme }) => theme['extra-light-color']};
+                }
+            }
+        }
+
+    }
+`;
+
 const SearchResultWrapper = Styled.div`
   .ant-select{
     @media only screen and (max-width: 575px){
@@ -2307,4 +2416,5 @@ export {
   SupportTopWrap,
   SupportContentWrap,
   AddProductForm,
+  ActivityContents,
 };

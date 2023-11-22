@@ -1,29 +1,26 @@
 import mutations from './mutations';
-// import { disposeDeviceListAdmin } from './load-data';
 
 const response = [
   {
+    "img": "notebook.png",
     "deviceId": "DIR-N-106",
     "category": "노트북",
     "purpose": "개발",
-    "purchaseDate": "January 20, 2021",
     "user": "김철수",
-    "model": "LSBX2431",
-    "company": "LG",
-    "sn": "ND6179NBK",
-    "description": "파손"
+    "manageDep": "제품2팀 0108",
+    "project": "스마트로 0205",
+    "description": "프로젝트용 노트북"
   },
   {
+    "img": "monitor.png",
     "deviceId": "DIR-N-107",
     "category": "모니터",
     "purpose": "개발",
-    "purchaseDate": "January 20, 2021",
     "user": "김철수",
-    "model": "LSBX2431",
-    "company": "LG",
-    "sn": "ND6179NBK",
-    "description": "부팅불가"
-  }
+    "manageDep": "제품2팀 0108",
+    "project": "스마트로 0205",
+    "description": "프로젝트용 모니터",
+  },
 ];
 
 const state = () => ({
