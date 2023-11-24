@@ -102,14 +102,10 @@
             const reader = new FileReader();
             reader.onload = (e) => {
               const fileContent = e.target.result;
-              try {
-                if (checkCSV(fileContent)) {
-                  resolve(file);
-                } else {
-                  reject(new Error("유효한 양식이 아닙니다."));
-                }
-              } catch (error) {
-                reject(error);
+              if (checkCSV(fileContent)) {
+                resolve(file);
+              } else {
+                reject(new Error("유효한 양식이 아닙니다."));
               }
             };
             reader.readAsText(file); // FileReader에 직접 파일 전달

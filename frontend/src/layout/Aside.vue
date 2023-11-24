@@ -68,51 +68,56 @@
         <p class="sidebar-nav-title">Pages</p>
       </template>
 
-      <a-menu-item @click="toggleCollapsed" key="addDevice">
-        <router-link to="/add-device">
-          <sdFeatherIcons type="plus-square" />
-          <span> 장비 등록 </span>
-        </router-link>
-      </a-menu-item>
-
-      <a-menu-item @click="toggleCollapsed" key="addDeviceList">
-        <router-link to="/add-device-list">
-          <sdFeatherIcons type="file-plus" />
-          <span> 장비 일괄 등록 </span>
-        </router-link>
-      </a-menu-item>
-
-      <a-sub-menu key="manageDevice">
+      <a-sub-menu key="admin">
         <template v-slot:title
-          ><sdFeatherIcons type="server" /><span>장비 관리 대장</span></template
+          ><sdFeatherIcons type="key" /><span>관리자 메뉴</span></template
         >
-        <a-menu-item @click="toggleCollapsed" key="DevicelistAdmin">
-          <router-link to="/devicelist-admin">
-            <sdFeatherIcons type="list" />
-            <span> 장비 리스트 </span>
+        <a-menu-item @click="toggleCollapsed" key="addDevice">
+          <router-link to="/add-device">
+            <sdFeatherIcons type="plus-square" />
+            <span> 장비 등록 </span>
           </router-link>
         </a-menu-item>
-        <a-menu-item @click="toggleCollapsed" key="DisposeDevicelistAdmin">
-          <router-link to="/dispose-devicelist-admin">
-            <sdFeatherIcons type="trash-2" />
-            <span> 폐기 장비 리스트 </span>
+
+        <a-menu-item @click="toggleCollapsed" key="addDeviceList">
+          <router-link to="/add-device-list">
+            <sdFeatherIcons type="file-plus" />
+            <span> 장비 일괄 등록 </span>
+          </router-link>
+        </a-menu-item>
+
+        <a-sub-menu key="manageDevice">
+          <template v-slot:title
+            ><sdFeatherIcons type="server" /><span>장비 관리 대장</span></template
+          >
+          <a-menu-item @click="toggleCollapsed" key="DevicelistAdmin">
+            <router-link to="/devicelist-admin">
+              <sdFeatherIcons type="list" />
+              <span> 장비 리스트 </span>
+            </router-link>
+          </a-menu-item>
+          <a-menu-item @click="toggleCollapsed" key="DisposeDevicelistAdmin">
+            <router-link to="/dispose-devicelist-admin">
+              <sdFeatherIcons type="trash-2" />
+              <span> 폐기 장비 리스트 </span>
+            </router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-menu-item @click="toggleCollapsed" key="Activity">
+          <router-link to="/activity">
+            <sdFeatherIcons type="book" />
+            <span> 신청 이력 </span>
+          </router-link>
+        </a-menu-item>
+
+        <a-menu-item @click="toggleCollapsed" key="devicePosition">
+          <router-link to="/blank">
+            <sdFeatherIcons type="map-pin" />
+            <span> 장비 지도 </span>
           </router-link>
         </a-menu-item>
       </a-sub-menu>
-
-      <a-menu-item @click="toggleCollapsed" key="Activity">
-        <router-link to="/activity">
-          <sdFeatherIcons type="book" />
-          <span> 장비 변경 이력 </span>
-        </router-link>
-      </a-menu-item>
-
-      <a-menu-item @click="toggleCollapsed" key="devicePosition">
-        <router-link to="/blank">
-          <sdFeatherIcons type="map-pin" />
-          <span> 장비 지도 </span>
-        </router-link>
-      </a-menu-item>
 
       <a-sub-menu key="users">
         <template v-slot:title
@@ -171,15 +176,14 @@ export default defineComponent({
       preOpenKeys: ["devices"],
     });
 
-    console.log(router.value.matched);
     watchEffect(() => { // 얘가 문제임
       if (router.value.matched.length) {
-        if (router.value.matched.length > 2) {
-          state.selectedKeys = [router.value.matched[2].name];
+        if (router.value.matched.length > 3) {
+          state.selectedKeys = [router.value.matched[3].name];
           state.openKeys = [router.value.matched[1].name];
           state.preOpenKeys = [router.value.matched[1].name];
-        } else if (router.value.matched.length > 3) {
-          state.selectedKeys = [router.value.matched[3].name];
+        } else if (router.value.matched.length > 2) {
+          state.selectedKeys = [router.value.matched[2].name];
           state.openKeys = [router.value.matched[1].name];
           state.preOpenKeys = [router.value.matched[1].name];
         } else {

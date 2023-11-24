@@ -39,7 +39,6 @@
           <a-col :md="24">
             <TableWrapper class="table-order table-responsive">
               <a-table
-                :type="radio"
                 :rowSelection="rowSelection"
                 :dataSource="dataSource"
                 :columns="columns"
@@ -144,7 +143,6 @@
         orders.value.map((value) => {
           const { category, manageDep, project, purpose, model, user, deviceId, company, sn, purchaseDate } = value;
           return {
-            key: deviceId, // radio 선택시 기준 값
             id: <span class="order-id">{deviceId}</span>,
             category: <span class="customer-name">{category}</span>,
             user: <span class="customer-name">{user}</span>,
@@ -179,17 +177,9 @@
           };
         }),
       );
-
-      const rowSelection = {
-        onChange: (selectedRowKeys) => {
-          deviceId.value = selectedRowKeys[0];
-        },
-        type: "radio", //기본값이 체크박스
-      };
       
       return {
         deviceId,
-        rowSelection,
         dataSource,
         handleChangeForFilter,
         filterKey,

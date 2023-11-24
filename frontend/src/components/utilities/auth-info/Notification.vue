@@ -5,7 +5,7 @@
         <AtbdTopDropdwon class="atbd-top-dropdwon">
           <sdHeading as="h5" class="atbd-top-dropdwon__title">
             <span class="title-text">Notifications</span>
-            <a-badge class="badge-success" count="3" />
+            <a-badge class="badge-success" count="1" />
           </sdHeading>
           <perfect-scrollbar
             :options="{
@@ -15,105 +15,21 @@
             }"
           >
             <ul class="atbd-top-dropdwon__nav notification-list">
-              <li>
-                <a to="#">
-                  <div class="atbd-top-dropdwon__content notifications">
-                    <div class="notification-icon bg-primary">
-                      <sdFeatherIcons type="hard-drive" />
+              <li v-for="(notification, index) in notificationList" :key="index">
+                <a :href="notification.link">
+                  <div class="atbd-top-dropdwon__content notifications" :class="notification.iconClass">
+                    <div class="notification-icon" :class="notification.bgClass">
+                      <sdFeatherIcons :type="notification.icon" />
                     </div>
                     <div class="notification-content d-flex">
                       <div class="notification-text">
                         <sdHeading as="h5">
-                          <span>James</span> sent you a message
+                          <span>{{ notification.sender }}</span> {{ notification.message }}
                         </sdHeading>
-                        <p>5 hours ago</p>
+                        <p>{{ notification.time }}</p>
                       </div>
                       <div class="notification-status">
-                        <a-badge dot />
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a to="#">
-                  <div class="atbd-top-dropdwon__content notifications">
-                    <div class="notification-icon bg-secondary">
-                      <sdFeatherIcons type="share-2" />
-                    </div>
-                    <div class="notification-content d-flex">
-                      <div class="notification-text">
-                        <sdHeading as="h5">
-                          <span>James</span> sent you a message
-                        </sdHeading>
-                        <p>5 hours ago</p>
-                      </div>
-
-                      <div class="notification-status">
-                        <a-badge dot />
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a to="#">
-                  <div class="atbd-top-dropdwon__content notifications">
-                    <div class="notification-icon bg-secondary">
-                      <sdFeatherIcons type="share-2" />
-                    </div>
-                    <div class="notification-content d-flex">
-                      <div class="notification-text">
-                        <sdHeading as="h5">
-                          <span>James</span> sent you a message
-                        </sdHeading>
-                        <p>5 hours ago</p>
-                      </div>
-
-                      <div class="notification-status">
-                        <a-badge dot />
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a to="#">
-                  <div class="atbd-top-dropdwon__content notifications">
-                    <div class="notification-icon bg-secondary">
-                      <sdFeatherIcons type="share-2" />
-                    </div>
-                    <div class="notification-content d-flex">
-                      <div class="notification-text">
-                        <sdHeading as="h5">
-                          <span>James</span> sent you a message
-                        </sdHeading>
-                        <p>5 hours ago</p>
-                      </div>
-
-                      <div class="notification-status">
-                        <a-badge dot />
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a to="#">
-                  <div class="atbd-top-dropdwon__content notifications">
-                    <div class="notification-icon bg-secondary">
-                      <sdFeatherIcons type="share-2" />
-                    </div>
-                    <div class="notification-content d-flex">
-                      <div class="notification-text">
-                        <sdHeading as="h5">
-                          <span>James</span> sent you a message
-                        </sdHeading>
-                        <p>5 hours ago</p>
-                      </div>
-
-                      <div class="notification-status">
-                        <a-badge dot />
+                        <a-badge v-if="!notification.read" dot />
                       </div>
                     </div>
                   </div>
@@ -138,7 +54,9 @@
 import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import "vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css";
 import { AtbdTopDropdwon } from "./auth-info-style";
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
+
+
 
 export default defineComponent({
   name: "Notification",
@@ -146,6 +64,35 @@ export default defineComponent({
     AtbdTopDropdwon,
     PerfectScrollbar,
   },
+  setup() {
+    const notificationList = reactive([
+        {
+          link: "#",
+          iconClass: "bg-primary",
+          bgClass: "bg-primary",
+          icon: "hard-drive",
+          sender: "James",
+          message: "sent you a message",
+          time: "5 hours ago",
+          read: false,
+        },
+        {
+          link: "#",
+          iconClass: "bg-primary",
+          bgClass: "bg-primary",
+          icon: "hard-drive",
+          sender: "James",
+          message: "sent you a message",
+          time: "5 hours ago",
+          read: true,
+        },
+      ]);
+
+    return {
+      notificationList,
+    };
+  },
+  
 });
 </script>
 <style scoped>

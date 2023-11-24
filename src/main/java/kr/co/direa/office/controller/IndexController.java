@@ -22,6 +22,7 @@ import java.security.Principal;
 @CrossOrigin(origins = {"http://192.168.2.110:8080", "http://192.168.2.110", "http://192.168.2.111:8080"}) // 개발용
 //@CrossOrigin(origins = {"http://172.30.1.30:8080", "http://172.30.1.30"})
 public class IndexController {
+//    private final SimpMessagingTemplate messagingTemplate;
     @GetMapping("/health")
     public String status() {
         return "It's working.";
@@ -43,6 +44,10 @@ public class IndexController {
         return ResponseEntity.ok(
                 jsonContent
         );
+//        messagingTemplate.convertAndSend (
+//                "/topic/admin/notification",
+//                new Notification("")
+//        );
     }
 
     @GetMapping("/error")
