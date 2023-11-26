@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.HashSet;
 import java.util.List;
@@ -39,13 +41,15 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth ->
                         auth.requestMatchers(
+                                new AntPathRequestMatcher("/**")).permitAll())
+                        .csrf(a -> a.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
 //                                HttpMethod.GET, "/oauth2/**", "/login", "/login/oauth2/**", "/api/health", "/").permitAll()
 //                                .requestMatchers(HttpMethod.GET, "/api/test", "/test/admin/**").hasAuthority("Admin")
 //                                .requestMatchers(HttpMethod.POST, "/logout").authenticated()
 //                                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
 //                                .anyRequest().authenticated()
-                                HttpMethod.GET, "/**").permitAll()
-        );
+//                                HttpMethod.GET, "/*").permitAll()
+        ).headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 

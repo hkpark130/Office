@@ -3,24 +3,6 @@ server:
   port: 80
 
 # keycloak
-#spring:
-#  security:
-#    oauth2:
-#      client:
-#        provider:
-#          external:
-#            issuer-uri: http://192.168.0.113:8080/realms/sso-test
-#        registration:
-#          external:
-#            provider: external
-#            client-name: springboot1
-#            client-id: backend1
-#            client-secret: zC0Y9wSVx4xzg6nbhdx5G5kQkx4CxuYO
-#            authorization-grant-type: authorization_code
-#            scope:
-#            - openid
-#            - profile
-
 spring:
   security:
     oauth2:
@@ -34,7 +16,20 @@ spring:
             provider: external
             client-name: back-office-api
             client-id: back-office-api
-#            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
             client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    show_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

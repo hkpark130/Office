@@ -5,7 +5,7 @@
         <AtbdTopDropdwon class="atbd-top-dropdwon">
           <sdHeading as="h5" class="atbd-top-dropdwon__title">
             <span class="title-text">Notifications</span>
-            <a-badge class="badge-success" count="1" />
+            <a-badge class="badge-success" :count="notificationList.length" />
           </sdHeading>
           <perfect-scrollbar
             :options="{
