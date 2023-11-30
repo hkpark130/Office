@@ -1,9 +1,12 @@
 package kr.co.direa.office.controller;
 
+import kr.co.direa.office.domain.Notifications;
+import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,9 +22,10 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://192.168.2.110:8080", "http://192.168.2.110", "http://192.168.2.111:8080"}) // 개발용
+@CrossOrigin(origins = {"http://192.168.2.113:8080", "http://192.168.2.113", "http://192.168.2.111:8080"}) // 개발용
 //@CrossOrigin(origins = {"http://172.30.1.30:8080", "http://172.30.1.30"})
 public class IndexController {
+    private final SimpMessagingTemplate messagingTemplate;
     @GetMapping("/health")
     public String status() {
         return "It's working.";
@@ -40,6 +44,10 @@ public class IndexController {
     ResponseEntity<?> deviceListAdmin() throws IOException {
         Path filePath = Path.of(System.getProperty("user.dir") + "/test.json");
         String jsonContent = Files.readString(filePath);
+        Notifications notifications = Notifications.builder().id(1L).is_read(true).link("phk").subject("happy!!!").build();
+        messagingTemplate.convertAndSend("/topic/dev", new NotificationDto(notifications));
+
+
         return ResponseEntity.ok(
                 jsonContent
         );

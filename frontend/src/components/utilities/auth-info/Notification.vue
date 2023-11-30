@@ -37,7 +37,7 @@
               </li>
             </ul>
           </perfect-scrollbar>
-          <router-link class="btn-seeAll" to="#">
+          <router-link class="btn-seeAll" to="/activity">
             See all incoming activity
           </router-link>
         </AtbdTopDropdwon>
@@ -55,8 +55,8 @@ import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import "vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css";
 import { AtbdTopDropdwon } from "./auth-info-style";
 import { defineComponent, reactive } from "vue";
-
-
+import Stomp from 'webstomp-client';
+import Sockjs from 'sockjs-client';
 
 export default defineComponent({
   name: "Notification",
@@ -87,6 +87,15 @@ export default defineComponent({
           read: true,
         },
       ]);
+
+    const socket = new Sockjs("http://localhost/gs-guide-websocket");
+    var stompClient = Stomp.over(socket);
+    stompClient.connect({}, () => {
+      console.log("Connected.");
+      stompClient.subscribe('/topic/dev', message =>
+        console.log(`Received: ${message.body}`)
+      );
+    });
 
     return {
       notificationList,
