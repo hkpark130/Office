@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,15 +18,25 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Configuration
 public class SecurityConfig {
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
+    CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setAllowedMethods(Collections.singletonList("*"));
+            config.setAllowedOriginPatterns(Collections.singletonList("*"));
+            config.setAllowCredentials(true);
+            return config;
+        };
+    }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -36,25 +45,24 @@ public class SecurityConfig {
                 .userInfoEndpoint(Customizer.withDefaults())
         );
 
-//        http.cors(Customizer.withDefaults());
+        http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
         http.cors(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth ->
                         auth.requestMatchers(
-                                new AntPathRequestMatcher("/**")).permitAll())
-                        .csrf(a -> a.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
-//                                HttpMethod.GET, "/oauth2/**", "/login", "/login/oauth2/**", "/api/health", "/").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/api/test", "/test/admin/**").hasAuthority("Admin")
-//                                .requestMatchers(HttpMethod.POST, "/logout").authenticated()
-//                                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-//                                .anyRequest().authenticated()
-//                                HttpMethod.GET, "/*").permitAll()
-        ).headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+                                        new AntPathRequestMatcher("/login/**")
+                                        , new AntPathRequestMatcher("/api/health")
+                                        , new AntPathRequestMatcher("/oauth2/**")
+                                ).permitAll()
+                                .requestMatchers(
+                                        new AntPathRequestMatcher("/api/test")
+                                        , new AntPathRequestMatcher("/test/admin/**")
+                                ).hasAuthority("Admin")
+                                .anyRequest().authenticated())
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
-
         http.logout(logout -> logout.logoutSuccessHandler(logoutSuccessHandler()));
-
 
         return http.build();
     }

@@ -5,7 +5,7 @@ import authRoutes from './authRoutes';
 
 const routes = [
   {
-    name: 'Admin',
+    name: 'home',
     path: '/',
     component: () => import(/* webpackChunkName: "admin" */ '@/layout/withAdminLayout.vue'),
     children: [...adminRoutes],

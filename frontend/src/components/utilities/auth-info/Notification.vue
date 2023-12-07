@@ -91,7 +91,6 @@ export default defineComponent({
     const socket = new Sockjs("http://localhost/gs-guide-websocket");
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, () => {
-      console.log("Connected.");
       stompClient.subscribe('/topic/dev', message =>
         console.log(`Received: ${message.body}`)
       );

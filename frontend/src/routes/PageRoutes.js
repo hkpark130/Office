@@ -2,7 +2,7 @@ export default [
   {
     path: '/',
     alias: ['/index.html'],
-    name: 'index',
+    name: 'devices',
     component: () => import(/* webpackChunkName: "DeviceList" */ '@/view/pages/DeviceList.vue'),
   },
   {

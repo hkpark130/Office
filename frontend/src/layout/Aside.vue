@@ -146,7 +146,7 @@ import {
 } from "vue";
 import VueTypes from "vue-types";
 import { useStore } from "vuex";
-import { useRoute } from "vue-router";
+// import { useRoute } from "vue-router";
 import versions from "../demoData/changelog.json";
 
 export default defineComponent({
@@ -169,33 +169,21 @@ export default defineComponent({
       modeChangeSideNav,
     } = events.value;
 
-    const router = computed(() => useRoute());
+    // const router = computed(() => useRoute());
     const state = reactive({
       selectedKeys: ["home"],
       openKeys: ["devices"],
       preOpenKeys: ["devices"],
     });
 
-    watchEffect(() => { // 얘가 문제임
-      if (router.value.matched.length) {
-        if (router.value.matched.length > 3) {
-          state.selectedKeys = [router.value.matched[3].name];
-          state.openKeys = [router.value.matched[1].name];
-          state.preOpenKeys = [router.value.matched[1].name];
-        } else if (router.value.matched.length > 2) {
-          state.selectedKeys = [router.value.matched[2].name];
-          state.openKeys = [router.value.matched[1].name];
-          state.preOpenKeys = [router.value.matched[1].name];
-        } else {
-          state.selectedKeys = [router.value.matched[1].name];
-          state.openKeys = [router.value.matched[1].name];
-          state.preOpenKeys = [router.value.matched[1].name];
-        }
-      }
+    watchEffect(() => {
+        // state.selectedKeys = [router.value.matched[1].name];
+        // 이게 변경되면 밑에 watch 함수가 실행됨
+        // ~Route.js의 name 조정 필요
     });
 
     watch(
-      () => state.openKeys,
+      () => state.selectedKeys,
       (val, oldVal) => {
         state.preOpenKeys = oldVal;
       }

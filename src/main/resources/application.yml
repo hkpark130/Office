@@ -19,6 +19,7 @@ spring:
             client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
+#            redirect-uri: 'http://192.168.2.110/login/oauth2/code/external'
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
