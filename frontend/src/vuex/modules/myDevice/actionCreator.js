@@ -3,7 +3,7 @@ import mutations from './mutations';
 const response = [
   {
     "img": "notebook.png",
-    "deviceId": "DIR-N-106",
+    "deviceId": "DIR-N-10666",
     "category": "노트북",
     "purpose": "개발",
     "user": "김철수",
@@ -13,7 +13,7 @@ const response = [
   },
   {
     "img": "monitor.png",
-    "deviceId": "DIR-N-107",
+    "deviceId": "DIR-N-10777",
     "category": "모니터",
     "purpose": "개발",
     "user": "김철수",

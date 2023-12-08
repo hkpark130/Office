@@ -8,8 +8,8 @@ const response = [
     "user": "Kellie Marquot",
     "status": "Shipped",
     "info": "승인대기",
-    "tag": "$4,248.66",
-    "memo": "January 20, 2021"
+    "tag": "OS 설치필요",
+    "memo": "January 20, 20222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222221"
   },
   {
     "deviceId": "DIR-N-107",
@@ -18,8 +18,8 @@ const response = [
     "user": "Carroll Maharry",
     "status": "Awaiting Shipment",
     "info": "반납예정(20231120)",
-    "tag": "$14,248.61",
-    "memo": "January 28, 2021"
+    "tag": "포맷완료",
+    "memo": "테스트 테스트 테스트 테스트 테스트 테스트 테스트 테스트 테스트 "
   }
 ];
 
@@ -30,10 +30,11 @@ const state = () => ({
 });
 
 const actions = {
-  async orderFilter({ commit }, { column, value }) {
+  async orderFilter({ commit }, { column, value, orders }) {
+    console.log("SSSSSSSS1", orders);
     try {
       commit('filterOrderBegin');
-      const data = response.filter((item) => {
+      const data = orders.filter((item) => {
         if (value !== '') {
           return item[column] === value;
         }
@@ -43,6 +44,7 @@ const actions = {
     } catch (err) {
       commit('filterOrderErr', err);
     }
+    console.log("SSSSSSSS2", orders);
   },
 };
 

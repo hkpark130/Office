@@ -3,7 +3,7 @@ import mutations from './mutations';
 
 const response = [
   {
-    "deviceId": "DIR-N-106",
+    "deviceId": "DIR-N-1066",
     "category": "노트북",
     "purpose": "개발",
     "purchaseDate": "January 20, 2021",
@@ -14,7 +14,7 @@ const response = [
     "description": "파손"
   },
   {
-    "deviceId": "DIR-N-107",
+    "deviceId": "DIR-N-1077",
     "category": "모니터",
     "purpose": "개발",
     "purchaseDate": "January 20, 2021",

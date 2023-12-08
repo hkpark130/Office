@@ -108,7 +108,7 @@
       const filterKey = ref(['Shipped', 'Awaiting Shipment', 'Canceled']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('orderFilter', { column: 'status', value: e.target.value });
+        dispatch('orderFilter', { column: 'status', value: e.target.value, response: orders });
       };
   
       const dataSource = computed(() =>
