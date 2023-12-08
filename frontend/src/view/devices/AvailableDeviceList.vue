@@ -100,8 +100,8 @@
     },
   ];
   
-  const Orders = defineComponent({
-    name: 'Orders',
+  const AvailableDevices = defineComponent({
+    name: 'AvailableDevices',
     components: { TopToolBox, Main, TableWrapper },
   
     setup() {
@@ -112,10 +112,10 @@
   
       const item = computed(() => state.devices.data);
       const stateValue = ref('');
-      const filterKey = ref(['Shipped', 'Awaiting Shipment', 'Canceled']);
+      const filterKey = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('orderFilter', { column: 'status', value: e.target.value });
+        dispatch('orderFilter', { column: 'category', value: e.target.value, orders: state.devices.data });
       };
   
       const dataSource = computed(() =>
@@ -188,6 +188,6 @@
     },
   });
   
-  export default Orders;
+  export default AvailableDevices;
   </script>
   
