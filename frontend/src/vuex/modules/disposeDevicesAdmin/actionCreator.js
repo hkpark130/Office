@@ -33,18 +33,18 @@ const state = () => ({
 });
 
 const actions = {
-  async orderFilter({ commit }, { column, value }) {
+  async disposeDeviceFilter({ commit }, { column, value }) {
     try {
-      commit('filterOrderBegin');
+      commit('filterDisposeDeviceBegin');
       const data = response.filter((item) => {
         if (value !== '') {
           return item[column] === value;
         }
         return item;
       });
-      commit('filterOrderSuccess', data);
+      commit('filterDisposeDeviceSuccess', data);
     } catch (err) {
-      commit('filterOrderErr', err);
+      commit('filterDisposeDeviceErr', err);
     }
   },
 };

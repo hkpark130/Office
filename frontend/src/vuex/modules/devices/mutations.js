@@ -1,12 +1,12 @@
 export default {
-  filterOrderBegin(state) {
+  filterDeviceBegin(state) {
     state.loading = true;
   },
-  filterOrderSuccess(state, data) {
+  filterDeviceSuccess(state, data) {
     state.loading = false;
     state.data = data;
   },
-  filterOrderErr(state, err) {
+  filterDeviceErr(state, err) {
     state.loading = false;
     state.error = err;
   },

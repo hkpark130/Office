@@ -50,18 +50,18 @@ const state = () => ({
 });
 
 const actions = {
-  async orderFilter({ commit }, { column, value }) {
+  async myListFilter({ commit }, { column, value }) {
     try {
-      commit('filterOrderBegin');
+      commit('filterMyListBegin');
       const data = response.filter((item) => {
         if (value !== '') {
           return item[column] === value;
         }
         return item;
       });
-      commit('filterOrderSuccess', data);
+      commit('filterMyListSuccess', data);
     } catch (err) {
-      commit('filterOrderErr', err);
+      commit('filterMyListErr', err);
     }
   },
 };

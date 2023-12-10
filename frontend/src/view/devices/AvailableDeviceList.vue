@@ -12,10 +12,18 @@
                 </a-col>
                 <a-col :xxl="14" :lg="16" :xs="24">
                   <div class="table-toolbox-menu">
-                    <span class="toolbox-menu-title"> Status:</span>
+                    <a-select
+                      @change="onSorting"
+                      :defaultValue="filterKey"
+                    >
+                      <a-select-option v-for="column in filterColumns" :key="column.key">
+                        <span class="toolbox-menu-title" > {{ column.title }}</span>
+                      </a-select-option>
+                    </a-select>
+
                     <a-radio-group v-if="item" @change="handleChangeForFilter">
                       <a-radio-button value="">All</a-radio-button>
-                      <a-radio-button v-for="value in [...new Set(filterKey)]" :key="value" :value="value">
+                      <a-radio-button v-for="value in [...new Set(filterVal)]" :key="value" :value="value">
                         {{ value }}
                       </a-radio-button>
                     </a-radio-group>
@@ -99,6 +107,10 @@
       key: 'action',
     },
   ];
+
+  const filterColumns = columns.filter((column, index) => {
+    return column.key !== 'memo' && column.key !== 'id' && index !== columns.length - 1;
+  });
   
   const AvailableDevices = defineComponent({
     name: 'AvailableDevices',
@@ -107,25 +119,26 @@
     setup() {
       const { state, dispatch } = useStore();
       const deviceId = ref(null);
+      const filterKey = ref('category');
       const searchData = computed(() => state.headerSearchData);
       const orders = computed(() => state.devices.data);
   
       const item = computed(() => state.devices.data);
       const stateValue = ref('');
-      const filterKey = ref(['노트북', '모니터', '서버']);
+      const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('orderFilter', { column: 'category', value: e.target.value, orders: state.devices.data });
+        dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
       };
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { category, info, status, purpose, user, deviceId, tag, memo } = value;
+          const { categoryId, info, status, purpose, userId, id, tag, description } = value;
           return {
-            key: deviceId, // radio 선택시 기준 값
-            id: <span class="order-id">{deviceId}</span>,
-            category: <span class="customer-name">{category}</span>,
-            user: <span class="customer-name">{user}</span>,
+            key: id, // radio 선택시 기준 값
+            id: <span class="order-id">{id}</span>,
+            category: <span class="customer-name">{ categoryId.name }</span>,
+            user: <span class="customer-name">{ userId }</span>,
             info: (
               <span
                 class={`status ${
@@ -146,7 +159,7 @@
                 </span>
               </div>
             ),
-            memo: <span class="ordered-date">{memo}</span>,
+            memo: <span class="ordered-date">{description}</span>,
             action: (
               <div class="table-actions">
                 <>
@@ -172,16 +185,24 @@
         },
         type: "radio", //기본값이 체크박스
       };
+
+      const onSorting = (selectedItems) => {
+        filterKey.value = selectedItems;
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]))]; // 중복 제거
+      };
       
       return {
         deviceId,
         rowSelection,
         dataSource,
         handleChangeForFilter,
+        onSorting,
+        filterVal,
         filterKey,
         item,
         searchData,
         columns,
+        filterColumns,
         orders,
         stateValue,
       };

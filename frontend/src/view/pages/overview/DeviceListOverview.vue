@@ -4,10 +4,10 @@
         <a-row :gutter="25">
             <a-col v-for="(item, index) in devices" :key="index" :xxl="8" :md="4" :xs="8">
             <SocialMediaContent
-                :title="item.title"
-                :subTitle="item.subTitle"
-                :src="require(`@/static/img/${item.src}`)"
-                :path="item.path"
+                :title="item.amount"
+                :subTitle="item.name"
+                :src="require(`@/static/img/${item.img}`)"
+                :path="item.name"
             />
             </a-col>
         </a-row>

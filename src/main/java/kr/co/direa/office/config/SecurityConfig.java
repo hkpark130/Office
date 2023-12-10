@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,7 +59,10 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/api/test")
                                         , new AntPathRequestMatcher("/test/admin/**")
                                 ).hasAuthority("Admin")
-                                .anyRequest().authenticated())
+//                                .anyRequest().authenticated())
+                                .anyRequest().permitAll())
+                .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .csrf(a -> a.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));

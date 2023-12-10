@@ -30,14 +30,14 @@ public class IndexController {
         return "It's working.";
     }
 
-    @GetMapping(value = "/devices")
-    ResponseEntity<?> echoReturn() throws IOException {
-        Path filePath = Path.of(System.getProperty("user.dir") + "/test3.json");
-        String jsonContent = Files.readString(filePath);
-        return ResponseEntity.ok(
-                jsonContent
-        );
-    }
+//    @GetMapping(value = "/devices")
+//    ResponseEntity<?> echoReturn() throws IOException {
+//        Path filePath = Path.of(System.getProperty("user.dir") + "/test3.json");
+//        String jsonContent = Files.readString(filePath);
+//        return ResponseEntity.ok(
+//                jsonContent
+//        );
+//    }
 
     @GetMapping(value = "/devicelist-admin")
     ResponseEntity<?> deviceListAdmin() throws IOException {

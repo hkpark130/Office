@@ -12,10 +12,17 @@
                 </a-col>
                 <a-col :xxl="14" :lg="16" :xs="24">
                   <div class="table-toolbox-menu">
-                    <span class="toolbox-menu-title"> Status:</span>
+                    <a-select
+                      @change="onSorting"
+                      :defaultValue="filterKey"
+                    >
+                      <a-select-option v-for="column in filterColumns" :key="column.key">
+                        <span class="toolbox-menu-title" > {{ column.title }}</span>
+                      </a-select-option>
+                    </a-select>
                     <a-radio-group v-if="item" @change="handleChangeForFilter">
                       <a-radio-button value="">All</a-radio-button>
-                      <a-radio-button v-for="value in [...new Set(filterKey)]" :key="value" :value="value">
+                      <a-radio-button v-for="value in [...new Set(filterVal)]" :key="value" :value="value">
                         {{ value }}
                       </a-radio-button>
                     </a-radio-group>
@@ -72,8 +79,8 @@
     },
     {
       title: '신청장비',
-      dataIndex: 'deviceName',
-      key: 'deviceName',
+      dataIndex: 'category',
+      key: 'category',
     },
     {
       title: '신청자',
@@ -96,6 +103,10 @@
       key: 'action',
     },
   ];
+
+  const filterColumns = columns.filter((column, index) => {
+    return column.key !== 'status' && index !== columns.length - 1;
+  });
   
   const Orders = defineComponent({
     name: 'Orders',
@@ -114,10 +125,11 @@
   
       const item = computed(() => state.myList.data);
       const stateValue = ref('');
-      const filterKey = ref(['progress', 'complete', 'delete', 'return']);
+      const filterKey = ref('category');
+      const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('orderFilter', { column: 'status', value: e.target.value });
+        dispatch('myListFilter', { column: filterKey.value, value: e.target.value });
       };
 
       const showModal = (row) => {
@@ -182,8 +194,7 @@
 
           return {
             status: <>{statusTag}</>,
-            deviceName: <span class="order-id">{deviceId} {category}</span>,
-            category: <span class="customer-name">{category}</span>,
+            category: <span class="order-id">{deviceId} {category}</span>,
             user: <span class="customer-name">{user}</span>,
             info: <a-tag class={status}>{info}</a-tag>,
             date: <span class="ordered-date">{date}</span>,
@@ -202,6 +213,11 @@
           };
         }),
       );
+
+      const onSorting = (selectedItems) => {
+        filterKey.value = selectedItems;
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]))]; // 중복 제거
+      };
       
       return {
         showModal,
@@ -214,6 +230,9 @@
         dataSource,
         handleChangeForFilter,
         filterKey,
+        filterVal,
+        filterColumns,
+        onSorting,
         item,
         searchData,
         columns,

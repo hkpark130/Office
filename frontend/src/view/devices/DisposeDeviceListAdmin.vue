@@ -12,10 +12,18 @@
                 </a-col>
                 <a-col :xxl="14" :lg="16" :xs="24">
                   <div class="table-toolbox-menu">
-                    <span class="toolbox-menu-title"> Status:</span>
+                    <a-select
+                      @change="onSorting"
+                      :defaultValue="filterKey"
+                    >
+                      <a-select-option v-for="column in filterColumns" :key="column.key">
+                        <span class="toolbox-menu-title" > {{ column.title }}</span>
+                      </a-select-option>
+                    </a-select>
+
                     <a-radio-group v-if="item" @change="handleChangeForFilter">
                       <a-radio-button value="">All</a-radio-button>
-                      <a-radio-button v-for="value in [...new Set(filterKey)]" :key="value" :value="value">
+                      <a-radio-button v-for="value in [...new Set(filterVal)]" :key="value" :value="value">
                         {{ value }}
                       </a-radio-button>
                     </a-radio-group>
@@ -39,8 +47,6 @@
           <a-col :md="24">
             <TableWrapper class="table-order table-responsive">
               <a-table
-                :type="radio"
-                :rowSelection="rowSelection"
                 :dataSource="dataSource"
                 :columns="columns"
                 :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
@@ -105,6 +111,15 @@
       key: 'action',
     },
   ];
+
+  const filterColumns = columns.filter((column, index) => {
+    return column.key !== 'memo' && 
+    column.key !== 'id' && 
+    column.key !== 'sn' && 
+    column.key !== 'model' && 
+    column.key !== 'purchaseDate' &&
+    index !== columns.length - 1;
+  });
   
   const Orders = defineComponent({ 
     name: 'Orders',
@@ -118,10 +133,11 @@
   
       const item = computed(() => state.disposeDevicesAdmin.data);
       const stateValue = ref('');
-      const filterKey = ref(['Shipped', 'Awaiting Shipment', 'Canceled']);
+      const filterKey = ref('category');
+      const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('orderFilter', { column: 'status', value: e.target.value });
+        dispatch('disposeDeviceFilter', { column: filterKey.value, value: e.target.value });
       };
 
       const removeItem = (deviceId) => {
@@ -168,19 +184,19 @@
         }),
       );
 
-      const rowSelection = {
-        onChange: (selectedRowKeys) => {
-          deviceId.value = selectedRowKeys[0];
-        },
-        type: "radio", //기본값이 체크박스
+      const onSorting = (selectedItems) => {
+        filterKey.value = selectedItems;
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]))]; // 중복 제거
       };
       
       return {
         deviceId,
-        rowSelection,
         dataSource,
         handleChangeForFilter,
         filterKey,
+        filterVal,
+        filterColumns,
+        onSorting,
         item,
         searchData,
         columns,

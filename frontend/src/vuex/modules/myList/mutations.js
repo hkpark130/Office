@@ -1,12 +1,12 @@
 export default {
-  filterOrderBegin(state) {
+  filterMyListBegin(state) {
     state.loading = true;
   },
-  filterOrderSuccess(state, data) {
+  filterMyListSuccess(state, data) {
     state.loading = false;
     state.data = data;
   },
-  filterOrderErr(state, err) {
+  filterMyListErr(state, err) {
     state.loading = false;
     state.error = err;
   },
