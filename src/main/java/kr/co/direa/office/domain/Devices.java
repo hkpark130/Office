@@ -74,7 +74,8 @@ public class Devices extends BaseTimeEntity{
     @Builder
     public Devices(Users userId, Departments manageDep, Categories categoryId, String spec,
                    Long price, String model, String description, String tag, String company,
-                   Projects projectId, String sn, Boolean status, String purpose, Date purchaseDate) {
+                   Projects projectId, String sn, Boolean status, String purpose, Date purchaseDate,
+                   List<ApprovalDevices> approvalDevices) {
         this.userId = userId;
         this.manageDep = manageDep;
         this.categoryId = categoryId;
@@ -89,6 +90,7 @@ public class Devices extends BaseTimeEntity{
         this.status = status;
         this.purpose = purpose;
         this.purchaseDate = purchaseDate;
+        this.approvalDevices = approvalDevices;
     }
 
 }

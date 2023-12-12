@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,8 +30,7 @@ public class DeviceDto implements Serializable {
     private String purpose;
     private Date purchaseDate;
     private String categoryName;
-    private String approval_info;
-
+    private List<ApprovalDevices> approvalDevices;
 
     @Builder
     public DeviceDto(Devices entity){
@@ -50,6 +50,7 @@ public class DeviceDto implements Serializable {
         this.status = entity.getStatus();
         this.purpose = entity.getPurpose();
         this.purchaseDate = entity.getPurchaseDate();
+        this.approvalDevices = entity.getApprovalDevices();
     }
 
     public Devices toEntity() {
@@ -67,7 +68,9 @@ public class DeviceDto implements Serializable {
                 .sn(sn)
                 .status(status)
                 .purpose(purpose)
+                .approvalDevices(approvalDevices)
                 .purchaseDate(purchaseDate)
+
                 .build();
     }
 
