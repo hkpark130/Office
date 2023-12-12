@@ -1,6 +1,5 @@
 package kr.co.direa.office.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.co.direa.office.domain.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +17,7 @@ public class DeviceDto implements Serializable {
     private Users userId;
     private Departments manageDep;
     private Categories categoryId;
+    private Projects projectId;
     private String spec;
     private Long price;
     private String model;
@@ -29,7 +29,8 @@ public class DeviceDto implements Serializable {
     private String purpose;
     private Date purchaseDate;
     private String categoryName;
-    private String img;
+    private String approval_info;
+
 
     @Builder
     public DeviceDto(Devices entity){
@@ -37,6 +38,8 @@ public class DeviceDto implements Serializable {
         this.userId = entity.getUserId();
         this.manageDep = entity.getManageDep();
         this.categoryId = entity.getCategoryId();
+        this.categoryName = this.categoryId.getName();
+        this.projectId = entity.getProjectId();
         this.spec = entity.getSpec();
         this.price = entity.getPrice();
         this.model = entity.getModel();
@@ -54,6 +57,7 @@ public class DeviceDto implements Serializable {
                 .userId(userId)
                 .manageDep(manageDep)
                 .categoryId(categoryId)
+                .projectId(projectId)
                 .spec(spec)
                 .price(price)
                 .model(model)

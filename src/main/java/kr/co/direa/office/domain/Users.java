@@ -1,14 +1,11 @@
 package kr.co.direa.office.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +25,13 @@ public class Users implements UserDetails {
     @Column(name = "auth")
     private String auth;
 
+    @ManyToOne
+    @JoinColumn(name ="department_id", referencedColumnName = "id")
+    private Departments departmentId;
+
     @Builder
     public Users(String username) {
+        this.name = username;
 
     }
 

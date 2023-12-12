@@ -1,8 +1,6 @@
 package kr.co.direa.office.controller;
 
 import kr.co.direa.office.dto.CategoryDto;
-import kr.co.direa.office.dto.DeviceDto;
-import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.CategoriesService;
 import kr.co.direa.office.service.DevicesService;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +20,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
-public class DeviceController {
+public class ApprovalController {
     private final SimpMessagingTemplate messagingTemplate;
     private final DevicesService devicesService;
     private final CategoriesService categoriesService;
-    private final ApprovalDevicesService approvalDevicesService;
 
-    @GetMapping(value = "/devices")
+    @GetMapping(value = "/devices222222")
     ResponseEntity<?> getDevices() {
         List<CategoryDto> categoryDtoList = categoriesService.findAll();
         Map<String, Object> map;
@@ -47,17 +44,5 @@ public class DeviceController {
                 response
         );
     }
-
-    @GetMapping(value = "/available-devicelist")
-    ResponseEntity<?> getAvailableDeviceList() {
-        List<DeviceDto> deviceDtoList = devicesService.findByStatusTrue();
-
-        return ResponseEntity.ok(
-                deviceDtoList
-        );
-    }
-
-
-
 
 }

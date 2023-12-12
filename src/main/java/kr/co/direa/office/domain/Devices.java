@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "devices")
 @Table(name = "devices")
@@ -19,6 +20,9 @@ public class Devices extends BaseTimeEntity{
     @JoinColumn(name ="user_id", referencedColumnName = "id")
     private Users userId;
 
+    @OneToMany(mappedBy = "deviceId", fetch = FetchType.LAZY)
+    private List<ApprovalDevices> approvalDevices;
+
     @ManyToOne
     @JoinColumn(name ="manage_dep", referencedColumnName = "id")
     private Departments manageDep;
@@ -26,6 +30,10 @@ public class Devices extends BaseTimeEntity{
     @ManyToOne
     @JoinColumn(name ="category_id", referencedColumnName = "id")
     private Categories categoryId;
+
+    @ManyToOne
+    @JoinColumn(name ="project_id", referencedColumnName = "id")
+    private Projects projectId;
 
     @Column(name = "spec")
     private String spec;
@@ -66,10 +74,11 @@ public class Devices extends BaseTimeEntity{
     @Builder
     public Devices(Users userId, Departments manageDep, Categories categoryId, String spec,
                    Long price, String model, String description, String tag, String company,
-                   String sn, Boolean status, String purpose, Date purchaseDate) {
+                   Projects projectId, String sn, Boolean status, String purpose, Date purchaseDate) {
         this.userId = userId;
         this.manageDep = manageDep;
         this.categoryId = categoryId;
+        this.projectId = projectId;
         this.spec = spec;
         this.price = price;
         this.model = model;

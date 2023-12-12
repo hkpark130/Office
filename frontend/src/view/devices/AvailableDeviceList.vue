@@ -64,12 +64,13 @@
   import { Main, TableWrapper } from '../styled';
   import { computed, ref, defineComponent } from 'vue';
   import { useStore } from 'vuex';
+  import { useRouter } from 'vue-router';
   
   const columns = [
     {
       title: '품목',
       dataIndex: 'category',
-      key: 'category',
+      key: 'categoryName',
     },
     {
       title: '관리번호',
@@ -79,7 +80,7 @@
     {
       title: '사용자',
       dataIndex: 'user',
-      key: 'user',
+      key: 'userId',
     },
     {
       title: '용도',
@@ -119,21 +120,27 @@
     setup() {
       const { state, dispatch } = useStore();
       const deviceId = ref(null);
-      const filterKey = ref('category');
+      const filterKey = ref('categoryName');
       const searchData = computed(() => state.headerSearchData);
       const orders = computed(() => state.devices.data);
+      const router = useRouter();
   
       const item = computed(() => state.devices.data);
       const stateValue = ref('');
       const filterVal = ref(['노트북', '모니터', '서버']);
   
+      if ( router.currentRoute.value.params.category ) {
+        dispatch('deviceFilter', { column: 'categoryName', 
+        value: router.currentRoute.value.params.category });
+      }
+
       const handleChangeForFilter = (e) => {
         dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
       };
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryId, info, status, purpose, userId, id, tag, description } = value;
+          const { categoryId, info, approvalInfo, purpose, spec, userId, id, tag, description } = value;
           return {
             key: id, // radio 선택시 기준 값
             id: <span class="order-id">{id}</span>,
@@ -142,7 +149,7 @@
             info: (
               <span
                 class={`status ${
-                  status === 'Shipped' ? 'Success' : status === 'Awaiting Shipment' ? 'warning' : 'error'
+                  approvalInfo === 'Shipped' ? 'Success' : approvalInfo === 'Awaiting Shipment' ? 'warning' : 'error'
                 }`}
               >
                 {info}
@@ -153,9 +160,7 @@
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
                 <span class="spnTooltip">
-                    <strong>CPU: </strong>12C<br />
-                    <strong>RAM: </strong>32G<br />
-                    테스트 툴팁
+                    {spec}
                 </span>
               </div>
             ),
@@ -188,7 +193,7 @@
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]))]; // 중복 제거
+        filterVal.value = [...new Set(state.devices.originData.map((item) => item[selectedItems]))]; // 중복 제거
       };
       
       return {

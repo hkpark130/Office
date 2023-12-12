@@ -7,7 +7,7 @@
                 :title="item.amount"
                 :subTitle="item.name"
                 :src="require(`@/static/img/${item.img}`)"
-                :path="item.name"
+                :path="`deviceList/${item.name}`"
             />
             </a-col>
         </a-row>

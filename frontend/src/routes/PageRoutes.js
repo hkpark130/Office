@@ -6,13 +6,15 @@ export default [
     component: () => import(/* webpackChunkName: "DeviceList" */ '@/view/pages/DeviceList.vue'),
   },
   {
-    path: '/deviceList',
+    path: '/deviceList/:category',
+    alias: ['/devicelist'],
     name: 'devicelist',
     component: () => import(/* webpackChunkName: "AvailableDeviceList" */ '@/view/devices/AvailableDeviceList.vue'),
   },
   {
     name: 'device-application',
     path: '/device-application/:deviceId',
+    alias: ['/device-application'],
     props: true,
     component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/DeviceApplication.vue'),
   },
