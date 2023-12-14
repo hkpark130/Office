@@ -30,6 +30,8 @@ public class DevicesService {
         List<Devices> devicesList = devicesRepository.findByStatusTrue();
         return devicesList.stream()
                 .map(DeviceDto::new)
+                .filter(deviceDto -> !deviceDto.getApprovalInfo().equals("폐기 완료"))
+                .filter(deviceDto -> !deviceDto.getApprovalInfo().equals("사용 신청 완료"))
                 .collect(Collectors.toList());
     }
 }

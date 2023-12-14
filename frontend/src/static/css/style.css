@@ -68,6 +68,11 @@
   color: #fa8b0c;
 }
 
+.status.waiting {
+  background-color: #2031c910;
+  color: #202bc9;
+}
+
 .status.error {
   background-color: #ff4d4f10;
   color: #ff4d4f;

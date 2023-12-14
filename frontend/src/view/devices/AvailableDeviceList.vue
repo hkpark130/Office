@@ -100,7 +100,7 @@
     {
       title: '신청정보',
       dataIndex: 'info',
-      key: 'info',
+      key: 'approvalInfo',
     },
     {
       title: 'Action',
@@ -140,7 +140,7 @@
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryId, info, approvalInfo, purpose, spec, userId, id, tag, description } = value;
+          const { categoryId, approvalInfo, purpose, spec, userId, id, tag, description } = value;
           return {
             key: id, // radio 선택시 기준 값
             id: <span class="order-id">{id}</span>,
@@ -149,10 +149,13 @@
             info: (
               <span
                 class={`status ${
-                  approvalInfo === 'Shipped' ? 'Success' : approvalInfo === 'Awaiting Shipment' ? 'warning' : 'error'
+                  approvalInfo === '사용가능' ? 'Success' : 
+                  approvalInfo === '승인대기' ? 'waiting' : 
+                  approvalInfo === '등록대기' ? 'warning' : 
+                  'error'
                 }`}
               >
-                {info}
+                {approvalInfo}
               </span>
             ),
             tag: <span class="ordered-amount">{tag}</span>,

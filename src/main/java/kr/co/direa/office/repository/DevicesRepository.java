@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DevicesRepository extends JpaRepository<Devices, Long> {
+public interface DevicesRepository extends JpaRepository<Devices, String> {
 
     Long countByCategoryId(Categories category);
     List<Devices> findByStatusTrue();
