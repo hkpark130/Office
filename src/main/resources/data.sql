@@ -6,6 +6,8 @@ INSERT INTO categories (id, name, img) values (4, '프린터', 'printer.png');
 INSERT INTO DEPARTMENTS (name) VALUES ('경영지원부');
 INSERT INTO DEPARTMENTS (name) VALUES ('제품2팀');
 
+insert into users (auth,department_id,username,id) values ('Admin',null,'test',1);
+
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
 values ('DIR-N-101', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)

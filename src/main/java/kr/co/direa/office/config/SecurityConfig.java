@@ -1,5 +1,6 @@
 package kr.co.direa.office.config;
 
+import kr.co.direa.office.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,12 @@ import java.util.Set;
 public class SecurityConfig {
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
+    private final UsersService usersService;
+
+    public SecurityConfig(UsersService usersService) {
+        this.usersService = usersService;
+    }
+
     private
     CorsConfigurationSource corsConfigurationSource() {
         return request -> {
@@ -98,7 +105,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler loginSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler();
+        return new CustomAuthenticationSuccessHandler(usersService);
     }
 
     @Bean

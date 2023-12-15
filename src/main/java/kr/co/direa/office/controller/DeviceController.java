@@ -1,5 +1,7 @@
 package kr.co.direa.office.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
@@ -29,7 +31,7 @@ public class DeviceController {
     private final ApprovalDevicesService approvalDevicesService;
 
     @GetMapping(value = "/devices")
-    ResponseEntity<?> getDevices() {
+    ResponseEntity<?> getDevices(HttpServletResponse response2) {
         List<CategoryDto> categoryDtoList = categoriesService.findAll();
         Map<String, Object> map;
         List<Map<String, Object>> response = new ArrayList<>();
@@ -42,6 +44,11 @@ public class DeviceController {
             map.put("img", categoryDto.getImg());
             response.add(map);
         }
+
+        Cookie cookie = new Cookie("phk", "Sex");
+        cookie.setHttpOnly(true);
+        response2.addCookie(cookie);
+
 
         return ResponseEntity.ok(
                 response

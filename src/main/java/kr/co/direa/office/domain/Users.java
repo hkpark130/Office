@@ -3,6 +3,7 @@ package kr.co.direa.office.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,8 +14,13 @@ import java.util.Set;
 @Entity(name = "users")
 @Table(name = "users")
 @Getter
+@Setter
 public class Users implements UserDetails {
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "username")
     private String username;
 
@@ -26,7 +32,8 @@ public class Users implements UserDetails {
     private Departments departmentId;
 
     @Builder
-    public Users(String username, String auth, Departments departmentId) {
+    public Users(Long id, String username, String auth, Departments departmentId) {
+        this.id = id;
         this.username = username;
         this.auth = auth;
         this.departmentId = departmentId;
