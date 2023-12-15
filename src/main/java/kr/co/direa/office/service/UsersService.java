@@ -6,7 +6,7 @@ import kr.co.direa.office.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +17,7 @@ public class UsersService {
         return usersRepository.save(userDto.toEntity());
     }
 
-    public void saveAll(List<Users> usersList) {
-        usersRepository.saveAll(usersList);
+    public Optional<Users> findByUsername(String username) {
+        return usersRepository.findByUsername(username);
     }
 }

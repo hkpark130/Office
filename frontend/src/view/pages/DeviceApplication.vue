@@ -142,6 +142,7 @@
   import { ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
   import { useRouter } from 'vue-router';
+  import { useStore } from 'vuex';
   
   const fileList = [
     // {
@@ -157,11 +158,14 @@
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
     setup() {
+      const { state } = useStore();
       const router = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
+
+      const categories = computed(() => state.devices.data);
   
       const fileUploadProps = {
         name: "file",
