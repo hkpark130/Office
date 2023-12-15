@@ -7,14 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
+<<<<<<< HEAD
 import java.util.List;
+=======
+import java.util.Optional;
+>>>>>>> 71d3fd363d4637316c12f2a75900780f6443628c
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class DeviceDto implements Serializable {
-    private Long id;
+    private String id;
     private Users userId;
     private Departments manageDep;
     private Categories categoryId;
@@ -30,10 +35,14 @@ public class DeviceDto implements Serializable {
     private String purpose;
     private Date purchaseDate;
     private String categoryName;
+<<<<<<< HEAD
     private List<ApprovalDevices> approvalDevices;
+=======
+    private String approvalInfo;
+>>>>>>> 71d3fd363d4637316c12f2a75900780f6443628c
 
     @Builder
-    public DeviceDto(Devices entity){
+    public DeviceDto(Devices entity) {
         this.id = entity.getId();
         this.userId = entity.getUserId();
         this.manageDep = entity.getManageDep();
@@ -50,7 +59,18 @@ public class DeviceDto implements Serializable {
         this.status = entity.getStatus();
         this.purpose = entity.getPurpose();
         this.purchaseDate = entity.getPurchaseDate();
+<<<<<<< HEAD
         this.approvalDevices = entity.getApprovalDevices();
+=======
+
+        Optional<ApprovalDevices> latestApprovalDevice = entity.getApprovalDevices().stream()
+                .max(Comparator.comparing(ApprovalDevices::getCreatedDate));
+        if (latestApprovalDevice.isPresent()) {
+            this.approvalInfo = latestApprovalDevice.get().getApprovalInfo();
+        } else {
+            this.approvalInfo = "사용가능";
+        }
+>>>>>>> 71d3fd363d4637316c12f2a75900780f6443628c
     }
 
     public Devices toEntity() {

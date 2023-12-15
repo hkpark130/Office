@@ -64,7 +64,8 @@ public class IndexController {
 
     @GetMapping(path = "/test")
     public String index(Principal principal) {
-        OAuth2User user = ((OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        OAuth2User user = (OAuth2User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        OidcUserInfo user = (OidcUserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return user.toString();
     }
 

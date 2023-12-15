@@ -12,9 +12,8 @@ import java.util.List;
 @Getter
 public class Devices extends BaseTimeEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name ="user_id", referencedColumnName = "id")

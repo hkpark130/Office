@@ -15,12 +15,8 @@ import java.util.Set;
 @Getter
 public class Users implements UserDetails {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "name")
-    private String name;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "auth")
     private String auth;
@@ -30,9 +26,10 @@ public class Users implements UserDetails {
     private Departments departmentId;
 
     @Builder
-    public Users(String username) {
-        this.name = username;
-
+    public Users(String username, String auth, Departments departmentId) {
+        this.username = username;
+        this.auth = auth;
+        this.departmentId = departmentId;
     }
 
     public Users() {
@@ -56,7 +53,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.username;
     }
 
     @Override

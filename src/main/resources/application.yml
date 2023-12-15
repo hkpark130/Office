@@ -6,14 +6,24 @@ server:
 spring:
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://192.168.0.2:8080/realms/sso-test
       client:
         provider:
+<<<<<<< HEAD
           external:
 #            issuer-uri: http://192.168.0.2:8080/realms/sso-test
             issuer-uri: http://192.168.2.111:8080/realms/sso-test
+=======
+          keycloak:
+            issuer-uri: http://192.168.0.2:8080/realms/sso-test
+#            issuer-uri: http://172.30.1.72:8080/realms/sso-test
+            user-name-attribute: preferred_username
+>>>>>>> 71d3fd363d4637316c12f2a75900780f6443628c
         registration:
-          external:
-            provider: external
+          keycloak:
+            provider: keycloak
             client-name: back-office-api
             client-id: back-office-api
             client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
