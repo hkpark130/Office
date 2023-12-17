@@ -2,12 +2,12 @@ package kr.co.direa.office.controller;
 
 import kr.co.direa.office.domain.Notifications;
 import kr.co.direa.office.dto.NotificationDto;
-import kr.co.direa.office.exception.CustomException;
-import kr.co.direa.office.exception.code.CustomErrorCode;
+import kr.co.direa.office.dto.ProjectDto;
+import kr.co.direa.office.service.ProjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,21 +23,22 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
-public class IndexController {
-    private final SimpMessagingTemplate messagingTemplate;
-    @GetMapping("/health")
-    public String status() {
-        return "It's working.";
+class UserController {
+
+    @GetMapping(value = "/user")
+//    ResponseEntity<?> getUser(Principal principal) {
+//        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        return ResponseEntity.ok(
+//                user
+//        );
+    ResponseEntity<?> getUser() throws IOException {
+        Path filePath = Path.of(System.getProperty("user.dir") + "/user.json");
+        String jsonContent = Files.readString(filePath);
+
+        return ResponseEntity.ok(
+                jsonContent
+        );
     }
 
-    @GetMapping("/error")
-    public String error() {
-        throw new IllegalArgumentException("error test");
-    }
-
-    @GetMapping("/custom_error")
-    public String customError() {
-        throw new CustomException(CustomErrorCode.METHOD_NOT_ALLOWED);
-    }
 
 }

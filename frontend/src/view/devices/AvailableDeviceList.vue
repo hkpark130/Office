@@ -32,13 +32,9 @@
                 <a-col :xxl="4" :xs="24">
                   <div class="table-toolbox-actions">
                     <sdButton size="small" type="secondary" transparented> Export </sdButton>
-                    <!-- <router-link :to="`/device-application/${deviceId}`"> -->
                     <router-link :to="{ 
                         name: 'device-application', 
                         params: { deviceId: `${deviceId}` }, 
-                        // query: { 
-                        //   category: 2,
-                        //  } 
                       }">
                       <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
                       사용신청

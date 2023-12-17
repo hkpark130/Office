@@ -62,6 +62,7 @@ public class SecurityConfig {
 
         http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
         http.cors(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth ->
                         auth.requestMatchers(
@@ -75,10 +76,9 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/api/test")
                                         , new AntPathRequestMatcher("/test/admin/**")
                                 ).hasAuthority("Admin")
-                                .anyRequest().authenticated())
-//                                .anyRequest().permitAll()) // 개발용
+//                                .anyRequest().authenticated())
+                                .anyRequest().permitAll()) // 개발용
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .csrf(a -> a.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
@@ -117,7 +117,7 @@ public class SecurityConfig {
                 if (OidcUserAuthority.class.isInstance(authority)) {
                     OidcUserAuthority oidcUserAuthority = (OidcUserAuthority)authority;
 
-                    OidcIdToken idToken = oidcUserAuthority.getIdToken();
+//                    OidcIdToken idToken = oidcUserAuthority.getIdToken();
                     OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
 
                     List<String> group = userInfo.getClaim("groups");

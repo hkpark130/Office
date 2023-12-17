@@ -14,7 +14,6 @@ export default [
   {
     name: 'device-application',
     path: '/device-application/:deviceId',
-    alias: ['/device-application'],
     props: true,
     component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/DeviceApplication.vue'),
   },

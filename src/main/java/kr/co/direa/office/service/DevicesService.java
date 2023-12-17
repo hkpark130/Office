@@ -34,4 +34,9 @@ public class DevicesService {
                 .filter(deviceDto -> !deviceDto.getApprovalInfo().equals("사용 신청 완료"))
                 .collect(Collectors.toList());
     }
+
+    public DeviceDto findById(String id) {
+        Devices device = devicesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 기기가 없습니다. id=" + id));
+        return new DeviceDto(device);
+    }
 }

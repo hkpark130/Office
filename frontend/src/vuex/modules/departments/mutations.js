@@ -1,12 +1,12 @@
 export default {
-  filterCatrgoryBegin(state) {
+  filterDepartmentBegin(state) {
     state.loading = true;
   },
-  filterCatrgorySuccess(state, data) {
+  filterDepartmentSuccess(state, data) {
     state.loading = false;
     state.data = data;
   },
-  filterCatrgoryErr(state, err) {
+  filterDepartmentErr(state, err) {
     state.loading = false;
     state.error = err;
   },

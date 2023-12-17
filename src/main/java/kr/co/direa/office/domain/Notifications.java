@@ -1,6 +1,7 @@
 package kr.co.direa.office.domain;
 
 import jakarta.persistence.*;
+import kr.co.direa.office.dto.ApprovalDeviceDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,20 +18,19 @@ public class Notifications {
     private String subject;
 
     @Column(name = "link")
-    private String link;
+    private String link = "#";
 
     @Column(name = "is_read")
-    private Boolean is_read;
+    private Boolean is_read = false;
 
     public Notifications() {
 
     }
 
     @Builder
-    public Notifications(Long id, String subject, String link, Boolean is_read) {
-        this.id = id;
+    public Notifications(String subject, String link) {
         this.subject = subject;
         this.link = link;
-        this.is_read = is_read;
     }
+
 }

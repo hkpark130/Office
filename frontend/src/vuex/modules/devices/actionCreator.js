@@ -1,4 +1,5 @@
 import mutations from './mutations';
+import { DataService } from '@/config/dataService/dataService';
 import { availableDeviceList } from './load-data';
 
 const originData = availableDeviceList.data;
@@ -8,6 +9,7 @@ const state = () => ({
   data: response,
   originData: originData,
   loading: false,
+  postDeviceApplicationLoading: false,
   error: null,
 });
 
@@ -26,6 +28,17 @@ const actions = {
       commit('filterDeviceErr', err);
     }
   },
+
+  async submitDeviceApplicationPost({ commit }, data) {
+    try {
+      commit('postDeviceApplicationBegin');
+      await DataService.post('/api/device-application', data);
+      commit('postDeviceApplicationSuccess', data);
+    } catch (err) {
+      commit('postDeviceApplicationErr', err);
+    }
+  },
+
 };
 
 export default {

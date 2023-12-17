@@ -2,19 +2,21 @@ package kr.co.direa.office.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.co.direa.office.domain.Notifications;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
+import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.CategoriesService;
 import kr.co.direa.office.service.DevicesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +33,7 @@ public class DeviceController {
     private final ApprovalDevicesService approvalDevicesService;
 
     @GetMapping(value = "/devices")
-    ResponseEntity<?> getDevices(HttpServletResponse response2) {
+    ResponseEntity<?> getDevices() {
         List<CategoryDto> categoryDtoList = categoriesService.findAll();
         Map<String, Object> map;
         List<Map<String, Object>> response = new ArrayList<>();
@@ -45,13 +47,29 @@ public class DeviceController {
             response.add(map);
         }
 
-        Cookie cookie = new Cookie("phk", "Sex");
-        cookie.setHttpOnly(true);
-        response2.addCookie(cookie);
-
-
         return ResponseEntity.ok(
                 response
+        );
+    }
+
+    @GetMapping(value = "/devicelist-admin")
+    ResponseEntity<?> deviceListAdmin() throws IOException {
+        Path filePath = Path.of(System.getProperty("user.dir") + "/test.json");
+        String jsonContent = Files.readString(filePath);
+        Notifications notifications = Notifications.builder().link("phk").subject("happy!!!").build();
+        messagingTemplate.convertAndSend("/topic/dev", new NotificationDto(notifications));
+
+        return ResponseEntity.ok(
+                jsonContent
+        );
+    }
+
+    @GetMapping(value = "/device/{id}")
+    ResponseEntity<?> getDevice(@PathVariable String id) {
+        DeviceDto deviceDto = devicesService.findById(id);
+
+        return ResponseEntity.ok(
+                deviceDto
         );
     }
 

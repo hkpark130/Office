@@ -1,5 +1,5 @@
 import { DataService } from '@/config/dataService/dataService';
 
-const availableDeviceList = await DataService.get('/api/available-devicelist');
+const catrgoryList = await DataService.get('/api/catrgory-list');
 
-export { availableDeviceList };
+export { catrgoryList };

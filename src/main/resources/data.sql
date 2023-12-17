@@ -8,32 +8,34 @@ INSERT INTO DEPARTMENTS (name) VALUES ('제품2팀');
 
 insert into users (auth,department_id,username,id) values ('Admin',null,'test',1);
 
+INSERT INTO PROJECTS (name) VALUES ('농협');
+
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-101', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
+values ('DIR-N-101', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-102', null, 1, 'RAM: 8G CPU: 4core', 1000, 'LSBX2434', 'OS 설치 필요', 'test', 'LG', 'ND6179NBJ', true, '사무', '2021-09-02', 2, null);
+values ('DIR-N-102', null, 1, 'RAM: 8G CPU: 4core', 1000, 'LSBX2434', 'OS 설치 필요', 'test', 'LG', 'ND6179NBJ', true, '사무', '2021-09-02', 2, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-103', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
+values ('DIR-N-103', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-104', null, 2, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
+values ('DIR-N-104', null, 2, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-105', null, 2, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
+values ('DIR-N-105', null, 2, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-106', null, 2, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
+values ('DIR-N-106', null, 2, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
 values ('DIR-N-107', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
 values ('DIR-N-108', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-109', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 2, null);
+values ('DIR-N-109', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 2, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-110', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', false, '개발', '2021-09-01', 1, null);
+values ('DIR-N-110', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'test', 'SAMSUNG', 'ND6179NBK', false, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-111', null, 1, '품질 최상', 10000, 'LSBX2', '부팅', 'test', 'SAMSUNG', 'ND6K', true, '개발', '2021-09-01', 3, null);
+values ('DIR-N-111', null, 1, '품질 최상', 10000, 'LSBX2', '부팅', 'test', 'SAMSUNG', 'ND6K', true, '개발', '2021-09-01', 3, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-112', null, 1, 'RAM: 2G', 1000, 'LSBXTEST', '폐기함', 'test', 'SAMSUNG', 'ND6179NBK', false, '개발', '2021-09-01', 1, null);
+values ('DIR-N-112', null, 1, 'RAM: 2G', 1000, 'LSBXTEST', '폐기함', 'test', 'SAMSUNG', 'ND6179NBK', false, '개발', '2021-09-01', 1, 1);
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
-values ('DIR-N-113', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '사용중인 기기', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, null);
+values ('DIR-N-113', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '사용중인 기기', 'test', 'SAMSUNG', 'ND6179NBK', true, '개발', '2021-09-01', 1, 1);
 
 INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (true, null, null, '반납예정(20231120)', 'test용');
 INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (false, null, null, '승인대기', 'test용');

@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "users")
 @Getter
 @Setter
-public class Users implements UserDetails {
+public class Users extends BaseTimeEntity implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)

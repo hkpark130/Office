@@ -21,58 +21,56 @@
                           <a-col :xs="24">
                             <div class="add-product-content">
                               <sdCards title="장비 사용 신청">
+                                <a-form-item label="긴급도" name="urgency">
+                                  <a-radio-group v-model:value="formState.urgency">
+                                    <a-radio value="normal">보통</a-radio>
+                                    <a-radio value="urgent">긴급</a-radio>
+                                  </a-radio-group>
+                                </a-form-item>
+
                                 <a-form-item label="관리번호">
-                                  <a-input v-model:value="formState.deviceId" />
+                                  <a-input v-model:value="formState.deviceId" disabled/>
                                 </a-form-item>
 
                                 <a-form-item
                                   name="category"
-                                  initialValue=""
+                                  :initialValue="formState.categoryName"
                                   label="품목"
                                 >
                                   <a-select
                                     v-model:value="formState.category"
-                                    style="width: 100%"
+                                    style="width: 100%" disabled
                                   >
-                                    <a-select-option value=""
-                                      >Please Select</a-select-option
-                                    >
-                                    <a-select-option value="wearingClothes"
-                                      >노트북</a-select-option
-                                    >
-                                    <a-select-option value="sunglasses"
-                                      >Sunglasses</a-select-option
-                                    >
-                                    <a-select-option value="t-shirt"
-                                      >T-Shirt</a-select-option
-                                    >
+                                    <a-select-option
+                                      v-for="category in categories"
+                                      :key="category.id"
+                                      :value="category.name"
+                                    >{{ category.name }}</a-select-option>
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="신청자">
-                                  <a-input v-model:value="formState.name" />
-                                  <a-radio-group v-model:value="formState.level" label="test">
-                                    <a-radio value="normal">직접 입력</a-radio>
-                                    <a-radio value="urgent">자동 입력</a-radio>
+                                <a-form-item label="신청자" name="userName" required>
+                                  <a-input v-model:value="formState.userName" :disabled="disabled"/>
+                                  <a-radio-group v-model:value="formState.auto" @change="onChange">
+                                    <a-radio value="auto">자동 입력</a-radio>
+                                    <a-radio value="manual">직접 입력</a-radio>
                                   </a-radio-group>
                                 </a-form-item>
-                                
 
                                 <a-form-item
-                                  name="manage-dep"
+                                  name="manageDep"
                                   initialValue=""
                                   label="관리부서"
                                 >
                                   <a-select
-                                    v-model:value="formState.purpose"
-                                    style="width: 100%"
+                                    v-model:value="formState.manageDep"
+                                    style="width: 100%" disabled
                                   >
-                                    <a-select-option value=""
-                                      >개발</a-select-option
-                                    >
-                                    <a-select-option value="sunglasses"
-                                      >ETC</a-select-option
-                                    >
+                                    <a-select-option
+                                      v-for="department in departments"
+                                      :key="department.id"
+                                      :value="department.name"
+                                    >{{ department.name }}</a-select-option>
                                   </a-select>
                                 </a-form-item>
 
@@ -83,25 +81,23 @@
                                 >
                                   <a-select
                                     v-model:value="formState.project"
-                                    style="width: 100%"
+                                    style="width: 100%" disabled
                                   >
-                                    <a-select-option value=""
-                                      >스마트로</a-select-option
-                                    >
-                                    <a-select-option value="sunglasses"
-                                      >ETC</a-select-option
-                                    >
+                                    <a-select-option
+                                      v-for="project in projects"
+                                      :key="project.id"
+                                      :value="project.name"
+                                    >{{ project.name }}</a-select-option>
                                   </a-select>
                                 </a-form-item>
 
-  
                                 <a-form-item
-                                  name="description"
+                                  name="reason"
                                   label="신청사유"
                                   required
                                 >
                                   <a-textarea
-                                    v-model:value="formState.description"
+                                    v-model:value="formState.reason"
                                     :rows="5"
                                   />
                                 </a-form-item>
@@ -139,76 +135,58 @@
   <script lang="jsx">
   import { Main, BasicFormWrapper } from "../styled";
   import { AddProductForm } from "./style";
-  import { ref, reactive, defineComponent } from "vue";
-  import { message } from "ant-design-vue";
+  import { computed, ref, reactive, defineComponent, watch } from "vue";
   import { useRouter } from 'vue-router';
   import { useStore } from 'vuex';
-  
-  const fileList = [
-    // {
-    //   uid: "1",
-    //   name: "1.png",
-    //   status: "done",
-    //   url: require("@/static/img/products/1.png"),
-    //   thumbUrl: require("@/static/img/products/1.png"),
-    // }, 파일첨부시 양식
-  ];
   
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
     setup() {
-      const { state } = useStore();
+      const { state, dispatch } = useStore();
       const router = useRouter();
+      const { push } = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
 
-      const categories = computed(() => state.devices.data);
-  
-      const fileUploadProps = {
-        name: "file",
-        multiple: true,
-        action: "http://192.168.2.110",
-        onChange(info) {
-          const { status } = info.file;
-          if (status !== "uploading") {
-            file.value = info.file;
-            list.value = info.fileList;
-          }
-          if (status === "done") {
-            message.success(`${info.file.name} file uploaded successfully.`);
-          } else if (status === "error") {
-            message.error(`${info.file.name} file upload failed.`);
-          }
-        },
-        listType: "picture",
-        defaultFileList: fileList,
-        showUploadList: {
-          showRemoveIcon: true,
-          removeIcon: (
-            <sdFeatherIcons
-              type="trash-2"
-              onClick={(e) => console.log(e, "custom removeIcon event")}
-            />
-          ),
-        },
-      };
+      dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
+      
+      const categories = computed(() => state.caregoryList.data);
+      const departments = computed(() => state.departmentList.data);
+      const projects = computed(() => state.projectList.data);
+      const getDeviceById = computed(() => state.deviceById.data);
+      const getUser = computed(() => state.getUser.data);
+
+      watch(getDeviceById, (newValue) => {
+        if (newValue) {
+          formState.category = newValue.categoryName;
+          formState.price = newValue.price;
+          formState.status = newValue.status;
+          formState.manageDep = newValue.manageDep.name;
+          formState.project = newValue.projectId && newValue.projectId.name ? newValue.projectId.name : "";
+        }
+      });
   
       const formState = reactive({
         deviceId: router.currentRoute.value.params.deviceId,
-        name: "",
-        category: "",
-        price: 0,
-        level: "normal",
-        status: "",
-        description: "",
+        category: getDeviceById.value.categoryName,
+        price: getDeviceById.value.price,
+        auto: "auto",
+        urgency: "normal", // normal, urgent
+        status: getDeviceById.value.status,
+        manageDep: "",
+        project: "",
+        userName: getUser.value.name,
+        reason: "",
+        type: "사용 신청",
         layout: "vertical",
       });
   
       const handleFinish = () => {
-        console.log(formState);
+        dispatch('submitDeviceApplicationPost', formState);
+        push('/');
       };
   
       const handleFinishFailed = (errors) => {
@@ -228,14 +206,22 @@
           },
         ],
       };
+
+      const disabled = ref(true);
+
+      const onChange = (check) => {
+        if (check.target.value === "auto") {
+          disabled.value = true;
+        } else {
+          disabled.value = false;
+        }
+      };
   
       const resetForm = () => {
         formRef.value.ruleformState.resetFields();
       };
   
       return {
-        fileList,
-        fileUploadProps,
         rules,
         file,
         list,
@@ -246,6 +232,11 @@
         handleFinishFailed,
         handleSubmit,
         formRef,
+        categories,
+        projects,
+        departments,
+        onChange,
+        disabled,
       };
     },
   });

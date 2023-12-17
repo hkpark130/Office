@@ -2,10 +2,12 @@ package kr.co.direa.office.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "approvals")
 @Table(name = "approvals")
 @Getter
+@Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Approvals extends BaseTimeEntity {
     @Id

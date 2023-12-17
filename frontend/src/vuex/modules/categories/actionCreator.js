@@ -1,7 +1,7 @@
 import mutations from './mutations';
-import { availableDeviceList } from './load-data';
+import { catrgoryList } from './load-data';
 
-const response = availableDeviceList.data;
+const response = catrgoryList.data;
 
 const state = () => ({
   data: response,
@@ -10,18 +10,18 @@ const state = () => ({
 });
 
 const actions = {
-  async deviceFilter({ commit }, { column, value }) {
+  async catrgoryFilter({ commit }, { column, value }) {
     try {
-      commit('filterDeviceBegin');
+      commit('filterCatrgoryBegin');
       const data = response.filter((item) => {
         if (value !== '') {
           return item[column] === value;
         }
         return item;
       });
-      commit('filterDeviceSuccess', data);
+      commit('filterCatrgorySuccess', data);
     } catch (err) {
-      commit('filterDeviceErr', err);
+      commit('filterCatrgoryErr', err);
     }
   },
 };

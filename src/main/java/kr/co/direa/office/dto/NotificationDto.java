@@ -17,7 +17,7 @@ public class NotificationDto implements Serializable {
     private String subject;
     private String link;
     @JsonProperty(value = "is_read")
-    private boolean isRead;
+    private boolean isRead = false;
 
     @Builder
     public NotificationDto(Notifications entity){
@@ -29,11 +29,17 @@ public class NotificationDto implements Serializable {
 
     public Notifications toEntity() {
         return Notifications.builder()
-                .id(id)
                 .subject(subject)
                 .link(link)
-                .is_read(isRead)
                 .build();
+    }
+
+    public NotificationDto convertNotificationFromApproval(ApprovalDeviceDto approvalDeviceDto) {
+        this.subject = approvalDeviceDto.getDeviceId().getId() + "의 " +
+                approvalDeviceDto.getType() + "에 대한 " +
+                approvalDeviceDto.getUserId().getUsername() + " 님의 승인 요청";
+        this.link = "#";
+        return this;
     }
 
 }

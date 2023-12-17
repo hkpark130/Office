@@ -3,10 +3,12 @@ package kr.co.direa.office.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "approval_devices")
 @Table(name = "approval_devices")
 @Getter
+@Setter
 public class ApprovalDevices extends Approvals {
     @ManyToOne
     @JoinColumn(name ="device_id", referencedColumnName = "id")
