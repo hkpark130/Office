@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 @Service
 public class DevicesService {
     private final DevicesRepository devicesRepository;
+    private final ProjectsService projectsService;
+    private final CategoriesService categoriesService;
+    private final DepartmentsService departmentsService;
 
     public List<DeviceDto> findAll() {
         List<Devices> devicesList =  devicesRepository.findAll();
@@ -38,5 +41,12 @@ public class DevicesService {
     public DeviceDto findById(String id) {
         Devices device = devicesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 기기가 없습니다. id=" + id));
         return new DeviceDto(device);
+    }
+
+    public void save(DeviceDto requestDto) {
+        requestDto.setProjectId(projectsService.findByName(requestDto.getProjectName()));
+        requestDto.setCategoryId(categoriesService.findByName(requestDto.getCategoryName()));
+        requestDto.setManageDep(departmentsService.findByName(requestDto.getManageDepName()));
+        devicesRepository.save(requestDto.toEntity());
     }
 }

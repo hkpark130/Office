@@ -8,6 +8,7 @@ INSERT INTO DEPARTMENTS (name) VALUES ('제품2팀');
 
 insert into users (auth,department_id,username,id) values ('Admin',null,'test',1);
 
+INSERT INTO PROJECTS (name) VALUES ('본사');
 INSERT INTO PROJECTS (name) VALUES ('농협');
 
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)

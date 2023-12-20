@@ -2,8 +2,6 @@
 server:
   port: 80
 
-
-
 # keycloak
 spring:
   servlet:

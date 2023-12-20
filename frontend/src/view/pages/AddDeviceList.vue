@@ -76,6 +76,7 @@
   import { AddProductForm } from "./style";
   import { computed, ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
+  import { useStore } from 'vuex';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -84,13 +85,20 @@
       const file = ref(null);
       const submitValues = ref({});
       const formRef = ref();
+      const { dispatch } = useStore();
 
       const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
       const requiredColumns = [
-        "category","deviceId","user","manageDep","project","purpose",
-        "spec","price","model","company","sn","description"
+        "id", "categoryName"
       ];
+
+      const optionalColumns = [
+        "user","manageDepName","projectName","purpose",
+        "status", "spec","price","model","company","sn","description"
+      ];
+
+      const columns = requiredColumns.concat(optionalColumns);
   
       const fileUploadProps = {
         name: "file",
@@ -104,6 +112,7 @@
               const fileContent = e.target.result;
               if (checkCSV(fileContent)) {
                 resolve(file);
+                // return false;
               } else {
                 reject(new Error("유효한 양식이 아닙니다."));
               }
@@ -133,27 +142,42 @@
         layout: "vertical",
       });
 
+      const requsetData = ref([]);
+      const inputData = ref({});
+
       const checkCSV = (csvContent) => {
         const lines = csvContent.split('\r\n');
         const headers = lines[0].split(',');
+        for (const v of new Set([...headers, ...columns]))
+          if (headers.filter(e => e === v).length !== columns.filter(e => e === v).length)
+            throw new Error("유효한 양식이 아닙니다. "+ v);
 
-        for (const col in requiredColumns) {
-          if( !headers.includes(requiredColumns[col]) ){
-            throw new Error("유효한 양식이 아닙니다. " + requiredColumns[col]);
-            // return false;
-          }
-          for (let row = 1; row < lines.length; row++) {
-            const val = lines[row].split(',');
-            if (requiredColumns[col] !== 'user' && val[col] === '') {
-              throw new Error(row + " 라인 " + requiredColumns[col] + " 값이 없습니다.");
+        for (let row = 1; row < lines.length; row++) {
+          inputData.value = {};
+          const val = lines[row].split(',');
+          for (const col in headers) {
+            if (requiredColumns.includes(headers[col]) && val[col] === '') {
+              throw new Error(row + " 라인에 " + requiredColumns[col] + " 값이 없습니다.");
             }
+            // inputData.value.push({"key": headers[col], "value": val[col]});
+            inputData.value[headers[col]] = val[col];
           }
+          requsetData.value.push(inputData.value);
         }
+
         return true;
       }
   
       const handleFinish = () => {
-        console.log(formState);
+        console.log(requsetData);
+        for (const v of requsetData.value) {
+          console.log("VVVVVVVVV:", v);
+          dispatch('submitAddDevicePost', v);
+        }
+
+        // dispatch('submitAddDevicePost', requsetData);
+        // alert('등록되었습니다.');
+        // push('/');
       };
   
       const handleFinishFailed = (errors) => {
@@ -195,9 +219,9 @@
           key: 'user',
         },
         {
-          title: 'manageDep',
-          dataIndex: 'manageDep',
-          key: 'manageDep',
+          title: 'manageDepName',
+          dataIndex: 'manageDepName',
+          key: 'manageDepName',
         },
         {
           title: 'project',
@@ -246,7 +270,7 @@
         "category": "노트북",
         "purpose": "사무",
         "user": "김철수",
-        "manageDep": "경영지원부",
+        "manageDepName": "경영지원부",
         "project": "농협",
         "spec": "RAM: 16G\nCPU: 8core",
         "price": "80,000",
@@ -258,14 +282,14 @@
 
       const formatData = computed(() =>
         formatState.value.map((value) => {
-          const { deviceId, category, purpose, user, manageDep, spec, price, model, description, project, sn, company } = value;
+          const { deviceId, category, purpose, user, manageDepName, spec, price, model, description, project, sn, company } = value;
           return {
             key: deviceId,
             deviceId: <span>{deviceId}</span>,
             category: <span>{category}</span>,
             purpose: <span>{purpose}</span>,
             user: <span>{user}</span>,
-            manageDep: <span>{manageDep}</span>,
+            manageDepName: <span>{manageDepName}</span>,
             spec: <span>{spec}</span>,
             price: <span>{price}</span>,
             model: <span>{model}</span>,

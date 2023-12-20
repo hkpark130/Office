@@ -18,6 +18,7 @@ public class DeviceDto implements Serializable {
     private String id;
     private Users userId;
     private Departments manageDep;
+    private String manageDepName;
     private Categories categoryId;
     private Projects projectId;
     private String spec;
@@ -31,6 +32,7 @@ public class DeviceDto implements Serializable {
     private String purpose;
     private Date purchaseDate;
     private String categoryName;
+    private String projectName;
     private String approvalInfo;
 
     @Builder
@@ -38,8 +40,9 @@ public class DeviceDto implements Serializable {
         this.id = entity.getId();
         this.userId = entity.getUserId();
         this.manageDep = entity.getManageDep();
+        this.manageDepName = (this.manageDep != null) ? this.manageDep.getName() : null;
         this.categoryId = entity.getCategoryId();
-        this.categoryName = this.categoryId.getName();
+        this.categoryName = (this.categoryId != null) ? this.categoryId.getName() : null;
         this.projectId = entity.getProjectId();
         this.spec = entity.getSpec();
         this.price = entity.getPrice();
@@ -51,6 +54,7 @@ public class DeviceDto implements Serializable {
         this.status = entity.getStatus();
         this.purpose = entity.getPurpose();
         this.purchaseDate = entity.getPurchaseDate();
+        this.projectName = (this.projectId != null) ? this.projectId.getName() : null;
 
         Optional<ApprovalDevices> latestApprovalDevice = entity.getApprovalDevices().stream()
                 .max(Comparator.comparing(ApprovalDevices::getCreatedDate));
@@ -63,6 +67,7 @@ public class DeviceDto implements Serializable {
 
     public Devices toEntity() {
         return Devices.builder()
+                .id(id)
                 .userId(userId)
                 .manageDep(manageDep)
                 .categoryId(categoryId)

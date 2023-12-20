@@ -28,6 +28,9 @@ public class IndexController {
     @GetMapping("/health")
     public String status() {
         return "It's working.";
+
+        // Notifications notifications = Notifications.builder().link("phk").subject("happy!!!").build();
+        // messagingTemplate.convertAndSend("/topic/dev", new NotificationDto(notifications));
     }
 
     @GetMapping("/error")

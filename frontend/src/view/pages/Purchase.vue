@@ -218,14 +218,13 @@
         multiple: false,
         action: API_ENDPOINT,
         beforeUpload(file) {
-          return new Promise((resolve) => {
-            if (checkIMG(file)) {
-              resolve(file);
-            } else {
-              alert("이미지 파일만 업로드 가능합니다.");
-              new Error("이미지 파일만 업로드 가능합니다.");
-            }
-          });
+          if (checkIMG(file)) {
+            return false; // 업로드 되지 않도록 함 !
+          } else {
+            // alert("이미지 파일만 업로드 가능합니다.");
+            message.error(`이미지 파일만 업로드 가능합니다.`);
+            return new Error("이미지 파일만 업로드 가능합니다.");
+          }
         },
         onChange(info) {
           const { status, response } = info.file;
@@ -233,18 +232,14 @@
             file.value = info.file;
             list.value = info.fileList;
           }
-          console.log("TESTESTESTESTETS: ",response);
-          console.log("TESTESTESTESTETS222: ",info.file);
+          console.log("status: ", status, "response: ",response);
+          console.log("TESTESTESTESTETS222: ",info);
           if (status === "done") {
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
             formState.file = response;
             message.success(`${info.file.name} file uploaded successfully.`);
           } else if (status === "error") {
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww2");
             message.error(`${info.file.name} file upload failed.`);
-          } else {
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww3");
-          }
+          } 
         },
         listType: "picture",
         defaultFileList: fileList,

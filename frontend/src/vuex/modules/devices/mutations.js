@@ -46,4 +46,28 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  postAddDeviceBegin(state) {
+    state.loading = true;
+  },
+  postAddDeviceSuccess(state, data) {
+    state.loading = false;
+    state.posts = data;
+  },
+  postAddDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  checkDuplicationBegin(state) {
+    state.loading = true;
+  },
+  checkDuplicationSuccess(state, data) {
+    state.loading = false;
+    state.duplicationCheck = data;
+  },
+  checkDuplicationErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };
