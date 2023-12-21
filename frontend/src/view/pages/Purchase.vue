@@ -216,7 +216,7 @@
         name: "file",
         maxCount: 1,
         multiple: false,
-        action: API_ENDPOINT,
+        action: API_ENDPOINT+"/api/upload",
         beforeUpload(file) {
           return new Promise((resolve) => {
             if (checkIMG(file)) {
@@ -229,22 +229,19 @@
         },
         onChange(info) {
           const { status, response } = info.file;
+          console.log("TESTESTESTESTETS: ",status);
+          console.log("File Info: ", info.file);
           if (status !== "uploading") {
             file.value = info.file;
             list.value = info.fileList;
           }
-          console.log("TESTESTESTESTETS: ",response);
-          console.log("TESTESTESTESTETS222: ",info.file);
+          
           if (status === "done") {
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
             formState.file = response;
             message.success(`${info.file.name} file uploaded successfully.`);
           } else if (status === "error") {
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww2");
             message.error(`${info.file.name} file upload failed.`);
-          } else {
-            console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww3");
-          }
+          } 
         },
         listType: "picture",
         defaultFileList: fileList,

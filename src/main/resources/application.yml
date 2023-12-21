@@ -2,32 +2,31 @@
 server:
   port: 80
 
-
-
 # keycloak
 spring:
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 50MB
+      max-request-size: 50MB
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://192.168.0.2:8080/realms/sso-test
+          issuer-uri: http://192.168.0.45:8080/realms/sso-test
+#          issuer-uri: http://192.168.2.111:8080/realms/sso-test
       client:
         provider:
           keycloak:
-#            issuer-uri: http://192.168.0.2:8080/realms/sso-test
-            issuer-uri: http://192.168.2.111:8080/realms/sso-test
+            issuer-uri: http://192.168.0.45:8080/realms/sso-test
+#            issuer-uri: http://192.168.2.111:8080/realms/sso-test
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-name: back-office-api
             client-id: back-office-api
-            client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
-#            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
+            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
+#            client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
 #            redirect-uri: 'http://192.168.2.110/login/oauth2/code/external'
