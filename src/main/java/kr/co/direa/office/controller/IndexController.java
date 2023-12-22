@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class IndexController {
-    private static final String UPLOAD_DIR = "uploads";
     private final SimpMessagingTemplate messagingTemplate;
     @GetMapping("/health")
     public String status() {
         return "It's working.";
+
+        // Notifications notifications = Notifications.builder().link("phk").subject("happy!!!").build();
+        // messagingTemplate.convertAndSend("/topic/dev", new NotificationDto(notifications));
     }
 
     @GetMapping("/error")

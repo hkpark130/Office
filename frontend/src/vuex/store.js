@@ -4,6 +4,7 @@ import headerSearchData from './modules/headerSearch/actionCreator';
 import auth from './modules/authentication/axios/actionCreator';
 import devices from './modules/devices/actionCreator';
 import deviceById from './modules/devices/getDeviceById';
+import addDevice from './modules/devices/addDevice';
 import disposeDevicesAdmin from './modules/disposeDevicesAdmin/actionCreator';
 import devicesAdmin from './modules/devicesAdmin/actionCreator';
 import myList from './modules/myList/actionCreator';
@@ -28,5 +29,6 @@ export default createStore({
     projectList,
     departmentList,
     getUser,
+    addDevice,
   },
 });

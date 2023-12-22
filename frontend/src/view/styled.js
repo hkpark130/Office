@@ -1464,6 +1464,25 @@ const BasicFormWrapper = Styled.div`
             width: 100% !important;
             border: 1px solid ${({ theme }) => theme['border-color-normal']};
         }
+        .input-append{
+            position: absolute;
+            ${({ theme }) => (theme.rtl ? 'left' : 'right')}: 0;
+            top: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1px;
+            height: 47px;
+            border-radius: ${({ theme }) => (theme.rtl ? '0 4px 4px 0' : '4px 0 0 4px')};
+            z-index: 10;
+            border: 1px solid ${({ theme }) => theme['border-color-normal']};
+            border-bottom: 0 none;
+            background-color: ${({ theme }) => theme['bg-color-light']};
+            svg,
+            i{
+                color: ${({ theme }) => theme['gray-color']};
+            }
+        }
     }
     .add-record-form{
         margin: 25px 0 35px 0;

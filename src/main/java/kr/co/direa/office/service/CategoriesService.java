@@ -25,4 +25,8 @@ public class CategoriesService {
                 .collect(Collectors.toList());
     }
 
+    public Categories findByName(String categoryName) {
+        return categoriesRepository.findByName(categoryName);
+    }
+
 }

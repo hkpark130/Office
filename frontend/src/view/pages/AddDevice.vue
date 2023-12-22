@@ -23,68 +23,77 @@
                               <sdCards title="About Device">
                                 <a-form-item
                                   name="category"
-                                  initialValue=""
+                                  :initialValue="formState.categoryName"
                                   label="품목"
                                 >
                                   <a-select
-                                    v-model:value="formState.category"
+                                    v-model:value="formState.categoryName"
                                     style="width: 100%"
                                   >
-                                    <a-select-option value=""
-                                      >모니터</a-select-option
-                                    >
-                                    <a-select-option value="wearingClothes"
-                                      >노트북</a-select-option
-                                    >
+                                    <a-select-option
+                                      v-for="category in categories"
+                                      :key="category.id"
+                                      :value="category.name"
+                                    >{{ category.name }}</a-select-option>
                                   </a-select>
                                 </a-form-item>
 
                                 <a-form-item label="관리번호">
-                                  <a-input name="deviceId" />
-                                </a-form-item>
-
-                                <a-form-item label="사용자">
-                                  <a-input name="user" />
+                                  <div class="input-prepend-wrap">
+                                    <a-input name="id" v-model:value="formState.id"/>
+                                    <span class="input-append">
+                                      <button class="btn-icon" type="button" :onClick="checkDup" transparented>중복체크</button> 
+                                      <sdFeatherIcons v-if="checkFinished == true" 
+                                      :style="{
+                                            backgroundColor: '#20C997',
+                                        }" type="circle" size="44" />
+                                    </span>
+                                  </div>
                                 </a-form-item>
 
                                 <a-form-item
-                                  name="manageDep"
+                                  name="projectName"
                                   initialValue=""
-                                  label="관리부서"
+                                  label="프로젝트"
                                 >
                                   <a-select
-                                    name="manageDep"
+                                    v-model:value="formState.projectName"
                                     style="width: 100%"
                                   >
-                                    <a-select-option value=""
-                                      >경영관리부</a-select-option
-                                    >
-                                    <a-select-option value="wearingClothes"
-                                      >제품2팀</a-select-option
-                                    >
+                                    <a-select-option value="본사"
+                                        >본사</a-select-option
+                                      >
+                                    <a-select-option
+                                      v-for="project in projects"
+                                      :key="project.id"
+                                      :value="project.name"
+                                    >{{ project.name }}</a-select-option>
                                   </a-select>
-                                </a-form-item>
-
-                                <a-form-item label="프로젝트">
-                                  <a-input name="project" />
                                 </a-form-item>
 
                                 <a-form-item
                                   name="purpose"
-                                  initialValue=""
                                   label="용도"
                                 >
                                   <a-select
                                     name="purpose"
+                                    v-model:value="formState.purpose"
                                     style="width: 100%"
                                   >
-                                    <a-select-option value=""
+                                    <a-select-option value="개발"
                                       >개발</a-select-option
                                     >
-                                    <a-select-option value="wearingClothes"
+                                    <a-select-option value="사무"
                                       >사무</a-select-option
                                     >
                                   </a-select>
+                                </a-form-item>
+
+                                <a-form-item label="개발 가능 여부" name="status">
+                                  <a-radio-group v-model:value="formState.status">
+                                    <a-radio value="true">개발 가능</a-radio>
+                                    <a-radio value="false">개발 불가능</a-radio>
+                                  </a-radio-group>
                                 </a-form-item>
 
                                 <a-form-item
@@ -92,7 +101,7 @@
                                   label="사양"
                                 >
                                   <a-textarea
-                                    v-model:value="formState.description"
+                                    v-model:value="formState.spec"
                                     :rows="5"
                                   />
                                 </a-form-item>
@@ -113,15 +122,15 @@
                                 </a-form-item>
 
                                 <a-form-item label="모델명">
-                                  <a-input name="model" />
+                                  <a-input name="model" v-model:value="formState.model"/>
                                 </a-form-item>
 
                                 <a-form-item label="제조사">
-                                  <a-input name="company" />
+                                  <a-input name="company" v-model:value="formState.company"/>
                                 </a-form-item>
 
                                 <a-form-item label="S/N">
-                                  <a-input name="sn" />
+                                  <a-input name="sn" v-model:value="formState.sn"/>
                                 </a-form-item>
   
                                 <a-form-item
@@ -166,74 +175,76 @@
   <script lang="jsx">
   import { Main, BasicFormWrapper } from "../styled";
   import { AddProductForm } from "./style";
-  import { ref, reactive, defineComponent } from "vue";
-  import { message } from "ant-design-vue";
-  
-  const fileList = [
-    // {
-    //   uid: "1",
-    //   name: "1.png",
-    //   status: "done",
-    //   url: require("@/static/img/products/1.png"),
-    //   thumbUrl: require("@/static/img/products/1.png"),
-    // },
-  ];
-  
+  import { ref, reactive, defineComponent, computed, watch } from "vue";
+  import { useStore } from 'vuex';
+  import { useRouter } from 'vue-router';
+
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
     setup() {
-      const file = ref(null);
-      const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
+      const { state, dispatch } = useStore();
+      const { push } = useRouter();
+      const checkFinished = ref(false);
 
-      const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
-  
-      const fileUploadProps = {
-        name: "file",
-        multiple: true,
-        action: API_ENDPOINT,
-        onChange(info) {
-          const { status } = info.file;
-          if (status !== "uploading") {
-            file.value = info.file;
-            list.value = info.fileList;
-          }
-          if (status === "done") {
-            message.success(`${info.file.name} file uploaded successfully.`);
-          } else if (status === "error") {
-            message.error(`${info.file.name} file upload failed.`);
-          }
-        },
-        listType: "picture",
-        defaultFileList: fileList,
-        showUploadList: {
-          showRemoveIcon: true,
-          removeIcon: (
-            <sdFeatherIcons
-              type="trash-2"
-              onClick={(e) => console.log(e, "custom removeIcon event")}
-            />
-          ),
-        },
-      };
+      const categories = computed(() => state.caregoryList.data);
+      const projects = computed(() => state.projectList.data);
   
       const formState = reactive({
-        name: "",
-        category: "",
+        id: "",
+        categoryName: "노트북",
         price: 0,
-        status: "",
+        projectName: "본사",
+        status: "true",
+        purpose: "개발",
         description: "",
+        model: "",
+        company: "",
+        sn: "",
+        spec: "",
         layout: "vertical",
+      });
+
+      watch(() => formState.id, (newId, oldId) => {
+        if (newId !== oldId) {
+          checkFinished.value = false;
+        }
       });
   
       const handleFinish = () => {
+        if (!checkFinished.value) {
+          alert('관리번호 중복체크를 해주세요.');
+          return;
+        }
+
         console.log(formState);
+
+        // dispatch('submitAddDevicePost', formState);
+        alert('등록되었습니다.');
+        push('/');
       };
   
       const handleFinishFailed = (errors) => {
         console.log(errors);
+      };
+
+      const checkDup = async () => {
+        if (formState.id === "") {
+          alert('관리번호를 입력해주세요.');
+          return;
+        }
+
+        const response = await dispatch('checkDuplication', formState.id);
+        if (response) {
+          alert('사용 가능한 관리번호입니다.');
+          checkFinished.value = true;
+        } else {
+          alert('이미 사용 중인 관리번호입니다.');
+          checkFinished.value = false;
+        }
+
       };
   
       const handleSubmit = (values) => {
@@ -255,11 +266,11 @@
       };
   
       return {
-        fileList,
-        fileUploadProps,
+        checkDup,
+        projects,
+        categories,
+        checkFinished,
         rules,
-        file,
-        list,
         resetForm,
         submitValues,
         formState,

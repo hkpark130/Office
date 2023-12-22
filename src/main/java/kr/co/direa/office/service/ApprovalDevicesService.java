@@ -65,4 +65,11 @@ public class ApprovalDevicesService {
 
         return approvalDeviceDto;
     }
+
+    public List<ApprovalDeviceDto> findAllExceptTypeAndApprovalInfo(String type, String approvalInfo) {
+        List<ApprovalDeviceDto> approvalDeviceDto = null;
+        // 여기에 데이터베이스에서 type이 '폐기'이고 approvalInfo가 '승인완료'인 것을 제외하고 나머지를 가져오는 로직
+
+        return approvalDeviceDto;
+    }
 }

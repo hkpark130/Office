@@ -1,11 +1,8 @@
 package kr.co.direa.office.service;
 
 import kr.co.direa.office.domain.Departments;
-import kr.co.direa.office.domain.Projects;
 import kr.co.direa.office.dto.DepartmentDto;
-import kr.co.direa.office.dto.ProjectDto;
 import kr.co.direa.office.repository.DepartmentsRepository;
-import kr.co.direa.office.repository.ProjectsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,4 +21,7 @@ public class DepartmentsService {
                 .collect(Collectors.toList());
     }
 
+    public Departments findByName(String manageDepName) {
+        return departmentsRepository.findByName(manageDepName);
+    }
 }

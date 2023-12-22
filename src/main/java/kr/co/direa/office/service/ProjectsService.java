@@ -26,4 +26,7 @@ public class ProjectsService {
                 .collect(Collectors.toList());
     }
 
+    public Projects findByName(String projectName) {
+        return projectsRepository.findByName(projectName);
+    }
 }

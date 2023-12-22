@@ -3,6 +3,7 @@ package kr.co.direa.office.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.direa.office.domain.Notifications;
+import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
@@ -53,14 +54,11 @@ public class DeviceController {
     }
 
     @GetMapping(value = "/devicelist-admin")
-    ResponseEntity<?> deviceListAdmin() throws IOException {
-        Path filePath = Path.of(System.getProperty("user.dir") + "/test.json");
-        String jsonContent = Files.readString(filePath);
-        Notifications notifications = Notifications.builder().link("phk").subject("happy!!!").build();
-        messagingTemplate.convertAndSend("/topic/dev", new NotificationDto(notifications));
+    ResponseEntity<?> deviceListAdmin() {
+        List<ApprovalDeviceDto> filteredDevices = approvalDevicesService.findAllExceptTypeAndApprovalInfo("폐기", "승인완료");
 
         return ResponseEntity.ok(
-                jsonContent
+                filteredDevices // 필터링된 결과 반환
         );
     }
 
@@ -82,5 +80,27 @@ public class DeviceController {
         );
     }
 
+    @PostMapping(value = "/add-device")
+    ResponseEntity<?> addDevice(@RequestBody DeviceDto requestDto) {
+        devicesService.save(requestDto);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @GetMapping(value = "/check-device-id/{deviceId}")
+    ResponseEntity<?> checkDeviceId(@PathVariable String deviceId) {
+        try {
+            devicesService.findById(deviceId);
+            return ResponseEntity.ok(
+                    false
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok(
+                    true
+            );
+        }
+    }
 
 }
