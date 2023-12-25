@@ -29,16 +29,6 @@
                     </a-radio-group>
                   </div>
                 </a-col>
-                <a-col :xxl="4" :xs="24">
-                  <div class="table-toolbox-actions">
-                    <sdButton size="small" type="secondary" transparented> Export </sdButton>
-                    <router-link :to="`/device-application/${deviceId}`">
-                      <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
-                      사용신청
-                      </sdButton>
-                    </router-link>
-                  </div>
-                </a-col>
               </a-row>
             </TopToolBox>
           </a-col>
@@ -55,24 +45,41 @@
           </a-col>
         </a-row>
       </sdCards>
+      <sdModal type="primary" title="수정" :visible="formState.visible" :footer="null" :onCancel="handleCancel">
+        <div class="todo-modal">
+          <BasicFormWrapper>
+            <a-form class="adTodo-form" name="todoAdd" :model="formState" @finish="onSubmitHandler">
+              <a-input v-model:value="formState.editApp" placeholder="상태" />
+              <br />
+              <br />
+              <a-input v-model:value="formState.editApp" placeholder="비고" />
+              <br />
+              <br />
+              <sdButton @click="showModal" htmlType="submit" class="btn-adTodo" type="primary" size="large">
+                수정
+              </sdButton>
+            </a-form>
+          </BasicFormWrapper>
+        </div>
+      </sdModal>
     </Main>
   </template>
   <script lang="jsx">
   import { TopToolBox } from './Style';
   import { Main, TableWrapper } from '../styled';
-  import { computed, ref, defineComponent } from 'vue';
+  import { computed, ref, defineComponent, reactive } from 'vue';
   import { useStore } from 'vuex';
   
   const columns = [
     {
       title: 'Product',
       dataIndex: 'category',
-      key: 'category',
+      key: 'categoryName',
     },
     {
       title: '사용자',
       dataIndex: 'user',
-      key: 'user',
+      key: 'username',
     },
     {
       title: '용도',
@@ -82,7 +89,7 @@
     {
       title: '프로젝트',
       dataIndex: 'project',
-      key: 'project',
+      key: 'projectName',
     },
     {
       title: '비고',
@@ -92,12 +99,13 @@
     {
       title: '관리부서',
       dataIndex: 'manageDep',
-      key: 'manageDep',
+      key: 'manageDepName',
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
+      // align: 'left',
     },
   ];
 
@@ -112,41 +120,73 @@
     name: 'Orders',
     components: { TopToolBox, Main, TableWrapper },
   
-    setup() {
+    async setup() {
       const { state, dispatch } = useStore();
       const deviceId = ref(null);
+      const getUser = computed(() => state.getUser.data);
       const searchData = computed(() => state.headerSearchData);
+
+      await dispatch('getMyDevices', getUser.value.name);
+
       const orders = computed(() => state.myDevice.data);
-  
       const item = computed(() => state.myDevice.data);
+
       const stateValue = ref('');
-      const filterKey = ref('category');
+      const filterKey = ref('categoryName');
       const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('myDeviceFilter', { column: filterKey.value, value: e.target.value });
+        dispatch('myDeviceFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
       };
-  
+
+      const formState = reactive({
+        visible: false,
+        editApp: '',
+      });
+
+      const showModal = (row) => {
+        console.log(row.deviceId);
+        
+        formState.visible = true;
+      };
+
+      const onCancel = () => {
+        formState.visible = false;
+      };
+
+      const handleCancel = () => {
+        onCancel();
+      };
+
+      const onSubmitHandler = () => {
+        if (formState.editApp !== '') {
+          formState.visible = false;
+        } else {
+          alert('Please Give a Task Title...');
+        }
+      };
+      
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { category, purpose, project, manageDep, user, deviceId, description, img } = value;
+          const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description } = value;
+
           return {
             category: (
               <div class="user-info">
                 <figure>
-                    <img style={{ width: '50px' }} src={require(`@/static/img/${img}`)} alt="" />
+                    <img style={{ width: '50px' }} src={`${categoryId ? require(`@/static/img/${categoryId.img}`) : ''}`} alt="" />
                 </figure>
                 <figcaption>
                     <sdHeading as="h6">
-                        {deviceId}
+                        {id}
                     </sdHeading>
-                    <span class="user-designation">{category}</span>
+                    <span class="user-designation">{categoryName}</span>
                 </figcaption>
               </div>
             ),
-            user: <span class="customer-name">{user}</span>,
-            manageDep: <span class="customer-name">{manageDep}</span>,
-            project: <span class="customer-name">{project}</span>,
+            user: <span class="customer-name">{username}</span>,
+            manageDep: <span class="customer-name">{manageDepName}</span>,
+            project: <span class="customer-name">{projectName}</span>,
             purpose: (
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
@@ -161,15 +201,20 @@
             action: (
               <div class="table-actions">
                 <>
-                  <sdButton class="btn-icon" type="link" to="#" shape="circle">
+                  
+                  <sdButton onClick={() => showModal(value)} class="btn-icon" type="link" shape="circle">
                     <sdFeatherIcons type="edit" size={16} title="수정" />
                   </sdButton>
-                  <sdButton class="btn-icon" type="primary" to="#" shape="circle" >
-                    <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
-                  </sdButton>
-                  <sdButton class="btn-icon" type="danger" to="#" shape="circle">
-                    <sdFeatherIcons type="trash-2" size={16} title="폐기" />
-                  </sdButton>
+                  <router-link to={"/return-device/"+id}>
+                    <sdButton class="btn-icon" type="primary" to="#" shape="circle" >
+                      <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
+                    </sdButton>
+                  </router-link>
+                  <router-link to={"/delete-device/"+id}>
+                    <sdButton class="btn-icon" type="danger" to="#" shape="circle">
+                      <sdFeatherIcons type="trash-2" size={16} title="폐기" />
+                    </sdButton>
+                  </router-link>
                 </>
               </div>
             ),
@@ -183,7 +228,12 @@
       };
       
       return {
+        formState,
         deviceId,
+        showModal,
+        onCancel,
+        handleCancel,
+        onSubmitHandler,
         dataSource,
         handleChangeForFilter,
         filterKey,

@@ -171,7 +171,6 @@
       const handleFinish = () => {
         console.log(requsetData);
         for (const v of requsetData.value) {
-          console.log("VVVVVVVVV:", v);
           dispatch('submitAddDevicePost', v);
         }
 

@@ -1,39 +1,18 @@
 import mutations from './mutations';
-
-const response = [
-  {
-    "img": "notebook.png",
-    "deviceId": "DIR-N-10666",
-    "category": "노트북",
-    "purpose": "개발",
-    "user": "김철수",
-    "manageDep": "제품2팀 0108",
-    "project": "스마트로 0205",
-    "description": "프로젝트용 노트북"
-  },
-  {
-    "img": "monitor.png",
-    "deviceId": "DIR-N-10777",
-    "category": "모니터",
-    "purpose": "개발",
-    "user": "김철수",
-    "manageDep": "제품2팀 0108",
-    "project": "스마트로 0205",
-    "description": "프로젝트용 모니터",
-  },
-];
+import { DataService } from '@/config/dataService/dataService';
 
 const state = () => ({
-  data: response,
+  data: "",
   loading: false,
   error: null,
 });
 
 const actions = {
-  async myDeviceFilter({ commit }, { column, value }) {
+  async myDeviceFilter({ commit }, { column, value, name }) {
     try {
       commit('filterMyDeviceBegin');
-      const data = response.filter((item) => {
+      const query = await DataService.get(`/api/mydevice/${name}`);
+      const data = query.data.filter((item) => {
         if (value !== '') {
           return item[column] === value;
         }
@@ -42,6 +21,18 @@ const actions = {
       commit('filterMyDeviceSuccess', data);
     } catch (err) {
       commit('filterMyDeviceErr', err);
+    }
+  },
+
+  async getMyDevices({ commit }, name) {
+    try {
+      commit('getMyDevicesBegin');
+      const query = await DataService.get(`/api/mydevice/${name}`);
+      commit('getMyDevicesSuccess', query.data);
+      return query.data;
+    } catch (err) {
+      console.log(err);
+      commit('getMyDevicesErr', err);
     }
   },
 };

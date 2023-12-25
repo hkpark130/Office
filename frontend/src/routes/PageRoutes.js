@@ -18,6 +18,24 @@ export default [
     component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/DeviceApplication.vue'),
   },
   {
+    name: 'return-device',
+    path: '/return-device/:deviceId',
+    props: true,
+    component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/ReturnDevice.vue'),
+  },
+  {
+    name: 'delete-device',
+    path: '/delete-device/:deviceId',
+    props: true,
+    component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/DeleteDevice.vue'),
+  },
+  {
+    name: 'check-approval-device',
+    path: '/check-approval-device/:approvalId',
+    props: true,
+    component: () => import(/* webpackChunkName: "DeviceApplication" */ '@/view/pages/CheckApprovalDevice.vue'),
+  },
+  {
     name: 'approval-process',
     path: '/approval-process',
     props: true,

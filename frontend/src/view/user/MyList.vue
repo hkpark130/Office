@@ -39,7 +39,7 @@
                 :dataSource="dataSource"
                 :columns="columns"
                 :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
-                :rowClassName="(record) => record.level === 'urgent' ? 'urgent-row' : ''"
+                :rowClassName="(record) => record.level ? 'urgent-row' : ''"
               />
             </TableWrapper>
           </a-col>
@@ -68,7 +68,6 @@
   import { Main, TableWrapper, BasicFormWrapper } from '../styled';
   import { computed, reactive, ref, defineComponent } from 'vue';
   import { useStore } from 'vuex';
-  import { useRouter } from 'vue-router';
   import Tag from '../../components/tags/Tag';
 
   const columns = [
@@ -76,26 +75,22 @@
       title: '구분',
       dataIndex: 'status',
       key: 'status',
+      align: 'center',
     },
     {
       title: '신청장비',
       dataIndex: 'category',
-      key: 'category',
+      key: 'categoryName',
     },
     {
       title: '신청자',
       dataIndex: 'user',
-      key: 'user',
-    },
-    {
-      title: '신청일자',
-      dataIndex: 'date',
-      key: 'date',
+      key: 'userName',
     },
     {
       title: '신청정보',
       dataIndex: 'info',
-      key: 'info',
+      key: 'approvalInfo',
     },
     {
       title: 'Action',
@@ -112,24 +107,28 @@
     name: 'Orders',
     components: { BasicFormWrapper, TopToolBox, Main, TableWrapper },
   
-    setup() {
+    async setup() {
       const { state, dispatch } = useStore();
       const deviceId = ref(1);
       const searchData = computed(() => state.headerSearchData);
+
+      const getUser = computed(() => state.getUser.data);
+      await dispatch('getMyApproval', getUser.value.name);
+
       const orders = computed(() => state.myList.data);
+      const item = computed(() => state.myList.data);
+
       const formState = reactive({
         visible: false,
         editApp: '',
       });
-      const router = useRouter();
   
-      const item = computed(() => state.myList.data);
       const stateValue = ref('');
-      const filterKey = ref('category');
+      const filterKey = ref('categoryName');
       const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('myListFilter', { column: filterKey.value, value: e.target.value });
+        dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
       };
 
       const showModal = (row) => {
@@ -138,15 +137,6 @@
         
         formState.visible = true;
       };
-
-      const navigateWithObject = (value) => {
-        router.push({
-          name: 'approval-process',
-          query: {
-            ...value,
-          },
-        });
-      }
 
       const onCancel = () => {
         formState.visible = false;
@@ -164,49 +154,68 @@
         }
       };
 
-      const dataSource = computed(() =>
+      const dataSource = computed(() => 
         orders.value.map((value) => {
-          const { category, info, status, user, deviceId, date, level } = value;
+          const { categoryName, type, approvalInfo, userName, deviceId, approvalId, createdDate, urgency } = value;
           let deleteIcon = null;
           let editIcon = null;
-          let statusTag = <span class="order-status">{status}</span>;
-          if (status === 'progress') {
+          let checkIcon = null;
+          let statusTag = <span class="order-status">{approvalInfo}</span>;
+          let approvalInfoClass = 
+            approvalInfo === '승인대기' ? 'progress' : approvalInfo === '반납' ? 'delete' 
+            : approvalInfo === '승인완료' ? 'complete' : approvalInfo === '반려' ? 'delete' : 'danger';
+          if (approvalInfo === '승인대기') {
             deleteIcon = 
             <sdButton class="btn-icon" type="danger" to="#" shape="circle">
               <sdFeatherIcons type="trash-2" size={16} title="삭제" />
             </sdButton>;
             
             editIcon = 
-            <router-link onClick={() => navigateWithObject(value)} to="/approval-process">
+            <router-link to={"/edit-approval/"+approvalId}>
               <sdButton class="btn-icon" type="info" to="#" shape="circle">
                 <sdFeatherIcons type="edit" size={16} title="편집" />
               </sdButton>
             </router-link>;
 
+            if (state.getUser.isAdmin) {
+              checkIcon = 
+                <router-link to={"/check-approval-device/"+approvalId}>
+                  <sdButton class="btn-icon" type="info" to="#" shape="circle">
+                    <sdFeatherIcons type="check" size={16} title="승인/반려" />
+                  </sdButton>
+                </router-link>;
+              }
           }
-          if (level === 'urgent') {
+          if (urgency) {
             statusTag = 
             <div class="taglist-wrap">
               <Tag data="긴급" tagType="colorful" color="red" />
-              <span class="order-status">{status}</span>
+              <span class="order-status">{type}</span>
+            </div>;
+          } else {
+            statusTag = 
+            <div class="taglist-wrap">
+              <span class="order-status">{type}</span>
             </div>;
           }
 
           return {
             status: <>{statusTag}</>,
-            category: <span class="order-id">{deviceId} {category}</span>,
-            user: <span class="customer-name">{user}</span>,
-            info: <a-tag class={status}>{info}</a-tag>,
-            date: <span class="ordered-date">{date}</span>,
-            level: level,
+            category: <span class="order-id">{deviceId} <br/>{categoryName}</span>,
+            user: <span class="customer-name">{userName}</span>,
+            info: <a-tag class={approvalInfoClass}>{approvalInfo}</a-tag>,
+            date: <span class="ordered-date">{createdDate}</span>,
+            level: urgency,
             action: (
               <div class="table-actions">
                 <>
+                  {checkIcon}
                   <sdButton onClick={() => showModal(value)} class="btn-icon" type="primary" to="#" shape="circle" >
                     <sdFeatherIcons type="eye" size={16} title="상세정보" />
                   </sdButton>
                   {editIcon}
                   {deleteIcon}
+                  
                 </>
               </div>
             ),
@@ -222,7 +231,6 @@
       return {
         showModal,
         onCancel,
-        navigateWithObject,
         handleCancel,
         onSubmitHandler,
         formState,

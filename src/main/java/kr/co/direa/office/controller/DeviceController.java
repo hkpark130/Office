@@ -55,10 +55,21 @@ public class DeviceController {
 
     @GetMapping(value = "/devicelist-admin")
     ResponseEntity<?> deviceListAdmin() {
-        List<ApprovalDeviceDto> filteredDevices = approvalDevicesService.findAllExceptTypeAndApprovalInfo("폐기", "승인완료");
+        List<DeviceDto> filteredDevices =
+                approvalDevicesService.findAllExceptTypeAndApprovalInfo("폐기", "승인완료");
 
         return ResponseEntity.ok(
-                filteredDevices // 필터링된 결과 반환
+                filteredDevices
+        );
+    }
+
+    @GetMapping(value = "/dispose-devicelist-admin")
+    ResponseEntity<?> disposeDeviceListAdmin() {
+        List<DeviceDto> filteredDevices =
+                approvalDevicesService.findByTypeAndApprovalInfo("폐기", "승인완료");
+
+        return ResponseEntity.ok(
+                filteredDevices
         );
     }
 
@@ -68,6 +79,15 @@ public class DeviceController {
 
         return ResponseEntity.ok(
                 deviceDto
+        );
+    }
+
+    @GetMapping(value = "/mydevice/{username}")
+    ResponseEntity<?> getMyDevice(@PathVariable String username) {
+        List<DeviceDto> deviceDtoList = devicesService.findByUsername(username);
+
+        return ResponseEntity.ok(
+                deviceDtoList
         );
     }
 
@@ -90,7 +110,7 @@ public class DeviceController {
     }
 
     @GetMapping(value = "/check-device-id/{deviceId}")
-    ResponseEntity<?> checkDeviceId(@PathVariable String deviceId) {
+    ResponseEntity<?> checkDeviceIdDup(@PathVariable String deviceId) {
         try {
             devicesService.findById(deviceId);
             return ResponseEntity.ok(

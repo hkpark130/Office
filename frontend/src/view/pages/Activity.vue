@@ -2,7 +2,7 @@
     <div>
         <Main>
             <ActivityContents>
-                <sdCards title="장비변경이력">
+                <sdCards title="신청 이력">
                     <ul v-if="activities.length > 0" class="activity-list">
                         <li v-for="(activity, i) in activities" class="activity-list__single" :key="i">
                             <span :class="['activity-icon', activity.iconClass]">
@@ -15,8 +15,7 @@
                                         @click="() => showModal(activity)"
                                     >
                                         <p>
-                                            <span class="inline-text color-primary">{{ activity.userName }}</span>
-                                            이/가 {{ activity.message }}
+                                            {{ activity.subject }}
                                             <span class="hour">{{ activity.date }}</span>
                                         </p>
                                     </a>
@@ -45,8 +44,9 @@
 </template>
 <script>
 import { ActivityContents } from './style';
-import { defineComponent } from 'vue';
+import { defineComponent, computed, onMounted } from 'vue';
 import { Main } from '../styled';
+import { useStore } from 'vuex';
 
 const ActivityContent = defineComponent({
     name: 'ActivityContent',
@@ -55,41 +55,18 @@ const ActivityContent = defineComponent({
         ActivityContents, 
     },
     setup() {
-        const activities = [
-                {
-                    icon: 'inbox',
-                    iconClass: 'primary',
-                    userName: 'James',
-                    message: '장비 사용 신청을 하였습니다.',
-                    date: '2023.11.22'
-                },
-                {
-                    icon: 'dollar-sign',
-                    iconClass: 'primary',
-                    userName: 'James',
-                    message: '장비 구매 신청을 하였습니다.',
-                    date: '2023.11.22'
-                },
-                {
-                    icon: 'edit',
-                    iconClass: 'success',
-                    userName: 'James',
-                    message: '신청 내용을 수정하였습니다.',
-                    date: '2023.11.22'
-                },
-                {
-                    icon: 'trash',
-                    iconClass: 'secondary',
-                    userName: 'Adam',
-                    message: '폐기 신청을 하였습니다.',
-                    date: '2023.11.21'
-                },
-            ];
+        const { state, dispatch } = useStore();
+        const activities = computed(() => state.getActivities.data);
 
-            const showModal = (row) => {
-                // console.log(row); row 객체 다 받아올 수 있음
-                console.log(row);
-            };
+
+        const showModal = (row) => {
+            console.log(row);
+        };
+        
+        onMounted(() => {
+            dispatch('fetchActivities');
+        });
+
 
         return {
             activities,

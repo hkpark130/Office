@@ -7,6 +7,7 @@
             <span class="title-text">Notifications</span>
             <a-badge class="badge-success" :count="notificationList.length" />
           </sdHeading>
+          
           <perfect-scrollbar
             :options="{
               wheelSpeed: 1,
@@ -24,12 +25,12 @@
                     <div class="notification-content d-flex">
                       <div class="notification-text">
                         <sdHeading as="h5">
-                          <span>{{ notification.sender }}</span> {{ notification.message }}
+                          <span>{{ notification.userName }}</span> {{ notification.subject }}
                         </sdHeading>
-                        <p>{{ notification.time }}</p>
+                        <p>{{ notification.date }}</p>
                       </div>
                       <div class="notification-status">
-                        <a-badge v-if="!notification.read" dot />
+                        <a-badge v-if="!notification.is_read" dot />
                       </div>
                     </div>
                   </div>
@@ -40,7 +41,9 @@
           <router-link class="btn-seeAll" to="/activity">
             See all incoming activity
           </router-link>
+          
         </AtbdTopDropdwon>
+        
       </template>
       <a-badge dot :offset="[-8, -5]">
         <a to="#" class="head-example">
@@ -54,9 +57,10 @@
 import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import "vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css";
 import { AtbdTopDropdwon } from "./auth-info-style";
-import { defineComponent, reactive } from "vue";
+import { defineComponent,  computed, ref } from "vue";
 import Stomp from 'webstomp-client';
 import Sockjs from 'sockjs-client';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: "Notification",
@@ -65,35 +69,25 @@ export default defineComponent({
     PerfectScrollbar,
   },
   setup() {
-    const notificationList = reactive([
-        {
-          link: "#",
-          iconClass: "bg-primary",
-          bgClass: "bg-primary",
-          icon: "hard-drive",
-          sender: "James",
-          message: "sent you a message",
-          time: "5 hours ago",
-          read: false,
-        },
-        {
-          link: "#",
-          iconClass: "bg-primary",
-          bgClass: "bg-primary",
-          icon: "hard-drive",
-          sender: "James",
-          message: "sent you a message",
-          time: "5 hours ago",
-          read: true,
-        },
-      ]);
+    const { state, dispatch } = useStore();
+
+    const notificationList = ref();
+    const getUser = computed(() => state.getUser.data);
 
     const socket = new Sockjs("http://localhost/gs-guide-websocket");
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, () => {
-      stompClient.subscribe('/topic/dev', message =>
-        console.log(`Received: ${message.body}`)
+      // console.log(getUser.value.preferredUsername); TODO: 유저별로 구독하게 해야함
+      const groupName = getUser.value.attributes.groups[0].substring(1);
+      
+      stompClient.subscribe('/topic/'+groupName, message =>
+        {
+          notificationList.value = JSON.parse(message.body);
+        }
       );
+
+      // dispatch('getNotifications', getUser.value.name); TODO: 유저별로 알림을 가져와야함
+      dispatch('getNotifications', groupName);
     });
 
     return {

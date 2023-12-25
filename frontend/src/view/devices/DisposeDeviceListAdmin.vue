@@ -68,7 +68,7 @@
     {
       title: '품목',
       dataIndex: 'category',
-      key: 'category',
+      key: 'categoryName',
     },
     {
       title: '관리번호',
@@ -133,7 +133,7 @@
   
       const item = computed(() => state.disposeDevicesAdmin.data);
       const stateValue = ref('');
-      const filterKey = ref('category');
+      const filterKey = ref('categoryName');
       const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
@@ -141,7 +141,7 @@
       };
 
       const removeItem = (deviceId) => {
-        const index = orders.value.findIndex((item) => item.deviceId === deviceId);
+        const index = orders.value.findIndex((item) => item.id === deviceId);
         if (index !== -1) {
           orders.value.splice(index, 1);
         }
@@ -149,11 +149,11 @@
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { category, manageDep, project, purpose, model, user, deviceId, company, sn, purchaseDate, description } = value;
+          const { categoryName, manageDep, project, purpose, model, user, id, company, sn, purchaseDate, description } = value;
           return {
-            key: deviceId, // radio 선택시 기준 값
-            id: <span class="order-id">{deviceId}</span>,
-            category: <span class="customer-name">{category}</span>,
+            key: id, // radio 선택시 기준 값
+            id: <span class="order-id">{id}</span>,
+            category: <span class="customer-name">{categoryName}</span>,
             user: <span class="customer-name">{user}</span>,
             purpose: (
               <div>
@@ -174,7 +174,7 @@
             action: (
               <div class="table-actions">
                 <>
-                  <sdButton class="btn-icon" onClick={() => removeItem(deviceId)} type="info" to="#" shape="circle">
+                  <sdButton class="btn-icon" onClick={() => removeItem(id)} type="info" to="#" shape="circle">
                     <font-awesome-icon icon={FontAwesomeIcon["faRecycle"]} size={16} title="복구" />
                   </sdButton>
                 </>

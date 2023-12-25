@@ -1,5 +1,5 @@
 <template>
-    <sdPageHeader title="장비 사용 신청"></sdPageHeader>
+    <sdPageHeader title="장비 반납 신청"></sdPageHeader>
     <Main>
       <a-row :gutter="15">
         <a-col :xs="24">
@@ -20,7 +20,7 @@
                         <a-row :gutter="15">
                           <a-col :xs="24">
                             <div class="add-product-content">
-                              <sdCards title="장비 사용 신청">
+                              <sdCards title="장비 반납 신청">
                                 <a-form-item label="긴급도" name="urgency">
                                   <a-radio-group v-model:value="formState.urgency">
                                     <a-radio value="normal">보통</a-radio>
@@ -50,50 +50,42 @@
                                 </a-form-item>
 
                                 <a-form-item label="신청자" name="userName" required>
-                                  <a-input v-model:value="formState.userName" :disabled="disabled"/>
-                                  <a-radio-group v-model:value="formState.auto" @change="onChange">
-                                    <a-radio value="auto">자동 입력</a-radio>
-                                    <a-radio value="manual">직접 입력</a-radio>
-                                  </a-radio-group>
+                                  <a-input v-model:value="formState.userName" disabled/>
                                 </a-form-item>
 
-                                <a-form-item
-                                  name="manageDep"
-                                  initialValue=""
-                                  label="관리부서"
-                                >
-                                  <a-select
-                                    v-model:value="formState.manageDep"
-                                    style="width: 100%" disabled
-                                  >
-                                    <a-select-option
-                                      v-for="department in departments"
-                                      :key="department.id"
-                                      :value="department.name"
-                                    >{{ department.name }}</a-select-option>
-                                  </a-select>
-                                </a-form-item>
+                                <a-row :gutter="15">
+                                  <a-col :span="12">
+                                    <a-form-item
+                                      name="purpose"
+                                      label="용도"
+                                    >
+                                      <a-select
+                                        name="purpose"
+                                        v-model:value="formState.purpose" disabled
+                                      >
+                                        <a-select-option value="개발"
+                                          >개발</a-select-option
+                                        >
+                                        <a-select-option value="사무"
+                                          >사무</a-select-option
+                                        >
+                                      </a-select>
+                                    </a-form-item>
+                                  </a-col>
 
-                                <a-form-item
-                                  name="project"
-                                  initialValue=""
-                                  label="프로젝트"
-                                >
-                                  <a-select
-                                    v-model:value="formState.project"
-                                    style="width: 100%" disabled
-                                  >
-                                    <a-select-option
-                                      v-for="project in projects"
-                                      :key="project.id"
-                                      :value="project.name"
-                                    >{{ project.name }}</a-select-option>
-                                  </a-select>
-                                </a-form-item>
+                                  <a-col :span="12">
+                                    <a-form-item label="상태" name="status" required>
+                                      <a-radio-group v-model:value="formState.status">
+                                        <a-radio :value=true>Y</a-radio>
+                                        <a-radio :value=false>N</a-radio>
+                                      </a-radio-group>
+                                    </a-form-item>
+                                  </a-col>
+                                </a-row>
 
                                 <a-form-item
                                   name="reason"
-                                  label="신청사유"
+                                  label="반납사유"
                                   required
                                 >
                                   <a-textarea
@@ -135,39 +127,26 @@
   <script lang="jsx">
   import { Main, BasicFormWrapper } from "../styled";
   import { AddProductForm } from "./style";
-  import { computed, ref, reactive, defineComponent, watch } from "vue";
+  import { computed, ref, reactive, defineComponent } from "vue";
   import { useRouter } from 'vue-router';
   import { useStore } from 'vuex';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
-    setup() {
+    async setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
-      // const { push } = useRouter();
+      const { push } = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
 
-      dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
+      await dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
       
-      const categories = computed(() => state.caregoryList.data);
-      const departments = computed(() => state.departmentList.data);
-      const projects = computed(() => state.projectList.data);
       const getDeviceById = computed(() => state.deviceById.data);
       const getUser = computed(() => state.getUser.data);
-
-      watch(getDeviceById, (newValue) => {
-        if (newValue) {
-          formState.category = newValue.categoryName;
-          formState.price = newValue.price;
-          formState.status = newValue.status;
-          formState.manageDep = newValue.manageDep.name;
-          formState.project = newValue.projectId && newValue.projectId.name ? newValue.projectId.name : "";
-        }
-      });
   
       const formState = reactive({
         deviceId: router.currentRoute.value.params.deviceId,
@@ -176,18 +155,19 @@
         auto: "auto",
         urgency: "normal", // normal, urgent
         status: getDeviceById.value.status,
+        purpose: getDeviceById.value.purpose,
         manageDep: "",
         project: "",
         userName: getUser.value.name,
         reason: "",
-        type: "대여",
+        type: "반납",
         layout: "vertical",
       });
   
       const handleFinish = () => {
-        dispatch('submitDeviceApplicationPost', formState);
+        dispatch('submitDeviceReturnPost', formState);
         alert('신청되었습니다.');
-        // push('/');
+        push('/');
       };
   
       const handleFinishFailed = (errors) => {
@@ -197,33 +177,14 @@
       const handleSubmit = (values) => {
         submitValues.value = values;
       };
-  
-      const rules = {
-        name: [
-          {
-            required: true,
-            message: "Please input Activity name",
-            trigger: "blur",
-          },
-        ],
-      };
 
       const disabled = ref(true);
-
-      const onChange = (check) => {
-        if (check.target.value === "auto") {
-          disabled.value = true;
-        } else {
-          disabled.value = false;
-        }
-      };
   
       const resetForm = () => {
         formRef.value.ruleformState.resetFields();
       };
   
       return {
-        rules,
         file,
         list,
         resetForm,
@@ -233,10 +194,6 @@
         handleFinishFailed,
         handleSubmit,
         formRef,
-        categories,
-        projects,
-        departments,
-        onChange,
         disabled,
       };
     },

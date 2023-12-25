@@ -68,7 +68,7 @@
     {
       title: '품목',
       dataIndex: 'category',
-      key: 'category',
+      key: 'categoryName',
     },
     {
       title: '관리번호',
@@ -143,7 +143,7 @@
   
       const item = computed(() => state.devicesAdmin.data);
       const stateValue = ref('');
-      const filterKey = ref('category');
+      const filterKey = ref('categoryName');
       const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
@@ -151,7 +151,7 @@
       };
 
       const removeItem = (deviceId) => {
-        const index = orders.value.findIndex((item) => item.deviceId === deviceId);
+        const index = orders.value.findIndex((item) => item.id === deviceId);
         if (index !== -1) {
           orders.value.splice(index, 1);
         }
@@ -159,11 +159,11 @@
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { category, manageDep, project, purpose, model, user, deviceId, company, sn, purchaseDate } = value;
+          const { categoryName, manageDepName, projectName, purpose, model, userId, id, company, sn, purchaseDate } = value;
           return {
-            id: <span class="order-id">{deviceId}</span>,
-            category: <span class="customer-name">{category}</span>,
-            user: <span class="customer-name">{user}</span>,
+            id: <span class="order-id">{id}</span>,
+            category: <span class="customer-name">{categoryName}</span>,
+            user: <span class="customer-name">{userId}</span>,
             purpose: (
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
@@ -174,8 +174,8 @@
                 </span>
               </div>
             ),
-            manageDep: <span class="ordered-amount">{manageDep}</span>,
-            project: <span class="ordered-amount">{project}</span>,
+            manageDep: <span class="ordered-amount">{manageDepName}</span>,
+            project: <span class="ordered-amount">{projectName}</span>,
             model: <span class="ordered-amount">{model}</span>,
             company: <span class="ordered-amount">{company}</span>,
             sn: <span class="ordered-amount">{sn}</span>,
@@ -186,7 +186,7 @@
                   <sdButton class="btn-icon" type="info" to="#" shape="circle">
                     <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
                   </sdButton>
-                  <sdButton class="btn-icon" onClick={() => removeItem(deviceId)} type="danger" to="#" shape="circle">
+                  <sdButton class="btn-icon" onClick={() => removeItem(id)} type="danger" to="#" shape="circle">
                     <sdFeatherIcons type="trash-2" size={16} title="폐기" />
                   </sdButton>
                 </>

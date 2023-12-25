@@ -1,35 +1,36 @@
 package kr.co.direa.office.controller;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import kr.co.direa.office.domain.Notifications;
+import kr.co.direa.office.dto.NotificationDto;
+import kr.co.direa.office.service.NotificationsService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @Controller
 public class NotificationController {
-    private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationsService notificationsService;
 
-    public NotificationController(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    public NotificationController(SimpMessagingTemplate messagingTemplate, NotificationsService notificationsService) {
+        this.notificationsService = notificationsService;
     }
 
-//    @MessageMapping("/hello")
-//    @SendTo("/topic/greetings")
-//    public Greeting greeting(HelloMessage message) throws Exception {
-////        Thread.sleep(1000); // simulated delay
-//        return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
-//    }
+    @GetMapping(value = "get-notifications/{username}")
+    public ResponseEntity<?> greeting(@PathVariable String username) {
+        // TODO: keycloak 의 username 별로 토픽 나눠야 함, notificationsService.findByUsername()
+        List<NotificationDto> notificationDtoList = notificationsService.findAll().stream()
+                .map(dto -> dto.setIcon(dto)).toList();
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public void greeting() throws Exception {
-//        return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
-        messagingTemplate.convertAndSend("/topic/dev", "test api called!");
+//        notificationsService.sendNotification("/topic/device-application", notificationDtoList);
+        notificationsService.sendNotification("/topic/"+username, notificationDtoList);
 
-//        messagingTemplate.convertAndSend (
-//                "/topic/admin/notification",
-//                new Notification("")
-//        );
+        return ResponseEntity.ok(
+                notificationDtoList
+        );
     }
 
 

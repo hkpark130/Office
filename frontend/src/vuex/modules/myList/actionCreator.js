@@ -1,5 +1,7 @@
 import mutations from './mutations';
+import { DataService } from '@/config/dataService/dataService';
 
+/*
 const response = [
   {
     "deviceId": "DIR-N-106",
@@ -42,18 +44,21 @@ const response = [
     "date": "January 28, 2021"
   },
 ];
+*/
 
 const state = () => ({
-  data: response,
+  data: "",
   loading: false,
   error: null,
 });
 
 const actions = {
-  async myListFilter({ commit }, { column, value }) {
+  async myListFilter({ commit }, { column, value, name }) {
     try {
       commit('filterMyListBegin');
-      const data = response.filter((item) => {
+      const query = await DataService.get(`/api/my-approval-list/${name}`);
+      console.log(query.data);
+      const data = query.data.filter((item) => {
         if (value !== '') {
           return item[column] === value;
         }
@@ -62,6 +67,18 @@ const actions = {
       commit('filterMyListSuccess', data);
     } catch (err) {
       commit('filterMyListErr', err);
+    }
+  },
+
+  async getMyApproval({ commit }, name) {
+    try {
+      commit('getMyApprovalBegin');
+      const query = await DataService.get(`/api/my-approval-list/${name}`);
+      commit('getMyApprovalSuccess', query.data);
+      return query.data;
+    } catch (err) {
+      console.log(err);
+      commit('getMyApprovalErr', err);
     }
   },
 };

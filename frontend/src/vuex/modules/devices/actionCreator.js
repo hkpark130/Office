@@ -39,6 +39,16 @@ const actions = {
     }
   },
 
+  async submitDeviceReturnPost({ commit }, data) {
+    try {
+      commit('postDeviceReturnBegin');
+      await DataService.post('/api/device-return', data);
+      commit('postDeviceReturnSuccess', data);
+    } catch (err) {
+      commit('postDeviceReturnErr', err);
+    }
+  },
+
 };
 
 export default {

@@ -1,24 +1,24 @@
 export default {
-  filterMyDeviceBegin(state) {
+  getActivitiesBegin(state) {
     state.loading = true;
   },
-  filterMyDeviceSuccess(state, data) {
+  getActivitiesSuccess(state, data) {
     state.loading = false;
     state.data = data;
   },
-  filterMyDeviceErr(state, err) {
+  getActivitiesErr(state, err) {
     state.loading = false;
     state.error = err;
   },
 
-  getMyDevicesBegin(state) {
+  fetchActivitiesBegin(state) {
     state.loading = true;
   },
-  getMyDevicesSuccess(state, data) {
+  fetchActivitiesSuccess(state, data) {
     state.loading = false;
     state.data = data;
   },
-  getMyDevicesErr(state, err) {
+  fetchActivitiesErr(state, err) {
     state.loading = false;
     state.error = err;
   },

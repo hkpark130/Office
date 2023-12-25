@@ -23,31 +23,10 @@ import java.util.Map;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class ApprovalController {
-    private final SimpMessagingTemplate messagingTemplate;
     private final DevicesService devicesService;
     private final CategoriesService categoriesService;
     private final ApprovalDevicesService approvalDevicesService;
     private final NotificationsService notificationsService;
-
-    @GetMapping(value = "/devices222222")
-    ResponseEntity<?> getDevices() {
-        List<CategoryDto> categoryDtoList = categoriesService.findAll();
-        Map<String, Object> map;
-        List<Map<String, Object>> response = new ArrayList<>();
-
-        for (CategoryDto categoryDto : categoryDtoList) {
-            Long deviceCount = devicesService.countByCategoryId(categoryDto.toEntity());
-            map = new HashMap<>();
-            map.put("amount", deviceCount);
-            map.put("name", categoryDto.getName());
-            map.put("img", categoryDto.getImg());
-            response.add(map);
-        }
-
-        return ResponseEntity.ok(
-                response
-        );
-    }
 
     @PostMapping(value = "/device-application")
     ResponseEntity<?> deviceApplication(
@@ -59,8 +38,27 @@ public class ApprovalController {
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.convertNotificationFromApproval(approvalDeviceDto);
 
-        messagingTemplate.convertAndSend("/topic/device-application", notificationDto);
         notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    // 구현하자
+    @PostMapping(value = "/device-return")
+    ResponseEntity<?> deviceReturn(
+            @RequestBody Map<String, Object> request
+    ) {
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        approvalDevicesService.save(approvalDeviceDto);
+
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
 
         return ResponseEntity.ok(
                 "success"
@@ -71,14 +69,77 @@ public class ApprovalController {
     ResponseEntity<?> devicePurchase(
             @RequestBody Map<String, Object> request
     ) {
-        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequestWithOutDeviceId(request);
         approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.convertNotificationFromApproval(approvalDeviceDto);
 
-        messagingTemplate.convertAndSend("/topic/device-application", notificationDto);
         notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @GetMapping(value = "/my-approval-list/{username}")
+    ResponseEntity<?> myApprovalList(
+            @PathVariable String username
+    ) {
+        // TODO: 관리자면 findAll 반환하도록 구현해야함
+        List<ApprovalDeviceDto> approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
+
+        return ResponseEntity.ok(
+                approvalDeviceDtoList
+        );
+    }
+
+    @GetMapping(value = "/approval-device/{id}")
+    ResponseEntity<?> getApproval(@PathVariable String id) {
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.findById(id);
+
+        return ResponseEntity.ok(
+                approvalDeviceDto
+        );
+    }
+
+    @PostMapping(value = "/approval-device-finish")
+    ResponseEntity<?> approvalDeviceFinish(
+            @RequestBody Map<String, Object> request
+    ) {
+        approvalDevicesService.setApprovalInfoById(
+                Long.valueOf(request.get("approvalId").toString()), 
+                "승인완료"
+        );
+
+        // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
+//        NotificationDto notificationDto = new NotificationDto();
+//        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+//
+//        notificationsService.save(notificationDto);
+//        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @PostMapping(value = "/approval-device-return")
+    ResponseEntity<?> approvalDeviceReturn(
+            @RequestBody Map<String, Object> request
+    ) {
+        approvalDevicesService.setApprovalInfoById(
+                Long.valueOf(request.get("approvalId").toString()),
+                "반려"
+        );
+
+        // TODO: 유저에게 반려 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
+//        NotificationDto notificationDto = new NotificationDto();
+//        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+//
+//        notificationsService.save(notificationDto);
+//        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
 
         return ResponseEntity.ok(
                 "success"

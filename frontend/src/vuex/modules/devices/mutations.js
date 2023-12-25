@@ -35,7 +35,7 @@ export default {
     state.error = err;
   },
 
-  postDevicePurchasenBegin(state) {
+  postDevicePurchaseBegin(state) {
     state.loading = true;
   },
   postDevicePurchaseSuccess(state, data) {

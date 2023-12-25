@@ -17,6 +17,7 @@ import java.util.Optional;
 public class DeviceDto implements Serializable {
     private String id;
     private Users userId;
+    private String username;
     private Departments manageDep;
     private String manageDepName;
     private Categories categoryId;
@@ -39,6 +40,7 @@ public class DeviceDto implements Serializable {
     public DeviceDto(Devices entity) {
         this.id = entity.getId();
         this.userId = entity.getUserId();
+        this.username = (this.userId != null) ? this.userId.getUsername() : null;
         this.manageDep = entity.getManageDep();
         this.manageDepName = (this.manageDep != null) ? this.manageDep.getName() : null;
         this.categoryId = entity.getCategoryId();
@@ -57,7 +59,8 @@ public class DeviceDto implements Serializable {
         this.projectName = (this.projectId != null) ? this.projectId.getName() : null;
 
         Optional<ApprovalDevices> latestApprovalDevice = entity.getApprovalDevices().stream()
-                .max(Comparator.comparing(ApprovalDevices::getCreatedDate));
+                .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
+                        Comparator.nullsLast(Comparator.naturalOrder())));
         if (latestApprovalDevice.isPresent()) {
             this.approvalInfo = latestApprovalDevice.get().getApprovalInfo();
         } else {
