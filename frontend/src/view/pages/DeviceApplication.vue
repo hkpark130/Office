@@ -49,13 +49,22 @@
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="신청자" name="userName" required>
-                                  <a-input v-model:value="formState.userName" :disabled="disabled"/>
-                                  <a-radio-group v-model:value="formState.auto" @change="onChange">
-                                    <a-radio value="auto">자동 입력</a-radio>
-                                    <a-radio value="manual">직접 입력</a-radio>
-                                  </a-radio-group>
-                                </a-form-item>
+                                <a-row :gutter="15">
+                                  <a-col :span="12">
+                                    <a-form-item label="신청자" name="userName" required>
+                                      <a-input v-model:value="formState.userName" :disabled="disabled"/>
+                                    </a-form-item>
+                                  </a-col>
+
+                                  <a-col :span="12">
+                                    <a-form-item name="auto" label="외부인력 사용여부">
+                                      <a-radio-group v-model:value="formState.auto" @change="onChange">
+                                        <a-radio value="auto">자동 입력</a-radio>
+                                        <a-radio value="manual">직접 입력</a-radio>
+                                      </a-radio-group>
+                                    </a-form-item>
+                                  </a-col>
+                                </a-row>
 
                                 <a-form-item
                                   name="manageDep"
@@ -93,7 +102,7 @@
 
                                 <a-form-item
                                   name="reason"
-                                  label="신청사유"
+                                  label="사유"
                                   required
                                 >
                                   <a-textarea
@@ -145,7 +154,7 @@
     setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
-      // const { push } = useRouter();
+      const { push } = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
@@ -156,7 +165,7 @@
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
       const projects = computed(() => state.projectList.data);
-      const getDeviceById = computed(() => state.deviceById.data);
+      const getDeviceById = computed(() => state.deviceById.getDeviceData);
       const getUser = computed(() => state.getUser.data);
 
       watch(getDeviceById, (newValue) => {
@@ -187,7 +196,7 @@
       const handleFinish = () => {
         dispatch('submitDeviceApplicationPost', formState);
         alert('신청되었습니다.');
-        // push('/');
+        push('/');
       };
   
       const handleFinishFailed = (errors) => {

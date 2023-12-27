@@ -18,16 +18,22 @@
   import { response } from './load-data';
   import { SocialMediaWrapper } from '../style';
   import SocialMediaContent from '../../../components/social-media/overview.vue';
-  import { defineComponent } from 'vue';
+  import { defineComponent, onMounted } from 'vue';
+  import { DataService } from '@/config/dataService/dataService';
 
   const SocialMediaOverview = defineComponent({
     name: 'SocialMediaOverview',
     components: { SocialMediaWrapper, SocialMediaContent },
     data() {
-        return {
-            devices: response.data,
-        };
+      onMounted(async() => {
+        const data = await DataService.get('/api/devices');
+        response.data = data.data;
+      });
+      return {
+          devices: response.data,
+      };
     },
+    
   });
   export default SocialMediaOverview;
   </script>

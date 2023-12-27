@@ -10,13 +10,37 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  filterDeviceAdminBegin(state) {
+    state.loading = true;
+  },
+  filterDeviceAdminSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  filterDeviceAdminErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  fetchAvailableDeviceListBegin(state) {
+    state.loading = true;
+  },
+  fetchAvailableDeviceListSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  fetchAvailableDeviceListErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
   
   getDeviceBegin(state) {
     state.loading = true;
   },
   getDeviceSuccess(state, data) {
     state.loading = false;
-    state.data = data;
+    state.getDeviceData = data;
   },
   getDeviceErr(state, err) {
     state.loading = false;

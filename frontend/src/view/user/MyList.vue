@@ -69,6 +69,7 @@
   import { computed, reactive, ref, defineComponent } from 'vue';
   import { useStore } from 'vuex';
   import Tag from '../../components/tags/Tag';
+  import { useRouter } from 'vue-router';
 
   const columns = [
     {
@@ -111,6 +112,7 @@
       const { state, dispatch } = useStore();
       const deviceId = ref(1);
       const searchData = computed(() => state.headerSearchData);
+      const { push } = useRouter();
 
       const getUser = computed(() => state.getUser.data);
       await dispatch('getMyApproval', getUser.value.name);
@@ -136,6 +138,14 @@
         console.log(row.deviceId);
         
         formState.visible = true;
+      };
+
+      const checkApproval = (approvalId) => {
+        push("/check-approval-device/"+approvalId);
+      };
+
+      const editApproval = (approvalId) => {
+        push("/edit-approval-device/"+approvalId);
       };
 
       const onCancel = () => {
@@ -171,19 +181,20 @@
             </sdButton>;
             
             editIcon = 
-            <router-link to={"/edit-approval/"+approvalId}>
-              <sdButton class="btn-icon" type="info" to="#" shape="circle">
+              <sdButton onClick={() => editApproval(approvalId)} class="btn-icon" type="info" to="#" shape="circle">
                 <sdFeatherIcons type="edit" size={16} title="편집" />
-              </sdButton>
-            </router-link>;
+              </sdButton>;
 
             if (state.getUser.isAdmin) {
               checkIcon = 
-                <router-link to={"/check-approval-device/"+approvalId}>
-                  <sdButton class="btn-icon" type="info" to="#" shape="circle">
-                    <sdFeatherIcons type="check" size={16} title="승인/반려" />
-                  </sdButton>
-                </router-link>;
+                // <router-link to={"/check-approval-device/"+approvalId}>
+                //   <sdButton class="btn-icon" type="success" to="#" shape="circle">
+                //     <sdFeatherIcons type="check" size={16} title="승인/반려" />
+                //   </sdButton>
+                // </router-link>;
+                <sdButton onClick={() => checkApproval(approvalId)} class="btn-icon" type="success" shape="circle">
+                  <sdFeatherIcons type="check" size={16} title="승인/반려" />
+                </sdButton>
               }
           }
           if (urgency) {

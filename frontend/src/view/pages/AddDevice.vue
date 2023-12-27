@@ -218,10 +218,8 @@
           alert('관리번호 중복체크를 해주세요.');
           return;
         }
-
-        console.log(formState);
-
-        // dispatch('submitAddDevicePost', formState);
+        
+        dispatch('submitAddDevicePost', formState);
         alert('등록되었습니다.');
         push('/');
       };

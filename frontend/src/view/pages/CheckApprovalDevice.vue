@@ -87,7 +87,7 @@
 
                                 <a-form-item
                                   name="reason"
-                                  label="반납사유"
+                                  label="사유"
                                   required
                                 >
                                   <a-textarea

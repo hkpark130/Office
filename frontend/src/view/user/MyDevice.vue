@@ -92,14 +92,14 @@
       key: 'projectName',
     },
     {
-      title: '비고',
-      dataIndex: 'description',
-      key: 'description',
-    },
-    {
       title: '관리부서',
       dataIndex: 'manageDep',
       key: 'manageDepName',
+    },
+    {
+      title: '비고',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
       title: 'Action',

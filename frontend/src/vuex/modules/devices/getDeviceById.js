@@ -2,7 +2,7 @@ import mutations from './mutations';
 import { DataService } from '@/config/dataService/dataService';
 
 const state = () => ({
-    data: [],
+    getDeviceData: "",
     loading: false,
     error: null,
   });

@@ -1748,8 +1748,9 @@ const TableWrapper = Styled.div`
         width:300px; line-height:16px;
     }
     td:hover .spnTooltip{
-        display:inline; position:absolute; color:#111;
+        display:block; position:absolute; color:#111;
         border:1px solid #DCA; background:#fffAF0;
+        overflow: hidden; word-wrap: break-word; overflow-y: auto;
     }
     
     .ant-pagination-prev, .ant-pagination-next {
@@ -1979,6 +1980,10 @@ const TableWrapper = Styled.div`
                     &.ant-btn-danger{
                         color: ${({ theme }) => theme['danger-color']};
                         background: ${({ theme }) => theme['danger-color']}10;
+                    }
+                    &.ant-btn-success{
+                        color: ${({ theme }) => theme['success-color']};
+                        background: ${({ theme }) => theme['success-color']}10;
                     }
                 }
             }

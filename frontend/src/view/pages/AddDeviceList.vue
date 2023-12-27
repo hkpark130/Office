@@ -100,25 +100,41 @@
 
       const columns = requiredColumns.concat(optionalColumns);
   
+      const fileList = [];
       const fileUploadProps = {
         name: "file",
         maxCount: 1, // 1개만 표시 되도록
         multiple: false, // 1개만 업로드 되도록
         action: API_ENDPOINT,
         beforeUpload(file) {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const fileContent = e.target.result;
-              if (checkCSV(fileContent)) {
-                resolve(file);
-                // return false;
-              } else {
-                reject(new Error("유효한 양식이 아닙니다."));
-              }
-            };
-            reader.readAsText(file); // FileReader에 직접 파일 전달
-          });
+          // return new Promise((resolve, reject) => {
+          //   const reader = new FileReader();
+          //   reader.onload = (e) => {
+          //     const fileContent = e.target.result;
+          //     if (checkCSV(fileContent)) {
+          //       resolve(file);
+          //       return false; // 서버에
+          //     } else {
+          //       reject(new Error("유효한 양식이 아닙니다."));
+          //     }
+          //   };
+          //   reader.readAsText(file); // FileReader에 직접 파일 전달
+
+            
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const fileContent = e.target.result;
+            if (checkCSV(fileContent)) {
+              resolve(file);
+              return false; // 서버에 업로드는 하기 싫음
+            } else {
+              message.error(`유효한 양식이 아닙니다.`);
+              return new Error("유효한 양식이 아닙니다.");
+            }
+          };
+          reader.readAsText(file); // FileReader에 직접 파일 전달
+
+          // });
         },
         onChange(info) {
           const { status } = info.file;
@@ -130,6 +146,17 @@
           } else if (status === "error") {
             message.error(`${info.file.name} file upload failed.`);
           }
+        },
+        listType: "file",
+        defaultFileList: fileList,
+        showUploadList: {
+          showRemoveIcon: true,
+          removeIcon: (
+            <sdFeatherIcons
+              type="trash-2"
+              onClick={(e) => console.log(e, "custom removeIcon event")}
+            />
+          ),
         },
       };
   
@@ -169,14 +196,11 @@
       }
   
       const handleFinish = () => {
-        console.log(requsetData);
         for (const v of requsetData.value) {
           dispatch('submitAddDevicePost', v);
         }
-
-        // dispatch('submitAddDevicePost', requsetData);
-        // alert('등록되었습니다.');
-        // push('/');
+        alert('등록되었습니다.');
+        push('/');
       };
   
       const handleFinishFailed = (errors) => {
@@ -203,14 +227,14 @@
 
       const formatKeys = [
         {
-          title: 'deviceId',
-          dataIndex: 'deviceId',
-          key: 'deviceId',
+          title: 'id',
+          dataIndex: 'id',
+          key: 'id',
         },
         {
-          title: 'category',
-          dataIndex: 'category',
-          key: 'category',
+          title: 'categoryName',
+          dataIndex: 'categoryName',
+          key: 'categoryName',
         },
         {
           title: 'user',
@@ -223,9 +247,14 @@
           key: 'manageDepName',
         },
         {
-          title: 'project',
-          dataIndex: 'project',
-          key: 'project',
+          title: 'projectName',
+          dataIndex: 'projectName',
+          key: 'projectName',
+        },
+        {
+          title: 'status',
+          dataIndex: 'status',
+          key: 'status',
         },
         {
           title: 'purpose',
@@ -265,12 +294,13 @@
       ];
 
       const formatState = computed(() => [{
-        "deviceId": "DIR-N-107",
-        "category": "노트북",
+        "id": "DIR-N-107",
+        "categoryName": "노트북",
         "purpose": "사무",
         "user": "김철수",
         "manageDepName": "경영지원부",
-        "project": "농협",
+        "status": "true",
+        "projectName": "농협",
         "spec": "RAM: 16G\nCPU: 8core",
         "price": "80,000",
         "model": "LSBX2433",
@@ -281,19 +311,21 @@
 
       const formatData = computed(() =>
         formatState.value.map((value) => {
-          const { deviceId, category, purpose, user, manageDepName, spec, price, model, description, project, sn, company } = value;
+          const { id, categoryName, purpose, user, manageDepName, spec, price, model, description, 
+            projectName, sn, status, company } = value;
           return {
-            key: deviceId,
-            deviceId: <span>{deviceId}</span>,
-            category: <span>{category}</span>,
+            key: id,
+            id: <span>{id}</span>,
+            categoryName: <span>{categoryName}</span>,
             purpose: <span>{purpose}</span>,
             user: <span>{user}</span>,
             manageDepName: <span>{manageDepName}</span>,
+            status: <span>{status}</span>,
             spec: <span>{spec}</span>,
             price: <span>{price}</span>,
             model: <span>{model}</span>,
             description: <span>{description}</span>,
-            project: <span>{project}</span>,
+            projectName: <span>{projectName}</span>,
             company: <span>{company}</span>,
             sn: <span>{sn}</span>,
           };

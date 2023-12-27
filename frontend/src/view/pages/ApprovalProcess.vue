@@ -66,23 +66,13 @@
 
                                 <a-form-item
                                   name="reason"
-                                  label="신청사유"
+                                  label="사유"
                                 >
                                   <a-textarea
                                     v-model:value="formState.description"
                                     :rows="5"
                                   />
-                                </a-form-item>
-
-                                <a-form-item
-                                  name="refuseReason"
-                                  label="반려사유"
-                                >
-                                  <a-textarea
-                                    v-model:value="formState.description"
-                                    :rows="5"
-                                  />
-                                </a-form-item>                                
+                                </a-form-item>                            
                               </sdCards>
                             </div>
                           </a-col>

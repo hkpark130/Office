@@ -85,7 +85,7 @@
 
                                 <a-form-item
                                   name="reason"
-                                  label="폐기사유"
+                                  label="사유"
                                   required
                                 >
                                   <a-textarea
@@ -169,7 +169,7 @@
 
       await dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
       
-      const getDeviceById = computed(() => state.deviceById.data);
+      const getDeviceById = computed(() => state.deviceById.getDeviceData);
       const getUser = computed(() => state.getUser.data);
   
       const formState = reactive({
@@ -231,12 +231,12 @@
           } else {
             // alert("이미지 파일만 업로드 가능합니다.");
             message.error(`이미지 파일만 업로드 가능합니다.`);
-            return new Error("이미지 파일만 업로드 가능합니다.");
+            return false;
           }
         },
         onChange(info) {
           const { status, response } = info.file;
-          
+          console.log("QQQQQQQQQQQQQQQQQ2", info.file);
           if (status !== "uploading") {
             file.value = info.file;
             list.value = info.fileList;

@@ -81,11 +81,6 @@
       key: 'id',
     },
     {
-      title: '사용자',
-      dataIndex: 'user',
-      key: 'userId',
-    },
-    {
       title: '용도',
       dataIndex: 'purpose',
       key: 'purpose',
@@ -104,11 +99,7 @@
       title: '신청정보',
       dataIndex: 'info',
       key: 'approvalInfo',
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
+      align: 'center',
     },
   ];
 
@@ -125,8 +116,9 @@
       const deviceId = ref(null);
       const filterKey = ref('categoryName');
       const searchData = computed(() => state.headerSearchData);
-      const orders = computed(() => state.devices.data);
       const router = useRouter();
+      dispatch("fetchAvailableDeviceList");
+      const orders = computed(() => state.devices.data);
   
       const item = computed(() => state.devices.data);
       const stateValue = ref('');
@@ -141,14 +133,15 @@
         dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
       };
   
+      console.log("TTTTTTTTTTTT", orders.value);
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryId, approvalInfo, purpose, spec, userId, id, tag, description } = value;
+          const { categoryId, approvalInfo, purpose, spec, id, tag, description } = value;
+          const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
           return {
             key: id, // radio 선택시 기준 값
             id: <span class="order-id">{id}</span>,
             category: <span class="customer-name">{ categoryId.name }</span>,
-            user: <span class="customer-name">{ userId }</span>,
             info: (
               <span
                 class={`status ${
@@ -170,22 +163,15 @@
                 </span>
               </div>
             ),
-            memo: <span class="ordered-date">{description}</span>,
-            action: (
-              <div class="table-actions">
-                <>
-                  <sdButton class="btn-icon" type="primary" to="#" shape="circle" >
-                    <sdFeatherIcons type="eye" size={16} title="상세정보" />
-                  </sdButton>
-                  <sdButton class="btn-icon" type="info" to="#" shape="circle">
-                    <sdFeatherIcons type="edit" size={16} title="편집" />
-                  </sdButton>
-                  <sdButton class="btn-icon" type="danger" to="#" shape="circle">
-                    <sdFeatherIcons type="trash-2" size={16} title="삭제" />
-                  </sdButton>
-                </>
+            memo: (
+              <div>
+                <span class="ordered-date">{truncatedDescription}</span>
+                <span class="spnTooltip" >
+                    {description}
+                </span>
               </div>
             ),
+            
           };
         }),
       );

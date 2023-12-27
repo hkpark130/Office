@@ -67,7 +67,7 @@
   const columns = [
     {
       title: '품목',
-      dataIndex: 'category',
+      dataIndex: 'categoryName',
       key: 'categoryName',
     },
     {
@@ -78,17 +78,17 @@
     {
       title: '사용자',
       dataIndex: 'user',
-      key: 'user',
+      key: 'username',
     },
     {
       title: '관리부서',
       dataIndex: 'manageDep',
-      key: 'manageDep',
+      key: 'manageDepName',
     },
     {
       title: '프로젝트',
       dataIndex: 'project',
-      key: 'project',
+      key: 'projectName',
     },
     {
       title: '용도',
@@ -140,14 +140,14 @@
       const deviceId = ref(null);
       const searchData = computed(() => state.headerSearchData);
       const orders = computed(() => state.devicesAdmin.data);
-  
+      
       const item = computed(() => state.devicesAdmin.data);
       const stateValue = ref('');
       const filterKey = ref('categoryName');
       const filterVal = ref(['노트북', '모니터', '서버']);
   
       const handleChangeForFilter = (e) => {
-        dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
+        dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value });
       };
 
       const removeItem = (deviceId) => {
@@ -159,11 +159,11 @@
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryName, manageDepName, projectName, purpose, model, userId, id, company, sn, purchaseDate } = value;
+          const { categoryName, manageDepName, projectName, purpose, model, username, id, company, sn, purchaseDate } = value;
           return {
             id: <span class="order-id">{id}</span>,
-            category: <span class="customer-name">{categoryName}</span>,
-            user: <span class="customer-name">{userId}</span>,
+            categoryName: <span class="customer-name">{categoryName}</span>,
+            user: <span class="customer-name">{username}</span>,
             purpose: (
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>

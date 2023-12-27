@@ -85,7 +85,7 @@
 
                                 <a-form-item
                                   name="reason"
-                                  label="반납사유"
+                                  label="사유"
                                   required
                                 >
                                   <a-textarea
@@ -145,7 +145,7 @@
 
       await dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
       
-      const getDeviceById = computed(() => state.deviceById.data);
+      const getDeviceById = computed(() => state.deviceById.getDeviceData);
       const getUser = computed(() => state.getUser.data);
   
       const formState = reactive({
