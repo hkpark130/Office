@@ -38,4 +38,11 @@ public class FileUploadController {
         }
     }
 
+    @PostMapping(value = "/upload-mock", consumes = { "multipart/form-data" })
+    ResponseEntity<?> uploadMock(
+            @RequestPart("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok("Success.");
+    }
+
 }

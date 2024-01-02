@@ -236,7 +236,6 @@
         },
         onChange(info) {
           const { status, response } = info.file;
-          console.log("QQQQQQQQQQQQQQQQQ2", info.file);
           if (status !== "uploading") {
             file.value = info.file;
             list.value = info.fileList;

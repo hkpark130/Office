@@ -77,6 +77,7 @@
   import { computed, ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
   import { useStore } from 'vuex';
+  import { useRouter } from 'vue-router';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -86,6 +87,7 @@
       const submitValues = ref({});
       const formRef = ref();
       const { dispatch } = useStore();
+      const { push } = useRouter();
 
       const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
@@ -105,36 +107,17 @@
         name: "file",
         maxCount: 1, // 1개만 표시 되도록
         multiple: false, // 1개만 업로드 되도록
-        action: API_ENDPOINT,
-        beforeUpload(file) {
-          // return new Promise((resolve, reject) => {
-          //   const reader = new FileReader();
-          //   reader.onload = (e) => {
-          //     const fileContent = e.target.result;
-          //     if (checkCSV(fileContent)) {
-          //       resolve(file);
-          //       return false; // 서버에
-          //     } else {
-          //       reject(new Error("유효한 양식이 아닙니다."));
-          //     }
-          //   };
-          //   reader.readAsText(file); // FileReader에 직접 파일 전달
-
-            
+        action: API_ENDPOINT+"/api/upload-mock",
+        beforeUpload(file) {            
           const reader = new FileReader();
           reader.onload = (e) => {
             const fileContent = e.target.result;
-            if (checkCSV(fileContent)) {
-              resolve(file);
-              return false; // 서버에 업로드는 하기 싫음
-            } else {
+            if (!checkCSV(fileContent)) {
               message.error(`유효한 양식이 아닙니다.`);
-              return new Error("유효한 양식이 아닙니다.");
-            }
+            } 
+            return false; // 서버에 업로드는 하기 싫음
           };
           reader.readAsText(file); // FileReader에 직접 파일 전달
-
-          // });
         },
         onChange(info) {
           const { status } = info.file;
