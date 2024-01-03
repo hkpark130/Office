@@ -1745,12 +1745,18 @@ const TableWrapper = Styled.div`
     .spnTooltip {
         z-index:10;display:none; padding:14px 20px;
         margin-top:-30px; margin-left:28px;
-        width:300px; line-height:16px;
+        width:250px; line-height:16px;
+        max-width: 250px;
+        word-wrap:break-word;
+        white-space: normal
     }
     td:hover .spnTooltip{
-        display:block; position:absolute; color:#111;
+        display:inline-block; position:absolute; color:#111;
         border:1px solid #DCA; background:#fffAF0;
-        overflow: hidden; word-wrap: break-word; overflow-y: auto;
+        overflow-y: auto;
+        width:250px;
+        max-height: 250px;
+        word-wrap:break-word;
     }
     
     .ant-pagination-prev, .ant-pagination-next {
