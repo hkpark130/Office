@@ -35,6 +35,7 @@ public class DeviceDto implements Serializable {
     private String categoryName;
     private String projectName;
     private String approvalInfo;
+    private String approvalType;
 
     @Builder
     public DeviceDto(Devices entity) {
@@ -63,6 +64,7 @@ public class DeviceDto implements Serializable {
                         Comparator.nullsLast(Comparator.naturalOrder())));
         if (latestApprovalDevice.isPresent()) {
             this.approvalInfo = latestApprovalDevice.get().getApprovalInfo();
+            this.approvalType = latestApprovalDevice.get().getType();
         } else {
             this.approvalInfo = "사용가능";
         }

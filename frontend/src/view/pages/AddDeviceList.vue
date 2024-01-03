@@ -57,7 +57,7 @@
                             type="primary"
                             raised
                           >
-                            Save
+                            장비 일괄 등록
                           </sdButton>
                         </a-form-item>
                       </div>
@@ -75,7 +75,7 @@
   import { Main, BasicFormWrapper } from "../styled";
   import { AddProductForm } from "./style";
   import { computed, ref, reactive, defineComponent } from "vue";
-  import { message } from "ant-design-vue";
+  import { message, Upload } from "ant-design-vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   
@@ -108,16 +108,19 @@
         maxCount: 1, // 1개만 표시 되도록
         multiple: false, // 1개만 업로드 되도록
         action: API_ENDPOINT+"/api/upload-mock",
-        beforeUpload(file) {            
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const fileContent = e.target.result;
-            if (!checkCSV(fileContent)) {
-              message.error(`유효한 양식이 아닙니다.`);
-            } 
-            return false; // 서버에 업로드는 하기 싫음
-          };
-          reader.readAsText(file); // FileReader에 직접 파일 전달
+        beforeUpload(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const fileContent = e.target.result;
+              if (checkCSV(fileContent)) {
+                resolve(file);
+              } else {
+                reject(Upload.LIST_IGNORE);
+              }
+            };
+            reader.readAsText(file); // FileReader에 직접 파일 전달
+          })
         },
         onChange(info) {
           const { status } = info.file;
@@ -125,7 +128,7 @@
             file.value = info.file;
           }
           if (status === "done") {
-            message.success(`${info.file.name} file uploaded successfully.`);
+            message.success(`'장비 일괄 등록' 버튼을 눌러주세요.`);
           } else if (status === "error") {
             message.error(`${info.file.name} file upload failed.`);
           }
@@ -158,9 +161,11 @@
       const checkCSV = (csvContent) => {
         const lines = csvContent.split('\r\n');
         const headers = lines[0].split(',');
-        for (const v of new Set([...headers, ...columns]))
-          if (headers.filter(e => e === v).length !== columns.filter(e => e === v).length)
+        for (const v of new Set([...headers, ...columns])){
+          if (headers.filter(e => e === v).length !== columns.filter(e => e === v).length) {
             throw new Error("유효한 양식이 아닙니다. "+ v);
+          }
+        }
 
         for (let row = 1; row < lines.length; row++) {
           inputData.value = {};
