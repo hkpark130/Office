@@ -33,6 +33,7 @@ public class DevicesService {
 
     public List<DeviceDto> findByStatusTrue() {
         // Device의 status가 true인 기기 중에서 폐기된 기기이거나 대여중인 기기가 아닌 기기만 가져옴
+        // + 타입이 반납이 아닌 승인대기인 기기도 제외
 
         List<Devices> devicesList = devicesRepository.findByStatusTrue();
         return devicesList.stream()
@@ -41,10 +42,14 @@ public class DevicesService {
                             .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                                     Comparator.nullsLast(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
-                            !((approvalDevices.getType().equals("폐기") &&
-                                approvalDevices.getApprovalInfo().equals("승인완료")) ||
+                            !(
+                                (approvalDevices.getType().equals("폐기") &&
+                                    approvalDevices.getApprovalInfo().equals("승인완료")) ||
                                 (approvalDevices.getType().equals("대여") &&
-                                    approvalDevices.getApprovalInfo().equals("승인완료")))
+                                    approvalDevices.getApprovalInfo().equals("승인완료")) ||
+                                (!approvalDevices.getType().equals("반납") &&
+                                        approvalDevices.getApprovalInfo().equals("승인대기"))
+                            )
                     ).orElse(true);
                 })
                 .map(DeviceDto::new).toList();
