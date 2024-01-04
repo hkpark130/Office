@@ -4,6 +4,8 @@ import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.repository.DevicesRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -19,6 +21,8 @@ public class DevicesService {
     private final CategoriesService categoriesService;
     private final DepartmentsService departmentsService;
     private final UsersService usersService;
+    private static final Logger logger = LoggerFactory.getLogger(DevicesService.class);
+
 
     public List<DeviceDto> findAll() {
         List<Devices> devicesList =  devicesRepository.findAll();
@@ -40,7 +44,7 @@ public class DevicesService {
                 .filter(device -> {
                     Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
                             .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                                    Comparator.nullsLast(Comparator.naturalOrder())));
+                                    Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
                             !(
                                 (approvalDevices.getType().equals("폐기") &&

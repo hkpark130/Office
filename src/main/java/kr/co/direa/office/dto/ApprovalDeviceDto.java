@@ -29,6 +29,7 @@ public class ApprovalDeviceDto implements Serializable {
     private String img;
     private String type;
     private LocalDateTime createdDate;
+    private LocalDateTime deadline;
 
     @Builder
     public ApprovalDeviceDto(ApprovalDevices entity) {
@@ -46,6 +47,7 @@ public class ApprovalDeviceDto implements Serializable {
         this.img = entity.getImg();
         this.type = entity.getType();
         this.createdDate = (entity.getCreatedDate() != null) ? entity.getCreatedDate() : null;
+        this.deadline = (entity.getDeadline() != null) ? entity.getDeadline() : null;
     }
 
     public ApprovalDevices toEntity() {
@@ -58,6 +60,7 @@ public class ApprovalDeviceDto implements Serializable {
                 .urgency(urgency)
                 .type(type)
                 .img(img)
+                .deadline(deadline)
                 .build();
     }
 

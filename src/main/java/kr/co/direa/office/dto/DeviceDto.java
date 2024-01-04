@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class DeviceDto implements Serializable {
     private String projectName;
     private String approvalInfo;
     private String approvalType;
+    private LocalDateTime deadline;
 
     @Builder
     public DeviceDto(Devices entity) {
@@ -61,10 +63,11 @@ public class DeviceDto implements Serializable {
 
         Optional<ApprovalDevices> latestApprovalDevice = entity.getApprovalDevices().stream()
                 .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                        Comparator.nullsLast(Comparator.naturalOrder())));
+                        Comparator.nullsFirst(Comparator.naturalOrder())));
         if (latestApprovalDevice.isPresent()) {
             this.approvalInfo = latestApprovalDevice.get().getApprovalInfo();
             this.approvalType = latestApprovalDevice.get().getType();
+            this.deadline = latestApprovalDevice.get().getDeadline();
         } else {
             this.approvalInfo = "사용가능";
         }

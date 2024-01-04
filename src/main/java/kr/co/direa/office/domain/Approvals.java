@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Entity(name = "approvals")
 @Table(name = "approvals")
 @Getter
@@ -33,17 +36,22 @@ public abstract class Approvals extends BaseTimeEntity {
     @JoinColumn(name ="approver_id", referencedColumnName = "id")
     private Users approverId;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "deadline")
+    private LocalDateTime deadline;
+
     public Approvals() {
 
     }
 
     public Approvals(Users userId, String approvalInfo, String reason,
-                     Boolean urgency, Users approverId) {
+                     Boolean urgency, Users approverId, LocalDateTime deadline) {
         this.userId = userId;
         this.approvalInfo = approvalInfo;
         this.reason = reason;
         this.urgency = urgency;
         this.approverId = approverId;
+        this.deadline = deadline;
     }
 
 }

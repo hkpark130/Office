@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Entity(name = "approval_devices")
 @Table(name = "approval_devices")
 @Getter
@@ -26,8 +29,8 @@ public class ApprovalDevices extends Approvals {
 
     @Builder
     public ApprovalDevices(Users userId, String approvalInfo, String reason, Users approverId,
-                           Devices deviceId, String img, Boolean urgency, String type) {
-        super(userId, approvalInfo, reason, urgency, approverId);
+                           Devices deviceId, String img, Boolean urgency, String type, LocalDateTime deadline) {
+        super(userId, approvalInfo, reason, urgency, approverId, deadline);
         this.deviceId = deviceId;
         this.img = img;
         this.type = type;
