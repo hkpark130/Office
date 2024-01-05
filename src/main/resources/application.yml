@@ -1,0 +1,47 @@
+
+server:
+  port: 80
+
+# keycloak
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://192.168.0.48:8080/realms/sso-test
+#          issuer-uri: http://192.168.2.111:8080/realms/sso-test
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://192.168.0.48:8080/realms/sso-test
+#            issuer-uri: http://192.168.2.111:8080/realms/sso-test
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            provider: keycloak
+            client-name: back-office-api
+            client-id: back-office-api
+            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
+#            client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
+            scope: openid,offline_access,profile
+            authorization-grant-type: authorization_code
+#            redirect-uri: 'http://192.168.2.110/login/oauth2/code/external'
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    show_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

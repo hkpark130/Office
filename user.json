@@ -1,0 +1,356 @@
+{
+  "authorities": [
+    {
+      "authority": "OIDC_USER",
+      "attributes": {
+        "at_hash": "DDrOnjfqlgSMmh_kfRR1rw",
+        "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+        "email_verified": true,
+        "iss": "http://192.168.2.111:8080/realms/sso-test",
+        "groups": [
+          "/Admin"
+        ],
+        "typ": "ID",
+        "preferred_username": "test",
+        "given_name": "tt",
+        "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+        "sid": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+        "aud": [
+          "back-office-api"
+        ],
+        "acr": "0",
+        "azp": "back-office-api",
+        "auth_time": "2023-12-16T23:55:39Z",
+        "name": "tt rr",
+        "exp": "2023-12-17T00:00:42Z",
+        "session_state": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+        "family_name": "rr",
+        "iat": "2023-12-16T23:55:42Z",
+        "jti": "09210fa6-d4d3-4cd8-a347-a6b15d7def42"
+      },
+      "idToken": {
+        "tokenValue": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpZW42SXdGblNHTlo4aHd4a25kY0QzeDJlVzd5X1M5UVlQcVhfbEx2VFhVIn0.eyJleHAiOjE3MDI3NzEyNDIsImlhdCI6MTcwMjc3MDk0MiwiYXV0aF90aW1lIjoxNzAyNzcwOTM5LCJqdGkiOiIwOTIxMGZhNi1kNGQzLTRjZDgtYTM0Ny1hNmIxNWQ3ZGVmNDIiLCJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjExMTo4MDgwL3JlYWxtcy9zc28tdGVzdCIsImF1ZCI6ImJhY2stb2ZmaWNlLWFwaSIsInN1YiI6ImZhZDRiNWI0LTcwNzItNGM1ZC1iNzIxLTBjYjRiOGU4N2I0NSIsInR5cCI6IklEIiwiYXpwIjoiYmFjay1vZmZpY2UtYXBpIiwibm9uY2UiOiJuMlZJNTdNMkhlV2NDTlc4ZVRkVVRxVnU4bzBHTkhuSVhyMTVFZ0xaNUJnIiwic2Vzc2lvbl9zdGF0ZSI6ImQxNTAzYzkzLWIxZmYtNGZiOS04MTU2LTFmZWQzZmVhZGU0ZSIsImF0X2hhc2giOiJERHJPbmpmcWxnU01taF9rZlJSMXJ3IiwiYWNyIjoiMCIsInNpZCI6ImQxNTAzYzkzLWIxZmYtNGZiOS04MTU2LTFmZWQzZmVhZGU0ZSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoidHQgcnIiLCJncm91cHMiOlsiL0FkbWluIl0sInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QiLCJnaXZlbl9uYW1lIjoidHQiLCJmYW1pbHlfbmFtZSI6InJyIn0.jJRy17P5ETXcuWPwDcl8xeoCx6IzZk35A7Mt0YVvsibEdm-5FRCCAYj9CHvWILttYx8PoL-oaFqamx8bb22Uf90f-zqNpf7u3Opg39HkvaaLqWLov3xsvmmeLjpOOhLX2A35wBY3-mNsHFINderGSDGVncJ2yjEUPn7UiLDDl0-ceM5ZtXsduiq-04p6OkgwtDl1tqkz1KzPffpWMOiOPsjWbu7qiRGTdICGw92uZzciW_X2tLj9fKAoYJqaR5Lfr6Aux-gPL-Sh_uoq0eTjmCWFPzeeC_tGMNxvSsd_3aJ05fZrCsfyVPueEhcTsh5LG7bbxGC45g-jFQ1dm-9-tA",
+        "issuedAt": "2023-12-16T23:55:42Z",
+        "expiresAt": "2023-12-17T00:00:42Z",
+        "claims": {
+          "at_hash": "DDrOnjfqlgSMmh_kfRR1rw",
+          "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+          "email_verified": true,
+          "iss": "http://192.168.2.111:8080/realms/sso-test",
+          "groups": [
+            "/Admin"
+          ],
+          "typ": "ID",
+          "preferred_username": "test",
+          "given_name": "tt",
+          "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+          "sid": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+          "aud": [
+            "back-office-api"
+          ],
+          "acr": "0",
+          "azp": "back-office-api",
+          "auth_time": "2023-12-16T23:55:39Z",
+          "name": "tt rr",
+          "exp": "2023-12-17T00:00:42Z",
+          "session_state": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+          "iat": "2023-12-16T23:55:42Z",
+          "family_name": "rr",
+          "jti": "09210fa6-d4d3-4cd8-a347-a6b15d7def42"
+        },
+        "subject": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+        "issuer": "http://192.168.2.111:8080/realms/sso-test",
+        "authorizationCodeHash": null,
+        "authenticationMethods": null,
+        "authenticationContextClass": "0",
+        "accessTokenHash": "DDrOnjfqlgSMmh_kfRR1rw",
+        "authenticatedAt": "2023-12-16T23:55:39Z",
+        "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+        "authorizedParty": "back-office-api",
+        "audience": [
+          "back-office-api"
+        ],
+        "profile": null,
+        "preferredUsername": "test",
+        "phoneNumberVerified": null,
+        "picture": null,
+        "familyName": "rr",
+        "nickName": null,
+        "phoneNumber": null,
+        "givenName": "tt",
+        "middleName": null,
+        "updatedAt": null,
+        "birthdate": null,
+        "gender": null,
+        "emailVerified": true,
+        "website": null,
+        "email": null,
+        "address": {
+          "formatted": null,
+          "streetAddress": null,
+          "locality": null,
+          "region": null,
+          "postalCode": null,
+          "country": null
+        },
+        "locale": null,
+        "fullName": "tt rr",
+        "zoneInfo": null
+      },
+      "userInfo": {
+        "claims": {
+          "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+          "email_verified": true,
+          "name": "tt rr",
+          "groups": [
+            "/Admin"
+          ],
+          "preferred_username": "test",
+          "given_name": "tt",
+          "family_name": "rr"
+        },
+        "profile": null,
+        "subject": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+        "preferredUsername": "test",
+        "phoneNumberVerified": null,
+        "picture": null,
+        "familyName": "rr",
+        "nickName": null,
+        "phoneNumber": null,
+        "givenName": "tt",
+        "middleName": null,
+        "updatedAt": null,
+        "birthdate": null,
+        "gender": null,
+        "emailVerified": true,
+        "website": null,
+        "email": null,
+        "address": {
+          "formatted": null,
+          "streetAddress": null,
+          "locality": null,
+          "region": null,
+          "postalCode": null,
+          "country": null
+        },
+        "locale": null,
+        "fullName": "tt rr",
+        "zoneInfo": null
+      }
+    },
+    {
+      "authority": "SCOPE_email"
+    },
+    {
+      "authority": "SCOPE_offline_access"
+    },
+    {
+      "authority": "SCOPE_openid"
+    },
+    {
+      "authority": "SCOPE_profile"
+    }
+  ],
+  "attributes": {
+    "at_hash": "DDrOnjfqlgSMmh_kfRR1rw",
+    "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+    "email_verified": true,
+    "iss": "http://192.168.2.111:8080/realms/sso-test",
+    "groups": [
+      "/Admin"
+    ],
+    "typ": "ID",
+    "preferred_username": "test",
+    "given_name": "tt",
+    "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+    "sid": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+    "aud": [
+      "back-office-api"
+    ],
+    "acr": "0",
+    "azp": "back-office-api",
+    "auth_time": "2023-12-16T23:55:39Z",
+    "name": "tt rr",
+    "exp": "2023-12-17T00:00:42Z",
+    "session_state": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+    "family_name": "rr",
+    "iat": "2023-12-16T23:55:42Z",
+    "jti": "09210fa6-d4d3-4cd8-a347-a6b15d7def42"
+  },
+  "idToken": {
+    "tokenValue": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpZW42SXdGblNHTlo4aHd4a25kY0QzeDJlVzd5X1M5UVlQcVhfbEx2VFhVIn0.eyJleHAiOjE3MDI3NzEyNDIsImlhdCI6MTcwMjc3MDk0MiwiYXV0aF90aW1lIjoxNzAyNzcwOTM5LCJqdGkiOiIwOTIxMGZhNi1kNGQzLTRjZDgtYTM0Ny1hNmIxNWQ3ZGVmNDIiLCJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjExMTo4MDgwL3JlYWxtcy9zc28tdGVzdCIsImF1ZCI6ImJhY2stb2ZmaWNlLWFwaSIsInN1YiI6ImZhZDRiNWI0LTcwNzItNGM1ZC1iNzIxLTBjYjRiOGU4N2I0NSIsInR5cCI6IklEIiwiYXpwIjoiYmFjay1vZmZpY2UtYXBpIiwibm9uY2UiOiJuMlZJNTdNMkhlV2NDTlc4ZVRkVVRxVnU4bzBHTkhuSVhyMTVFZ0xaNUJnIiwic2Vzc2lvbl9zdGF0ZSI6ImQxNTAzYzkzLWIxZmYtNGZiOS04MTU2LTFmZWQzZmVhZGU0ZSIsImF0X2hhc2giOiJERHJPbmpmcWxnU01taF9rZlJSMXJ3IiwiYWNyIjoiMCIsInNpZCI6ImQxNTAzYzkzLWIxZmYtNGZiOS04MTU2LTFmZWQzZmVhZGU0ZSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoidHQgcnIiLCJncm91cHMiOlsiL0FkbWluIl0sInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QiLCJnaXZlbl9uYW1lIjoidHQiLCJmYW1pbHlfbmFtZSI6InJyIn0.jJRy17P5ETXcuWPwDcl8xeoCx6IzZk35A7Mt0YVvsibEdm-5FRCCAYj9CHvWILttYx8PoL-oaFqamx8bb22Uf90f-zqNpf7u3Opg39HkvaaLqWLov3xsvmmeLjpOOhLX2A35wBY3-mNsHFINderGSDGVncJ2yjEUPn7UiLDDl0-ceM5ZtXsduiq-04p6OkgwtDl1tqkz1KzPffpWMOiOPsjWbu7qiRGTdICGw92uZzciW_X2tLj9fKAoYJqaR5Lfr6Aux-gPL-Sh_uoq0eTjmCWFPzeeC_tGMNxvSsd_3aJ05fZrCsfyVPueEhcTsh5LG7bbxGC45g-jFQ1dm-9-tA",
+    "issuedAt": "2023-12-16T23:55:42Z",
+    "expiresAt": "2023-12-17T00:00:42Z",
+    "claims": {
+      "at_hash": "DDrOnjfqlgSMmh_kfRR1rw",
+      "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+      "email_verified": true,
+      "iss": "http://192.168.2.111:8080/realms/sso-test",
+      "groups": [
+        "/Admin"
+      ],
+      "typ": "ID",
+      "preferred_username": "test",
+      "given_name": "tt",
+      "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+      "sid": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+      "aud": [
+        "back-office-api"
+      ],
+      "acr": "0",
+      "azp": "back-office-api",
+      "auth_time": "2023-12-16T23:55:39Z",
+      "name": "tt rr",
+      "exp": "2023-12-17T00:00:42Z",
+      "session_state": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+      "iat": "2023-12-16T23:55:42Z",
+      "family_name": "rr",
+      "jti": "09210fa6-d4d3-4cd8-a347-a6b15d7def42"
+    },
+    "subject": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+    "issuer": "http://192.168.2.111:8080/realms/sso-test",
+    "authorizationCodeHash": null,
+    "authenticationMethods": null,
+    "authenticationContextClass": "0",
+    "accessTokenHash": "DDrOnjfqlgSMmh_kfRR1rw",
+    "authenticatedAt": "2023-12-16T23:55:39Z",
+    "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+    "authorizedParty": "back-office-api",
+    "audience": [
+      "back-office-api"
+    ],
+    "profile": null,
+    "preferredUsername": "test",
+    "phoneNumberVerified": null,
+    "picture": null,
+    "familyName": "rr",
+    "nickName": null,
+    "phoneNumber": null,
+    "givenName": "tt",
+    "middleName": null,
+    "updatedAt": null,
+    "birthdate": null,
+    "gender": null,
+    "emailVerified": true,
+    "website": null,
+    "email": null,
+    "address": {
+      "formatted": null,
+      "streetAddress": null,
+      "locality": null,
+      "region": null,
+      "postalCode": null,
+      "country": null
+    },
+    "locale": null,
+    "fullName": "tt rr",
+    "zoneInfo": null
+  },
+  "userInfo": {
+    "claims": {
+      "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+      "email_verified": true,
+      "name": "tt rr",
+      "groups": [
+        "/Admin"
+      ],
+      "preferred_username": "test",
+      "given_name": "tt",
+      "family_name": "rr"
+    },
+    "profile": null,
+    "subject": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+    "preferredUsername": "test",
+    "phoneNumberVerified": null,
+    "picture": null,
+    "familyName": "rr",
+    "nickName": null,
+    "phoneNumber": null,
+    "givenName": "tt",
+    "middleName": null,
+    "updatedAt": null,
+    "birthdate": null,
+    "gender": null,
+    "emailVerified": true,
+    "website": null,
+    "email": null,
+    "address": {
+      "formatted": null,
+      "streetAddress": null,
+      "locality": null,
+      "region": null,
+      "postalCode": null,
+      "country": null
+    },
+    "locale": null,
+    "fullName": "tt rr",
+    "zoneInfo": null
+  },
+  "claims": {
+    "at_hash": "DDrOnjfqlgSMmh_kfRR1rw",
+    "sub": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+    "email_verified": true,
+    "iss": "http://192.168.2.111:8080/realms/sso-test",
+    "groups": [
+      "/Admin"
+    ],
+    "typ": "ID",
+    "preferred_username": "test",
+    "given_name": "tt",
+    "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+    "sid": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+    "aud": [
+      "back-office-api"
+    ],
+    "acr": "0",
+    "azp": "back-office-api",
+    "auth_time": "2023-12-16T23:55:39Z",
+    "name": "tt rr",
+    "exp": "2023-12-17T00:00:42Z",
+    "session_state": "d1503c93-b1ff-4fb9-8156-1fed3feade4e",
+    "family_name": "rr",
+    "iat": "2023-12-16T23:55:42Z",
+    "jti": "09210fa6-d4d3-4cd8-a347-a6b15d7def42"
+  },
+  "name": "test",
+  "subject": "fad4b5b4-7072-4c5d-b721-0cb4b8e87b45",
+  "issuer": "http://192.168.2.111:8080/realms/sso-test",
+  "expiresAt": "2023-12-17T00:00:42Z",
+  "authorizationCodeHash": null,
+  "authenticationMethods": null,
+  "authenticationContextClass": "0",
+  "accessTokenHash": "DDrOnjfqlgSMmh_kfRR1rw",
+  "authenticatedAt": "2023-12-16T23:55:39Z",
+  "issuedAt": "2023-12-16T23:55:42Z",
+  "nonce": "n2VI57M2HeWcCNW8eTdUTqVu8o0GNHnIXr15EgLZ5Bg",
+  "authorizedParty": "back-office-api",
+  "audience": [
+    "back-office-api"
+  ],
+  "profile": null,
+  "preferredUsername": "test",
+  "phoneNumberVerified": null,
+  "picture": null,
+  "familyName": "rr",
+  "nickName": null,
+  "phoneNumber": null,
+  "givenName": "tt",
+  "middleName": null,
+  "updatedAt": null,
+  "birthdate": null,
+  "gender": null,
+  "emailVerified": true,
+  "website": null,
+  "email": null,
+  "address": {
+    "formatted": null,
+    "streetAddress": null,
+    "locality": null,
+    "region": null,
+    "postalCode": null,
+    "country": null
+  },
+  "locale": null,
+  "fullName": "tt rr",
+  "zoneInfo": null
+}
