@@ -114,11 +114,12 @@
   
                                 <a-form-item
                                   name="reason"
-                                  label="상세"
+                                  label="사유"
                                 >
                                   <a-textarea
                                     v-model:value="formState.reason"
                                     :rows="5"
+                                    placeholder="구매링크를 기재해주세요."
                                   />
                                 </a-form-item>
                               </sdCards>
@@ -160,10 +161,8 @@
   import { useRouter } from 'vue-router';
   
   const AddProduct = defineComponent({
-    // props: ['deviceId'],
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
-    // setup(props) {
     setup() {
       const { state, dispatch } = useStore();
       const file = ref(null);
@@ -191,7 +190,12 @@
       });
   
       const handleFinish = () => {
-        console.log(formState);
+        const reason = formState.reason;
+        formState.reason = "품목: "+formState.category+"\n";
+        formState.reason += "비용: "+formState.price+"\n";
+        formState.reason += "용도: "+formState.purpose+"\n";
+        formState.reason += "사유: "+reason;
+
         dispatch('submitDevicePurchasePost', formState);
         alert('구매 신청이 완료되었습니다.');
         push('/');
