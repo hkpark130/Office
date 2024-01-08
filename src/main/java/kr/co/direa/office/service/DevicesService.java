@@ -47,12 +47,18 @@ public class DevicesService {
                                     Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
                             !(
-                                (approvalDevices.getType().equals("폐기") &&
-                                    approvalDevices.getApprovalInfo().equals("승인완료")) ||
-                                (approvalDevices.getType().equals("대여") &&
-                                    approvalDevices.getApprovalInfo().equals("승인완료")) ||
-                                (!approvalDevices.getType().equals("반납") &&
-                                        approvalDevices.getApprovalInfo().equals("승인대기"))
+                                (
+                                    ("폐기").equals(approvalDevices.getType()) &&
+                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    ("대여").equals(approvalDevices.getType()) &&
+                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    !("반납").equals(approvalDevices.getType()) &&
+                                    ("승인대기").equals(approvalDevices.getApprovalInfo())
+                                )
                             )
                     ).orElse(true);
                 })
