@@ -30,7 +30,7 @@
 
                                 <a-form-item
                                   name="category"
-                                  :initialValue="formState.categoryName"
+                                  :initialValue="formState.category"
                                   label="품목"
                                 >
                                   <a-select
@@ -122,6 +122,21 @@
                                     placeholder="구매링크를 기재해주세요."
                                   />
                                 </a-form-item>
+
+                                <a-form-item
+                                  name="deadline"
+                                  label="마감일"
+                                  required
+                                >
+                                  <DatePickerWrap>
+                                    <DatePickerWrapper>
+                                      <a-date-picker 
+                                        :disabledDate="disabledDate"
+                                        v-model:value="formState.deadline"
+                                      />
+                                    </DatePickerWrapper>
+                                  </DatePickerWrap>
+                                </a-form-item>
                               </sdCards>
                             </div>
                           </a-col>
@@ -154,7 +169,8 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
+  import { DatePickerWrap } from './ui-elements-styled';
   import { AddProductForm } from "./style";
   import { ref, reactive, defineComponent, computed } from "vue";
   import { useStore } from 'vuex';
@@ -162,7 +178,7 @@
   
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm },
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
     setup() {
       const { state, dispatch } = useStore();
       const file = ref(null);
@@ -177,7 +193,7 @@
       const getUser = computed(() => state.getUser.data);
 
       const formState = reactive({
-        category: "",
+        category: "노트북",
         price: 0,
         urgency: "normal",
         project: "",
@@ -186,9 +202,13 @@
         reason: "",
         type: "구매",
         layout: "vertical",
-        file: "",
+        file: "",        
       });
-  
+
+      const disabledDate = (current) => {
+        return current && current.valueOf() < Date.now();
+      }
+
       const handleFinish = () => {
         const reason = formState.reason;
         formState.reason = "품목: "+formState.category+"\n";
@@ -221,7 +241,7 @@
         projects,
         categories,
         departments,
-
+        disabledDate,
       };
     },
   });
