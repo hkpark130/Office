@@ -133,11 +133,11 @@
         dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
       };
   
-      console.log("TTTTTTTTTTTT", orders.value);
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryId, approvalInfo, purpose, spec, id, tag, description } = value;
+          const { categoryId, approvalInfo, purpose, spec, id, tag, description, approvalType, deadline } = value;
           const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
+          const deadlineDate = (deadline === null)?null:new Date(deadline).toISOString().split('T')[0];
           return {
             key: id, // radio 선택시 기준 값
             id: <span class="order-id">{id}</span>,
@@ -145,13 +145,12 @@
             info: (
               <span
                 class={`status ${
-                  approvalInfo === '사용가능' ? 'Success' : 
-                  approvalInfo === '승인대기' ? 'waiting' : 
-                  approvalInfo === '등록대기' ? 'warning' : 
+                  (approvalInfo === '승인대기' && approvalType === '반납') ? 'waiting' :
+                  (approvalInfo === '사용가능') ? 'Success' :
                   'error'
                 }`}
               >
-                {approvalInfo}
+                {approvalType === '반납' ? `반납예정 ${deadlineDate}`:approvalInfo }
               </span>
             ),
             tag: <span class="ordered-amount">{tag}</span>,

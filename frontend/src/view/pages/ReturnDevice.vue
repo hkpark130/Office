@@ -93,6 +93,21 @@
                                     :rows="5"
                                   />
                                 </a-form-item>
+
+                                <a-form-item
+                                  name="deadline"
+                                  label="마감일"
+                                  required
+                                >
+                                  <DatePickerWrap>
+                                    <DatePickerWrapper>
+                                      <a-date-picker 
+                                        :disabledDate="disabledDate"
+                                        v-model:value="formState.deadline"
+                                      />
+                                    </DatePickerWrapper>
+                                  </DatePickerWrap>
+                                </a-form-item>
                               </sdCards>
                             </div>
                           </a-col>
@@ -125,15 +140,16 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
   import { AddProductForm } from "./style";
+  import { DatePickerWrap } from './ui-elements-styled';
   import { computed, ref, reactive, defineComponent } from "vue";
   import { useRouter } from 'vue-router';
   import { useStore } from 'vuex';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm },
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
     async setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
@@ -158,11 +174,16 @@
         purpose: getDeviceById.value.purpose,
         manageDep: "",
         project: "",
+        deadline: "",
         userName: getUser.value.name,
         reason: "",
         type: "반납",
         layout: "vertical",
       });
+
+      const disabledDate = (current) => {
+        return current && current.valueOf() < Date.now();
+      }
   
       const handleFinish = () => {
         dispatch('submitDeviceReturnPost', formState);
@@ -195,6 +216,7 @@
         handleSubmit,
         formRef,
         disabled,
+        disabledDate,
       };
     },
   });

@@ -4,6 +4,8 @@ import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.repository.DevicesRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -19,6 +21,8 @@ public class DevicesService {
     private final CategoriesService categoriesService;
     private final DepartmentsService departmentsService;
     private final UsersService usersService;
+    private static final Logger logger = LoggerFactory.getLogger(DevicesService.class);
+
 
     public List<DeviceDto> findAll() {
         List<Devices> devicesList =  devicesRepository.findAll();
@@ -33,18 +37,29 @@ public class DevicesService {
 
     public List<DeviceDto> findByStatusTrue() {
         // Device의 status가 true인 기기 중에서 폐기된 기기이거나 대여중인 기기가 아닌 기기만 가져옴
+        // + 타입이 반납이 아닌 승인대기인 기기도 제외
 
         List<Devices> devicesList = devicesRepository.findByStatusTrue();
         return devicesList.stream()
                 .filter(device -> {
                     Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
                             .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                                    Comparator.nullsLast(Comparator.naturalOrder())));
+                                    Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
-                            !((approvalDevices.getType().equals("폐기") &&
-                                approvalDevices.getApprovalInfo().equals("승인완료")) ||
-                                (approvalDevices.getType().equals("대여") &&
-                                    approvalDevices.getApprovalInfo().equals("승인완료")))
+                            !(
+                                (
+                                    ("폐기").equals(approvalDevices.getType()) &&
+                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    ("대여").equals(approvalDevices.getType()) &&
+                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    !("반납").equals(approvalDevices.getType()) &&
+                                    ("승인대기").equals(approvalDevices.getApprovalInfo())
+                                )
+                            )
                     ).orElse(true);
                 })
                 .map(DeviceDto::new).toList();

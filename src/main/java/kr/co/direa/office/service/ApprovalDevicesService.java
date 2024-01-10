@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,9 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setDeviceId(device.getId());
         approvalDeviceDto.setType(request.get("type").toString());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
+        approvalDeviceDto.setDeadline(
+            ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime()
+        );
 
         return approvalDeviceDto;
     }
