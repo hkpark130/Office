@@ -110,15 +110,15 @@ public class ApprovalDevicesService {
                 })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
-                    deviceDto.setHistory(getHistory(deviceDto.getId(), true));
+                    deviceDto.setHistory(getHistory(deviceDto.getId(), false));
                     return deviceDto;
                 }).toList();
     }
 
     private List<Map<String, Object>> getHistory(String deviceId, Boolean includeDispose) {
         List<ApprovalDevices> histories = (includeDispose)?
-                approvalDevicesRepository.findHistoryExceptDisposeByDeviceId(deviceId):
-                approvalDevicesRepository.findHistoryByDeviceId(deviceId);
+                approvalDevicesRepository.findHistoryByDeviceId(deviceId):
+                approvalDevicesRepository.findHistoryExceptDisposeByDeviceId(deviceId);
         List<Map<String, Object>> historyList = new ArrayList<>();
 
         histories.forEach(history -> {
@@ -148,7 +148,7 @@ public class ApprovalDevicesService {
                 })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
-                    deviceDto.setHistory(getHistory(deviceDto.getId(), false));
+                    deviceDto.setHistory(getHistory(deviceDto.getId(), true));
                     return deviceDto;
                 }).toList();
     }
