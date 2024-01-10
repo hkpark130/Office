@@ -1758,6 +1758,15 @@ const TableWrapper = Styled.div`
         max-height: 250px;
         word-wrap:break-word;
     }
+    .historyTable{
+        align-items: center;
+        border: 1px solid black;
+        
+    }
+    .historyTable td,tr {
+        background-color:white;
+        text-align: center;
+    }
     
     .ant-pagination-prev, .ant-pagination-next {
         line-height: 28px !important;

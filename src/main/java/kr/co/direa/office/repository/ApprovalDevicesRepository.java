@@ -12,5 +12,9 @@ public interface ApprovalDevicesRepository extends JpaRepository<ApprovalDevices
     @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
             "WHERE TYPE IN ('폐기', '대여') AND APPROVAL_INFO = '승인완료' AND DEVICE_ID = :deviceId", nativeQuery = true)
     List<ApprovalDevices> findHistoryByDeviceId(@Param("deviceId") String deviceId);
+
+    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
+            "WHERE TYPE = '대여' AND APPROVAL_INFO = '승인완료' AND DEVICE_ID = :deviceId", nativeQuery = true)
+    List<ApprovalDevices> findHistoryExceptDisposeByDeviceId(@Param("deviceId") String deviceId);
     List<ApprovalDevices> findByUserId(Users user);
 }
