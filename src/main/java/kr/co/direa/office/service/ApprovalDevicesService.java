@@ -70,7 +70,7 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo("승인대기");
         approvalDeviceDto.setReason(request.get("reason").toString());
-        approvalDeviceDto.setUrgency(request.get("urgency").toString().equals("urgent"));
+        approvalDeviceDto.setUrgency(("urgent").equalsIgnoreCase(request.get("urgency").toString()));
         approvalDeviceDto.setDeviceId(device.getId());
         approvalDeviceDto.setType(request.get("type").toString());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
@@ -89,7 +89,7 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo("승인대기");
         approvalDeviceDto.setReason(request.get("reason").toString());
-        approvalDeviceDto.setUrgency(request.get("urgency").toString().equals("urgent"));
+        approvalDeviceDto.setUrgency(("urgent").equalsIgnoreCase(request.get("urgency").toString()));
         approvalDeviceDto.setType(request.get("type").toString());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
 

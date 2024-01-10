@@ -30,7 +30,7 @@
 
                                 <a-form-item
                                   name="category"
-                                  :initialValue="formState.categoryName"
+                                  :initialValue="formState.category"
                                   label="품목"
                                 >
                                   <a-select
@@ -114,12 +114,28 @@
   
                                 <a-form-item
                                   name="reason"
-                                  label="상세"
+                                  label="사유"
                                 >
                                   <a-textarea
                                     v-model:value="formState.reason"
                                     :rows="5"
+                                    placeholder="구매링크를 기재해주세요."
                                   />
+                                </a-form-item>
+
+                                <a-form-item
+                                  name="deadline"
+                                  label="마감일"
+                                  required
+                                >
+                                  <DatePickerWrap>
+                                    <DatePickerWrapper>
+                                      <a-date-picker 
+                                        :disabledDate="disabledDate"
+                                        v-model:value="formState.deadline"
+                                      />
+                                    </DatePickerWrapper>
+                                  </DatePickerWrap>
                                 </a-form-item>
                               </sdCards>
                             </div>
@@ -153,17 +169,16 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
+  import { DatePickerWrap } from './ui-elements-styled';
   import { AddProductForm } from "./style";
   import { ref, reactive, defineComponent, computed } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   
   const AddProduct = defineComponent({
-    // props: ['deviceId'],
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm },
-    // setup(props) {
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
     setup() {
       const { state, dispatch } = useStore();
       const file = ref(null);
@@ -178,7 +193,7 @@
       const getUser = computed(() => state.getUser.data);
 
       const formState = reactive({
-        category: "",
+        category: "노트북",
         price: 0,
         urgency: "normal",
         project: "",
@@ -187,11 +202,20 @@
         reason: "",
         type: "구매",
         layout: "vertical",
-        file: "",
+        file: "",        
       });
-  
+
+      const disabledDate = (current) => {
+        return current && current.valueOf() < Date.now();
+      }
+
       const handleFinish = () => {
-        console.log(formState);
+        const reason = formState.reason;
+        formState.reason = "품목: "+formState.category+"\n";
+        formState.reason += "비용: "+formState.price+"\n";
+        formState.reason += "용도: "+formState.purpose+"\n";
+        formState.reason += "사유: "+reason;
+
         dispatch('submitDevicePurchasePost', formState);
         alert('구매 신청이 완료되었습니다.');
         push('/');
@@ -217,7 +241,7 @@
         projects,
         categories,
         departments,
-
+        disabledDate,
       };
     },
   });

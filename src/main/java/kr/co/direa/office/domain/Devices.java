@@ -43,7 +43,7 @@ public class Devices extends BaseTimeEntity{
     @Column(name = "model")
     private String model;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "tag")

@@ -74,7 +74,9 @@ export default defineComponent({
     const notificationList = ref();
     const getUser = computed(() => state.getUser.data);
 
-    const socket = new Sockjs("http://localhost/gs-guide-websocket");
+    const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
+
+    const socket = new Sockjs(API_ENDPOINT+"/gs-guide-websocket");
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, () => {
       // console.log(getUser.value.preferredUsername); TODO: 유저별로 구독하게 해야함
