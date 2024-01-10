@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,8 +108,25 @@ public class ApprovalDevicesService {
                                 approvalDevices.getApprovalInfo().equals(approvalInfo))
                     ).orElse(true);
                 })
-                .map(DeviceDto::new).toList();
+                .map(device -> {
+                    DeviceDto deviceDto = new DeviceDto(device);
+                    deviceDto.setHistory(getHistory(deviceDto.getId()));
+                    return deviceDto;
+                }).toList();
+    }
 
+    private List<Map<String, Object>> getHistory(String deviceId) {
+        List<ApprovalDevices> histories = approvalDevicesRepository.findHistoryByDeviceId(deviceId);
+        List<Map<String, Object>> historyList = new ArrayList<>();
+
+        histories.forEach(history -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("username", history.getUserId().getUsername());
+            map.put("type", history.getType());
+            map.put("modifiedDate", history.getModifiedDate());
+            historyList.add(map);
+        });
+        return historyList;
     }
 
     public List<DeviceDto> findByTypeAndApprovalInfo(String type, String approvalInfo) {

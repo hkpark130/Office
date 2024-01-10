@@ -3,10 +3,14 @@ package kr.co.direa.office.repository;
 import kr.co.direa.office.domain.ApprovalDevices;
 import kr.co.direa.office.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface ApprovalDevicesRepository extends JpaRepository<ApprovalDevices, Long> {
-
+    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
+            "WHERE TYPE IN ('폐기', '대여') AND APPROVAL_INFO = '승인완료' AND DEVICE_ID = :deviceId", nativeQuery = true)
+    List<ApprovalDevices> findHistoryByDeviceId(@Param("deviceId") String deviceId);
     List<ApprovalDevices> findByUserId(Users user);
 }
