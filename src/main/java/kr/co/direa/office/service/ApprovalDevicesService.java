@@ -115,8 +115,8 @@ public class ApprovalDevicesService {
                 }).toList();
     }
 
-    private List<Map<String, Object>> getHistory(String deviceId, Boolean status) {
-        List<ApprovalDevices> histories = (status)?
+    private List<Map<String, Object>> getHistory(String deviceId, Boolean includeDispose) {
+        List<ApprovalDevices> histories = (includeDispose)?
                 approvalDevicesRepository.findHistoryExceptDisposeByDeviceId(deviceId):
                 approvalDevicesRepository.findHistoryByDeviceId(deviceId);
         List<Map<String, Object>> historyList = new ArrayList<>();
