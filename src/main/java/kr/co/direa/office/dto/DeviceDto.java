@@ -8,9 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Setter
@@ -38,6 +36,7 @@ public class DeviceDto implements Serializable {
     private String approvalInfo;
     private String approvalType;
     private LocalDateTime deadline;
+    private List<Map<String, Object>> history;
 
     @Builder
     public DeviceDto(Devices entity) {
