@@ -66,7 +66,8 @@ public class DevicesService {
     }
 
     public DeviceDto findById(String id) {
-        Devices device = devicesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 기기가 없습니다. id=" + id));
+        Devices device = devicesRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 기기가 없습니다. id=" + id));
         return new DeviceDto(device);
     }
 
@@ -78,8 +79,9 @@ public class DevicesService {
     }
 
     public List<DeviceDto> findByUsername(String username) {
-        Users user = usersService.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. username=" + username));
-        List<Devices> myDevices = devicesRepository.findByUserId(user);
+        Users user = usersService.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 없습니다. username=" + username));
+        List<Devices> myDevices = devicesRepository.findRentedDevicesByUserId(user.getId());
         return myDevices.stream()
                 .map(DeviceDto::new)
                 .toList();
