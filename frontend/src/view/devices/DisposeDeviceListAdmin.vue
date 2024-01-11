@@ -149,10 +149,38 @@
   
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryName, manageDep, project, purpose, model, user, id, company, sn, purchaseDate, description } = value;
+          const { categoryName, manageDep, project, purpose, model, user, id, company, sn, 
+            purchaseDate, description, history } = value;
+          const formattedPurchaseDate = (purchaseDate === null)?null:new Date(purchaseDate).toISOString().split('T')[0];
           return {
             key: id, // radio 선택시 기준 값
-            id: <span class="order-id">{id}</span>,
+            id: (
+              <div>
+                <span class="order-id spnDetails">{id}</span>
+                {history.length !== 0 ? (
+                  <span class="spnTooltip">
+                    <table class="historyTable">
+                      <thead>
+                        <tr>
+                          <th>사용자</th>
+                          <th>타입</th>
+                          <th>날짜</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {history.map((item) => (
+                          <tr>
+                            <td style="background-color:white;">{item.username}</td>
+                            <td style="background-color:white;">{item.type}</td>
+                            <td style="background-color:white;">{item.modifiedDate}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </span>
+                ) : null}
+              </div>
+            ),
             category: <span class="customer-name">{categoryName}</span>,
             user: <span class="customer-name">{user}</span>,
             purpose: (
@@ -169,7 +197,7 @@
             model: <span class="ordered-amount">{model}</span>,
             company: <span class="ordered-amount">{company}</span>,
             sn: <span class="ordered-amount">{sn}</span>,
-            purchaseDate: <span class="ordered-date">{purchaseDate}</span>,
+            purchaseDate: <span class="ordered-date">{formattedPurchaseDate}</span>,
             description: <span class="ordered-date">{description}</span>,
             action: (
               <div class="table-actions">

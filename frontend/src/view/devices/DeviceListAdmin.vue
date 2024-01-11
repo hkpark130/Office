@@ -168,9 +168,9 @@ const Orders = defineComponent({
               <span class="order-id spnDetails">{id}</span>
               {history.length !== 0 ? (
                 <span class="spnTooltip">
-                  <table>
+                  <table class="historyTable">
                     <thead>
-                      <tr style="text-align: center;">
+                      <tr>
                         <th>사용자</th>
                         <th>타입</th>
                         <th>날짜</th>
@@ -179,9 +179,9 @@ const Orders = defineComponent({
                     <tbody>
                       {history.map((item) => (
                         <tr>
-                          <td>{item.username}</td>
-                          <td>{item.type}</td>
-                          <td>{item.modifiedDate}</td>
+                          <td style="background-color:white;">{item.username}</td>
+                          <td style="background-color:white;">{item.type}</td>
+                          <td style="background-color:white;">{item.modifiedDate}</td>
                         </tr>
                       ))}
                     </tbody>

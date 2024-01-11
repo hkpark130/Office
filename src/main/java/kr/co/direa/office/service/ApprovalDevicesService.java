@@ -110,13 +110,15 @@ public class ApprovalDevicesService {
                 })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
-                    deviceDto.setHistory(getHistory(deviceDto.getId()));
+                    deviceDto.setHistory(getHistory(deviceDto.getId(), false));
                     return deviceDto;
                 }).toList();
     }
 
-    private List<Map<String, Object>> getHistory(String deviceId) {
-        List<ApprovalDevices> histories = approvalDevicesRepository.findHistoryByDeviceId(deviceId);
+    private List<Map<String, Object>> getHistory(String deviceId, Boolean includeDispose) {
+        List<ApprovalDevices> histories = (includeDispose)?
+                approvalDevicesRepository.findHistoryByDeviceId(deviceId):
+                approvalDevicesRepository.findHistoryExceptDisposeByDeviceId(deviceId);
         List<Map<String, Object>> historyList = new ArrayList<>();
 
         histories.forEach(history -> {
@@ -144,7 +146,11 @@ public class ApprovalDevicesService {
                                     approvalDevices.getApprovalInfo().equals(approvalInfo)
                     ).orElse(false); // 조건 완전 일치(폐기 처리된) 하는 기기만
                 })
-                .map(DeviceDto::new).toList();
+                .map(device -> {
+                    DeviceDto deviceDto = new DeviceDto(device);
+                    deviceDto.setHistory(getHistory(deviceDto.getId(), true));
+                    return deviceDto;
+                }).toList();
     }
 
     public List<ApprovalDeviceDto> findAllByUsername(String username) {
