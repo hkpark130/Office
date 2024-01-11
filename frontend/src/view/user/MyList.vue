@@ -89,6 +89,11 @@
       key: 'userName',
     },
     {
+      title: '마감일',
+      dataIndex: 'deadline',
+      key: 'deadline',
+    },
+    {
       title: '신청정보',
       dataIndex: 'info',
       key: 'approvalInfo',
@@ -166,14 +171,34 @@
 
       const dataSource = computed(() => 
         orders.value.map((value) => {
-          const { categoryName, type, approvalInfo, userName, deviceId, approvalId, createdDate, urgency } = value;
+          const { categoryName, type, approvalInfo, userName, deviceId, approvalId, createdDate, deadline } = value;
           let deleteIcon = null;
           let editIcon = null;
           let checkIcon = null;
+          let timeDiff = null;
+          let daysDiff = null;
+          let dDayTag = null;
+          let urgency = false;
+          const deadlineDate = (deadline === null)?null:new Date(deadline).toLocaleDateString('ko-KR',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              });
           let statusTag = <span class="order-status">{approvalInfo}</span>;
           let approvalInfoClass = 
             approvalInfo === '승인대기' ? 'progress' : approvalInfo === '반납' ? 'delete' 
             : approvalInfo === '승인완료' ? 'complete' : approvalInfo === '반려' ? 'delete' : 'danger';
+
+          if (deadline !== null) {
+            timeDiff = (new Date(deadline)).getTime() - (new Date()).getTime();
+            daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            if (daysDiff < 6) {
+              urgency = true;
+              dDayTag = "긴급 "+daysDiff+" 일 남음";
+            }
+          }          
+
           if (approvalInfo === '승인대기') {
             deleteIcon = 
             <sdButton class="btn-icon" type="danger" to="#" shape="circle">
@@ -187,29 +212,18 @@
 
             if (state.getUser.isAdmin) {
               checkIcon = 
-                // <router-link to={"/check-approval-device/"+approvalId}>
-                //   <sdButton class="btn-icon" type="success" to="#" shape="circle">
-                //     <sdFeatherIcons type="check" size={16} title="승인/반려" />
-                //   </sdButton>
-                // </router-link>;
                 <sdButton onClick={() => checkApproval(approvalId)} class="btn-icon" type="success" shape="circle">
                   <sdFeatherIcons type="check" size={16} title="승인/반려" />
                 </sdButton>
               }
           }
-          if (urgency) {
-            statusTag = 
+          statusTag = (
             <div class="taglist-wrap">
-              <Tag data="긴급" tagType="colorful" color="red" />
+              {(urgency)?<Tag data={dDayTag} tagType="colorful" color="red" />:''}
               <span class="order-status">{type}</span>
-            </div>;
-          } else {
-            statusTag = 
-            <div class="taglist-wrap">
-              <span class="order-status">{type}</span>
-            </div>;
-          }
-
+            </div>
+          );
+         
           return {
             status: <>{statusTag}</>,
             category: <span class="order-id">{deviceId} <br/>{categoryName}</span>,
@@ -217,6 +231,7 @@
             info: <a-tag class={approvalInfoClass}>{approvalInfo}</a-tag>,
             date: <span class="ordered-date">{createdDate}</span>,
             level: urgency,
+            deadline: deadlineDate,
             action: (
               <div class="table-actions">
                 <>

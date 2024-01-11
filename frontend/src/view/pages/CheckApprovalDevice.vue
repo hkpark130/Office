@@ -161,7 +161,6 @@ const AddProduct = defineComponent({
       deviceId: getApprovalById.value.deviceId,
       category: getApprovalById.value.categoryName,
       auto: "auto",
-      urgency: "normal", // normal, urgent
       approvalInfo: getApprovalById.value.approvalInfo,
       status: getApprovalById.value.deviceStatus,
       purpose: getApprovalById.value.devicePurpose,

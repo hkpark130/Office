@@ -29,9 +29,6 @@ public abstract class Approvals extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", name = "reason")
     private String reason;
 
-    @Column(name = "urgency")
-    private Boolean urgency;
-
     @ManyToOne
     @JoinColumn(name ="approver_id", referencedColumnName = "id")
     private Users approverId;
@@ -45,11 +42,10 @@ public abstract class Approvals extends BaseTimeEntity {
     }
 
     public Approvals(Users userId, String approvalInfo, String reason,
-                     Boolean urgency, Users approverId, LocalDateTime deadline) {
+                     Users approverId, LocalDateTime deadline) {
         this.userId = userId;
         this.approvalInfo = approvalInfo;
         this.reason = reason;
-        this.urgency = urgency;
         this.approverId = approverId;
         this.deadline = deadline;
     }
