@@ -21,13 +21,6 @@
                           <a-col :xs="24">
                             <div class="add-product-content">
                               <sdCards title="장비 폐기 신청">
-                                <a-form-item label="긴급도" name="urgency">
-                                  <a-radio-group v-model:value="formState.urgency">
-                                    <a-radio value="normal">보통</a-radio>
-                                    <a-radio value="urgent">긴급</a-radio>
-                                  </a-radio-group>
-                                </a-form-item>
-
                                 <a-form-item label="관리번호">
                                   <a-input v-model:value="formState.deviceId" disabled/>
                                 </a-form-item>
@@ -177,7 +170,6 @@
         category: getDeviceById.value.categoryName,
         price: getDeviceById.value.price,
         auto: "auto",
-        urgency: "normal", // normal, urgent
         status: getDeviceById.value.status,
         purpose: getDeviceById.value.purpose,
         manageDep: "",

@@ -161,7 +161,13 @@ const Orders = defineComponent({
       orders.value.map((value) => {
         const { categoryName, manageDepName, projectName, purpose, model, history,
           username, id, company, sn, purchaseDate, spec, description } = value;
-        const formattedPurchaseDate = (purchaseDate === null)?null:new Date(purchaseDate).toISOString().split('T')[0];
+        const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              });
+
         return {
           id: (
             <div>

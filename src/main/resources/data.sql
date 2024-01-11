@@ -40,11 +40,11 @@ values ('DIR-N-113', 1, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '사용중�
 INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, tag, company, sn, status, purpose, purchase_date, category_id, project_id)
 values ('DIR-N-114', 1, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX24', '폐기한 기기', 'test', 'SAMSUNG', 'ND9NBK', true, '개발', '2021-09-02', 1, 1);
 
-INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON, CREATED_DATE) values (true, 1, 1, '승인완료', 'test용', '2021-08-01');
-INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (false, null, 1, '승인대기', 'test용');
-INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (false, 1, 1, '승인완료', 'test용2');
-INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (false, 1, 1, '승인완료', 'test용 폐기');
-INSERT INTO APPROVALS (URGENCY, APPROVER_ID, USER_ID, APPROVAL_INFO, REASON, CREATED_DATE) values (true, null, 1, '승인대기', 'test용', '2021-09-01');
+INSERT INTO APPROVALS (APPROVER_ID, USER_ID, APPROVAL_INFO, REASON, CREATED_DATE) values (1, 1, '승인완료', 'test용', '2021-08-01');
+INSERT INTO APPROVALS (APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (null, 1, '승인대기', 'test용');
+INSERT INTO APPROVALS (APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (1, 1, '승인완료', 'test용2');
+INSERT INTO APPROVALS (APPROVER_ID, USER_ID, APPROVAL_INFO, REASON) values (1, 1, '승인완료', 'test용 폐기');
+INSERT INTO APPROVALS (APPROVER_ID, USER_ID, APPROVAL_INFO, REASON, CREATED_DATE) values (null, 1, '승인대기', 'test용', '2021-09-01');
 
 INSERT INTO APPROVAL_DEVICES (id, device_id, img, type) values (1, 'DIR-N-101', 'notebook.png', '구매');
 INSERT INTO APPROVAL_DEVICES (id, device_id, img, type) values (2, 'DIR-N-102', 'server.png', '폐기');

@@ -20,7 +20,6 @@ public class ApprovalDeviceDto implements Serializable {
     private Users userId;
     private String userName;
     private String reason;
-    private Boolean urgency;
     private Users approverId;
     private String deviceId;
     private Boolean deviceStatus;
@@ -38,7 +37,6 @@ public class ApprovalDeviceDto implements Serializable {
         this.userId = (entity.getUserId() != null) ? entity.getUserId() : null;
         this.userName = (this.userId != null) ? this.userId.getUsername() : null;
         this.reason = entity.getReason();
-        this.urgency = entity.getUrgency();
         this.approverId = entity.getApproverId();
         this.deviceId = (entity.getDeviceId() != null) ? entity.getDeviceId().getId() : null;
         this.categoryName = (entity.getDeviceId() != null) ? entity.getDeviceId().getCategoryId().getName() : null;
@@ -57,7 +55,6 @@ public class ApprovalDeviceDto implements Serializable {
                 .userId((userId != null) ? userId : null)
                 .deviceId((deviceId != null) ? Devices.builder().id(deviceId).build() : null )
                 .reason(reason)
-                .urgency(urgency)
                 .type(type)
                 .img(img)
                 .deadline(deadline)

@@ -29,8 +29,8 @@ public class ApprovalDevices extends Approvals {
 
     @Builder
     public ApprovalDevices(Users userId, String approvalInfo, String reason, Users approverId,
-                           Devices deviceId, String img, Boolean urgency, String type, LocalDateTime deadline) {
-        super(userId, approvalInfo, reason, urgency, approverId, deadline);
+                           Devices deviceId, String img, String type, LocalDateTime deadline) {
+        super(userId, approvalInfo, reason, approverId, deadline);
         this.deviceId = deviceId;
         this.img = img;
         this.type = type;
