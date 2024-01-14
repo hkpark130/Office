@@ -69,21 +69,58 @@
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   
+  const sortWithNullCheck = (aValue, bValue) => {
+    // Null 값을 제일 뒤로 둘거임
+    // 둘 다 null이면 순서를 변경하지 않음
+    if (aValue === '' && bValue === '') {
+      return 0;
+    }
+
+    // aValue가 null이면 b가 먼저 오도록 함
+    if (aValue === '') {
+      return 1;
+    }
+
+    // bValue가 null이면 a가 먼저 오도록 함
+    if (bValue === '') {
+      return -1;
+    }
+
+    // 둘 다 null이 아닐 경우, localeCompare로 문자열 비교
+    return aValue.localeCompare(bValue);
+    // 정수인 경우 aValue - bValue 로 비교해줘야 함
+  };
+
   const columns = [
     {
       title: '품목',
       dataIndex: 'category',
       key: 'categoryName',
+      sorter: (a, b) => {
+        const aValue = a.categoryName?a.categoryName:'';
+        const bValue = b.categoryName?b.categoryName:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '관리번호',
       dataIndex: 'id',
       key: 'id',
+      sorter: (a, b) => {
+        const aValue = a.key?a.key:'';
+        const bValue = b.key?b.key:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '용도',
       dataIndex: 'purpose',
       key: 'purpose',
+      sorter: (a, b) => {
+        const aValue = a.purposeKey?a.purposeKey:'';
+        const bValue = b.purposeKey?b.purposeKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '태그',
@@ -100,6 +137,11 @@
       dataIndex: 'info',
       key: 'approvalInfo',
       align: 'center',
+      sorter: (a, b) => {
+        const aValue = a.infoKey?a.infoKey:'';
+        const bValue = b.infoKey?b.infoKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
   ];
 
@@ -140,6 +182,9 @@
           const deadlineDate = (deadline === null)?null:new Date(deadline).toISOString().split('T')[0];
           return {
             key: id, // radio 선택시 기준 값
+            categoryName: categoryId.name,
+            purposeKey: purpose,
+            infoKey: approvalInfo,
             id: <span class="order-id">{id}</span>,
             category: <span class="customer-name">{ categoryId.name }</span>,
             info: (
@@ -184,7 +229,7 @@
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(state.devices.originData.map((item) => item[selectedItems]))]; // 중복 제거
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
       
       return {

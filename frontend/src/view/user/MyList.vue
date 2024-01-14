@@ -45,31 +45,38 @@
           </a-col>
         </a-row>
       </sdCards>
-      <sdModal type="primary" title="Add New Todo" :visible="formState.visible" :footer="null" :onCancel="handleCancel">
-        <div class="todo-modal">
-          <BasicFormWrapper>
-            <a-form class="adTodo-form" name="todoAdd" :model="formState" @finish="onSubmitHandler">
-              <a-input v-model:value="formState.editApp" placeholder="Input Item Name......." />
-              <br />
-              <br />
-
-              <sdButton @click="showModal" htmlType="submit" class="btn-adTodo" type="primary" size="large">
-                Add New
-              </sdButton>
-            </a-form>
-          </BasicFormWrapper>
-        </div>
-      </sdModal>
       
     </Main>
   </template>
   <script lang="jsx">
   import { TopToolBox } from './Style';
-  import { Main, TableWrapper, BasicFormWrapper } from '../styled';
+  import { Main, TableWrapper } from '../styled';
   import { computed, reactive, ref, defineComponent } from 'vue';
   import { useStore } from 'vuex';
   import Tag from '../../components/tags/Tag';
   import { useRouter } from 'vue-router';
+
+  const sortWithNullCheck = (aValue, bValue) => {
+    // Null 값을 제일 뒤로 둘거임
+    // 둘 다 null이면 순서를 변경하지 않음
+    if (aValue === '' && bValue === '') {
+      return 0;
+    }
+
+    // aValue가 null이면 b가 먼저 오도록 함
+    if (aValue === '') {
+      return 1;
+    }
+
+    // bValue가 null이면 a가 먼저 오도록 함
+    if (bValue === '') {
+      return -1;
+    }
+
+    // 둘 다 null이 아닐 경우, localeCompare로 문자열 비교
+    return aValue.localeCompare(bValue);
+    // 정수인 경우 aValue - bValue 로 비교해줘야 함
+  };
 
   const columns = [
     {
@@ -77,21 +84,41 @@
       dataIndex: 'status',
       key: 'status',
       align: 'center',
+      sorter: (a, b) => {
+        const aValue = a.type?a.type:'';
+        const bValue = b.type?b.type:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '신청장비',
       dataIndex: 'category',
       key: 'categoryName',
+      sorter: (a, b) => {
+        const aValue = a.categoryName?a.categoryName:'';
+        const bValue = b.categoryName?b.categoryName:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '신청자',
       dataIndex: 'user',
       key: 'userName',
+      sorter: (a, b) => {
+        const aValue = a.userName?a.userName:'';
+        const bValue = b.userName?b.userName:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '신청정보',
       dataIndex: 'info',
       key: 'approvalInfo',
+      sorter: (a, b) => {
+        const aValue = a.approvalInfo?a.approvalInfo:'';
+        const bValue = b.approvalInfo?b.approvalInfo:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: 'Action',
@@ -106,7 +133,7 @@
   
   const Orders = defineComponent({
     name: 'Orders',
-    components: { BasicFormWrapper, TopToolBox, Main, TableWrapper },
+    components: { TopToolBox, Main, TableWrapper },
   
     async setup() {
       const { state, dispatch } = useStore();
@@ -133,19 +160,16 @@
         dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
       };
 
-      const showModal = (row) => {
-        // console.log(row); row 객체 다 받아올 수 있음
-        console.log(row.deviceId);
-        
-        formState.visible = true;
-      };
-
       const checkApproval = (approvalId) => {
         push("/check-approval-device/"+approvalId);
       };
 
       const editApproval = (approvalId) => {
         push("/edit-approval-device/"+approvalId);
+      };
+
+      const detailApproval = (approvalId) => {
+        push("/detail-approval-device/"+approvalId);
       };
 
       const onCancel = () => {
@@ -211,7 +235,11 @@
           }
 
           return {
+            key: approvalId,
             status: <>{statusTag}</>,
+            categoryName: categoryName,
+            type: type,
+            approvalInfo: approvalInfo,
             category: <span class="order-id">{deviceId} <br/>{categoryName}</span>,
             user: <span class="customer-name">{userName}</span>,
             info: <a-tag class={approvalInfoClass}>{approvalInfo}</a-tag>,
@@ -221,7 +249,7 @@
               <div class="table-actions">
                 <>
                   {checkIcon}
-                  <sdButton onClick={() => showModal(value)} class="btn-icon" type="primary" to="#" shape="circle" >
+                  <sdButton onClick={() => detailApproval(approvalId)} class="btn-icon" type="primary" to="#" shape="circle" >
                     <sdFeatherIcons type="eye" size={16} title="상세정보" />
                   </sdButton>
                   {editIcon}
@@ -236,11 +264,10 @@
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]))]; // 중복 제거
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
       
       return {
-        showModal,
         onCancel,
         handleCancel,
         onSubmitHandler,

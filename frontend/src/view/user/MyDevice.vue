@@ -70,31 +70,79 @@
   import { computed, ref, defineComponent, reactive } from 'vue';
   import { useStore } from 'vuex';
   
+  const sortWithNullCheck = (aValue, bValue) => {
+    // Null 값을 제일 뒤로 둘거임
+    // 둘 다 null이면 순서를 변경하지 않음
+    if (aValue === '' && bValue === '') {
+      return 0;
+    }
+
+    // aValue가 null이면 b가 먼저 오도록 함
+    if (aValue === '') {
+      return 1;
+    }
+
+    // bValue가 null이면 a가 먼저 오도록 함
+    if (bValue === '') {
+      return -1;
+    }
+
+    // 둘 다 null이 아닐 경우, localeCompare로 문자열 비교
+    return aValue.localeCompare(bValue);
+    // 정수인 경우 aValue - bValue 로 비교해줘야 함
+  };
+
   const columns = [
     {
       title: 'Product',
       dataIndex: 'category',
       key: 'categoryName',
+      sorter: (a, b) => {
+        // 카테고리별 정렬임, Device ID가 아님
+        const aValue = a.categoryNameKey?a.categoryNameKey:'';
+        const bValue = b.categoryNameKey?b.categoryNameKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '사용자',
       dataIndex: 'user',
       key: 'username',
+      sorter: (a, b) => {
+        const aValue = a.userKey?a.userKey:'';
+        const bValue = b.userKey?b.userKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '용도',
       dataIndex: 'purpose',
       key: 'purpose',
+      sorter: (a, b) => {
+        const aValue = a.purposeKey?a.purposeKey:'';
+        const bValue = b.purposeKey?b.purposeKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '프로젝트',
       dataIndex: 'project',
       key: 'projectName',
+      sorter: (a, b) => {
+        const aValue = a.projectKey?a.projectKey:'';
+        const bValue = b.projectKey?b.projectKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '관리부서',
       dataIndex: 'manageDep',
       key: 'manageDepName',
+      sorter: (a, b) => {
+        const aValue = a.manageDepKey?a.manageDepKey:'';
+        const bValue = b.manageDepKey?b.manageDepKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
     },
     {
       title: '비고',
@@ -184,9 +232,13 @@
                 </figcaption>
               </div>
             ),
+            categoryNameKey: categoryName,
             user: <span class="customer-name">{username}</span>,
+            userKey: username,
             manageDep: <span class="customer-name">{manageDepName}</span>,
+            manageDepKey: manageDepName,
             project: <span class="customer-name">{projectName}</span>,
+            projectKey: projectName,
             purpose: (
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
@@ -197,6 +249,7 @@
                 </span>
               </div>
             ),
+            purposeKey: purpose,
             description: <span class="ordered-date">{description}</span>,
             action: (
               <div class="table-actions">
@@ -224,7 +277,7 @@
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]))]; // 중복 제거
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
       
       return {

@@ -2,6 +2,8 @@ package kr.co.direa.office.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jdk.jshell.Snippet;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

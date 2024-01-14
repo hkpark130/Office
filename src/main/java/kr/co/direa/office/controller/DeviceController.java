@@ -7,10 +7,13 @@ import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
+import kr.co.direa.office.exception.CustomException;
+import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.CategoriesService;
 import kr.co.direa.office.service.DevicesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -116,10 +119,13 @@ public class DeviceController {
             return ResponseEntity.ok(
                     false
             );
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.ok(
-                    true
-            );
+        } catch (CustomException e) {
+            if (e.getErrorCode() == CustomErrorCode.NOT_FOUND_DEVICE) {
+                return ResponseEntity.ok(true);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred2");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred3");
         }
     }
 

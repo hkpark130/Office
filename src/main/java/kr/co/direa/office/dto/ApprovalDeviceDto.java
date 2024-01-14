@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class ApprovalDeviceDto implements Serializable {
     private String approvalInfo;
     private Long approvalId;
@@ -30,6 +29,10 @@ public class ApprovalDeviceDto implements Serializable {
     private String type;
     private LocalDateTime createdDate;
     private LocalDateTime deadline;
+
+    public ApprovalDeviceDto() {
+        this.createdDate = LocalDateTime.now();
+    }
 
     @Builder
     public ApprovalDeviceDto(ApprovalDevices entity) {

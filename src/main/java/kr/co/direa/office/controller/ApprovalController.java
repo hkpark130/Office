@@ -96,7 +96,7 @@ public class ApprovalController {
     }
 
     @GetMapping(value = "/approval-device/{id}")
-    ResponseEntity<?> getApproval(@PathVariable String id) {
+    ResponseEntity<?> getApproval(@PathVariable Long id) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.findById(id);
 
         return ResponseEntity.ok(
