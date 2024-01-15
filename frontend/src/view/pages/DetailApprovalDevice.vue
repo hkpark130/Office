@@ -200,20 +200,6 @@ const AddProduct = defineComponent({
     const formRef = ref();
     let comments = [];
     const value = ref('');
-    const data = [
-            {
-                author: 'Han Solo2',
-                content:
-                    'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-                datetime: dayjs().subtract(1, 'days'),
-            },
-            {
-                author: 'Han Solo',
-                content:
-                    'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-                datetime: dayjs().subtract(2, 'days'),
-            },
-        ];
 
     await dispatch('getApprovalById', router.currentRoute.value.params.approvalId);
     await dispatch('getCommentById', router.currentRoute.value.params.approvalId);
@@ -290,7 +276,6 @@ const AddProduct = defineComponent({
       disabled,
       comments,
       value,
-      data,
       getCommentById,
       handleSubmit,
     };
