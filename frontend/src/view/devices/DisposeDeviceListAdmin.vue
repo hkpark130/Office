@@ -268,27 +268,28 @@ const Orders = defineComponent({
       }),
     );
 
-    const onSorting = (selectedItems) => {
-      filterKey.value = selectedItems;
-      filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
-    };
-    
-    return {
-      deviceId,
-      dataSource,
-      handleChangeForFilter,
-      filterKey,
-      filterVal,
-      filterColumns,
-      onSorting,
-      item,
-      searchData,
-      columns,
-      orders,
-      stateValue,
-    };
-  },
-});
-
-export default Orders;
-</script>
+      const onSorting = (selectedItems) => {
+        filterKey.value = selectedItems;
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      };
+      
+      return {
+        deviceId,
+        dataSource,
+        handleChangeForFilter,
+        filterKey,
+        filterVal,
+        filterColumns,
+        onSorting,
+        item,
+        searchData,
+        columns,
+        orders,
+        stateValue,
+      };
+    },
+  });
+  
+  export default Orders;
+  </script>
+  

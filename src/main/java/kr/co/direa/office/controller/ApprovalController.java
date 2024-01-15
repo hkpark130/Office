@@ -96,7 +96,7 @@ public class ApprovalController {
     }
 
     @GetMapping(value = "/approval-device/{id}")
-    ResponseEntity<?> getApproval(@PathVariable String id) {
+    ResponseEntity<?> getApproval(@PathVariable Long id) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.findById(id);
 
         return ResponseEntity.ok(
@@ -109,7 +109,7 @@ public class ApprovalController {
             @RequestBody Map<String, Object> request
     ) {
         approvalDevicesService.setApprovalInfoById(
-                Long.valueOf(request.get("approvalId").toString()), 
+                Long.valueOf(request.get("approvalId").toString()),
                 "승인완료"
         );
 
