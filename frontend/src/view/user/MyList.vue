@@ -108,7 +108,7 @@ const columns = [
       const aValue = a.userName?a.userName:'';
       const bValue = b.userName?b.userName:'';
       return sortWithNullCheck(aValue, bValue);
-    },    
+    },
   },
   {
     title: '마감일',
@@ -118,7 +118,7 @@ const columns = [
       const aValue = a.deadline?a.deadline:'';
       const bValue = b.deadline?b.deadline:'';
       return sortWithNullCheck(aValue, bValue);
-    }, 
+    },
   },
   {
     title: '신청정보',
@@ -226,7 +226,7 @@ const Orders = defineComponent({
               urgency = true;
               dDayTag = "긴급 "+daysDiff+" 일 남음";
             }
-          }  
+          }
 
         if (approvalInfo === '승인대기') {
           deleteIcon = 
@@ -247,11 +247,11 @@ const Orders = defineComponent({
             }
         }
         statusTag = (
-            <div class="taglist-wrap">
-              {(urgency)?<Tag data={dDayTag} tagType="colorful" color="red" />:''}
-              <span class="order-status">{type}</span>
-            </div>
-          );
+          <div class="taglist-wrap">
+            {(urgency)?<Tag data={dDayTag} tagType="colorful" color="red" />:''}
+            <span class="order-status">{type}</span>
+          </div>
+        );
 
         return {
           key: approvalId,
@@ -259,7 +259,6 @@ const Orders = defineComponent({
           categoryName: categoryName,
           type: type,
           approvalInfo: approvalInfo,
-          deadline: deadline,
           category: <span class="order-id">{deviceId} <br/>{categoryName}</span>,
           user: <span class="customer-name">{userName}</span>,
           info: <a-tag class={approvalInfoClass}>{approvalInfo}</a-tag>,

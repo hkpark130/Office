@@ -17,6 +17,7 @@ import getUser from './modules/user/actionCreator';
 import getNotifications from './modules/notification/actionCreator';
 import getActivities from './modules/activities/actionCreator';
 import approvals from './modules/approvals/actionCreator';
+import comments from './modules/comments/actionCreator';
 
 export default createStore({
   modules: {
@@ -38,5 +39,6 @@ export default createStore({
     getNotifications,
     getActivities,
     approvals,
+    comments,
   },
 });

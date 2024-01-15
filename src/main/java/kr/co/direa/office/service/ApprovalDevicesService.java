@@ -32,8 +32,8 @@ public class ApprovalDevicesService {
                                   ApprovalDevicesRepository approvalDevicesRepository,
                                   DevicesRepository devicesRepository,
                                   UsersRepository usersRepository,
-                                    UsersService usersService
-                                  ) {
+                                  UsersService usersService
+    ) {
         this.notificationsRepository = notificationsRepository;
         this.approvalDevicesRepository = approvalDevicesRepository;
         this.devicesRepository = devicesRepository;
@@ -76,7 +76,7 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setType(request.get("type").toString());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
         approvalDeviceDto.setDeadline(
-            ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime()
+                ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime()
         );
 
         return approvalDeviceDto;
@@ -112,7 +112,7 @@ public class ApprovalDevicesService {
                                     Comparator.nullsLast(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
                             !(approvalDevices.getType().equals(type) &&
-                                approvalDevices.getApprovalInfo().equals(approvalInfo))
+                                    approvalDevices.getApprovalInfo().equals(approvalInfo))
                     ).orElse(true);
                 })
                 .map(device -> {
@@ -171,8 +171,8 @@ public class ApprovalDevicesService {
 
     }
 
-    public ApprovalDeviceDto findById(String id) {
-        ApprovalDevices approvalDevices = approvalDevicesRepository.findById(Long.parseLong(id))
+    public ApprovalDeviceDto findById(Long id) {
+        ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
         return new ApprovalDeviceDto(approvalDevices);

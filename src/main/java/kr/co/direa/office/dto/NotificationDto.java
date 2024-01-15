@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -50,10 +51,28 @@ public class NotificationDto implements Serializable {
                 this.type + " 신청에 대한 " +
                 this.userName + " 님의 승인 요청";
         this.link = "#";
-        this.date = approvalDeviceDto.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+        this.date = getFormattedCreatedDate(approvalDeviceDto.getCreatedDate());
         setIcon(this);
 
         return this;
+    }
+
+    public NotificationDto convertNotificationFromComment(CommentDto commentDto) {
+        this.userName = commentDto.getUserId().getUsername();
+        this.type = "댓글";
+        this.subject = "신청 번호 " +
+                commentDto.getApprovalId() + " 에 대한 " +
+                this.userName + " 님의 댓글이 등록되었습니다.";
+        this.link = "#";
+        this.date = getFormattedCreatedDate(commentDto.getCreatedDate());
+        setIcon(this);
+
+        return this;
+    }
+
+    public String getFormattedCreatedDate(LocalDateTime createdDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+        return createdDate.format(formatter);
     }
 
     public NotificationDto setIcon(NotificationDto notificationDto) {
@@ -77,6 +96,10 @@ public class NotificationDto implements Serializable {
             case "수정":
                 notificationDto.icon = "edit";
                 notificationDto.iconClass = "success";
+                break;
+            case "댓글":
+                notificationDto.icon = "message-square";
+                notificationDto.iconClass = "primary";
                 break;
             default:
                 notificationDto.icon = "bell";
