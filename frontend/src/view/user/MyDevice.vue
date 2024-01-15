@@ -168,7 +168,7 @@
       
       const dataSource = computed(() =>
         orders.value.map((value) => {
-          const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description } = value;
+          const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, spec } = value;
 
           return {
             category: (
@@ -191,9 +191,7 @@
               <div>
                 <span class="ordered-amount spnDetails">{purpose}</span>
                 <span class="spnTooltip">
-                    <strong>CPU: </strong>12C<br />
-                    <strong>RAM: </strong>32G<br />
-                    테스트 툴팁
+                    {spec}
                 </span>
               </div>
             ),

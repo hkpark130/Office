@@ -2,6 +2,8 @@ package kr.co.direa.office.service;
 
 import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.DeviceDto;
+import kr.co.direa.office.exception.CustomException;
+import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.repository.DevicesRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -66,7 +68,9 @@ public class DevicesService {
     }
 
     public DeviceDto findById(String id) {
-        Devices device = devicesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 기기가 없습니다. id=" + id));
+        Devices device = devicesRepository.findById(id).orElseThrow(() ->
+                new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + id));
         return new DeviceDto(device);
     }
 
@@ -78,8 +82,10 @@ public class DevicesService {
     }
 
     public List<DeviceDto> findByUsername(String username) {
-        Users user = usersService.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. username=" + username));
-        List<Devices> myDevices = devicesRepository.findByUserId(user);
+        Users user = usersService.findByUsername(username).orElseThrow(() ->
+                new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=" + username));
+        List<Devices> myDevices = devicesRepository.findRentedDevicesByUserId(user.getId());
         return myDevices.stream()
                 .map(DeviceDto::new)
                 .toList();
