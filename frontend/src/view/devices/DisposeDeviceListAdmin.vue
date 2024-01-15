@@ -198,7 +198,12 @@ const Orders = defineComponent({
       orders.value.map((value) => {
         const { categoryName, manageDep, project, purpose, model, user, id, company, sn, 
             purchaseDate, description, history } = value;
-        const formattedPurchaseDate = (purchaseDate === null)?null:new Date(purchaseDate).toISOString().split('T')[0];
+        const formattedPurchaseDate = (purchaseDate === null)?null:new Date(purchaseDate).toLocaleDateString('ko-KR',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              });
         return {
           key: id, // radio 선택시 기준 값
           id: (
