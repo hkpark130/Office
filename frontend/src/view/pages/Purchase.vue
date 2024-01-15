@@ -93,16 +93,24 @@
                                   initialValue=""
                                   label="프로젝트"
                                 >
-                                  <a-select
-                                    v-model:value="formState.project"
-                                    style="width: 100%"
+                                  <sdPopover
+                                    :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
+                                    v-model="visible"
+                                    title="프로젝트 리스트"
+                                    action="click"
                                   >
-                                    <a-select-option
-                                      v-for="project in projects"
-                                      :key="project.id"
-                                      :value="project.name"
-                                    >{{ project.name }}</a-select-option>
-                                  </a-select>
+                                    <template v-slot:content>
+                                      <div>
+                                        <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
+                                          {{ item.name }}
+                                        </a>
+                                        <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
+                                      </div>
+                                    </template>
+                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" />
+                                  </sdPopover>
+                                  
+                                  <span>선택된 프로젝트: <b>{{ formState.project }}</b></span>
                                 </a-form-item>
   
                                 <a-form-item
@@ -165,7 +173,7 @@
   import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
   import { DatePickerWrap } from './ui-elements-styled';
   import { AddProductForm } from "./style";
-  import { ref, reactive, defineComponent, computed } from "vue";
+  import { toRef, ref, reactive, defineComponent, computed } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   
@@ -178,6 +186,7 @@
       const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
+      const projectTmp = ref();
 
       const { push } = useRouter();
       const categories = computed(() => state.caregoryList.data);
@@ -185,13 +194,24 @@
       const projects = computed(() => state.projectList.data);
       const getUser = computed(() => state.getUser.data);
 
+      const searchData = toRef(projects.value);
+      const filteredData = toRef(projects.value);
+
+      const search = (e, searchDatas) => {
+        const data = searchDatas.filter((item) => {
+          return item.name.includes(e.target.value);
+        });
+        filteredData.value = data;
+      };
+
       const formState = reactive({
         category: "노트북",
         price: 0,
-        project: "",
+        project: "본사",
         purpose: "개발",
         userName: getUser.value.name,
         reason: "",
+        deadline: "",
         type: "구매",
         layout: "vertical",
         file: "",        
@@ -199,6 +219,11 @@
 
       const disabledDate = (current) => {
         return current && current.valueOf() < Date.now();
+      }
+
+      const onClickSearchList = (v) => {
+        formState.project = v;
+        projectTmp.value = v;
       }
 
       const handleFinish = () => {
@@ -217,10 +242,6 @@
         console.log(errors);
       };
   
-      const handleSubmit = (values) => {
-        submitValues.value = values;
-      };
-  
       return {
         file,
         list,
@@ -228,12 +249,16 @@
         formState,
         handleFinish,
         handleFinishFailed,
-        handleSubmit,
         formRef,
         projects,
         categories,
         departments,
         disabledDate,
+        searchData,
+        filteredData,
+        search,
+        onClickSearchList,
+        projectTmp,
       };
     },
   });

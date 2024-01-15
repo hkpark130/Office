@@ -56,19 +56,24 @@
                                   initialValue=""
                                   label="프로젝트"
                                 >
-                                  <a-select
-                                    v-model:value="formState.projectName"
-                                    style="width: 100%"
+                                  <sdPopover
+                                    :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
+                                    v-model="visible"
+                                    title="프로젝트 리스트"
+                                    action="click"
                                   >
-                                    <a-select-option value="본사"
-                                        >본사</a-select-option
-                                      >
-                                    <a-select-option
-                                      v-for="project in projects"
-                                      :key="project.id"
-                                      :value="project.name"
-                                    >{{ project.name }}</a-select-option>
-                                  </a-select>
+                                    <template v-slot:content>
+                                      <div>
+                                        <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
+                                          {{ item.name }}
+                                        </a>
+                                        <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
+                                      </div>
+                                    </template>
+                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" />
+                                  </sdPopover>
+                                  
+                                  <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
                                 </a-form-item>
 
                                 <a-form-item
@@ -175,7 +180,7 @@
   <script lang="jsx">
   import { Main, BasicFormWrapper } from "../styled";
   import { AddProductForm } from "./style";
-  import { ref, reactive, defineComponent, computed, watch } from "vue";
+  import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
 
@@ -188,9 +193,20 @@
       const { state, dispatch } = useStore();
       const { push } = useRouter();
       const checkFinished = ref(false);
+      const projectTmp = ref();
 
       const categories = computed(() => state.caregoryList.data);
       const projects = computed(() => state.projectList.data);
+
+      const searchData = toRef(projects.value);
+      const filteredData = toRef(projects.value);
+
+      const search = (e, searchDatas) => {
+        const data = searchDatas.filter((item) => {
+          return item.name.includes(e.target.value);
+        });
+        filteredData.value = data;
+      };
   
       const formState = reactive({
         id: "",
@@ -206,6 +222,11 @@
         spec: "",
         layout: "vertical",
       });
+
+      const onClickSearchList = (v) => {
+        formState.projectName = v;
+        projectTmp.value = v;
+      }
 
       watch(() => formState.id, (newId, oldId) => {
         if (newId !== oldId) {
@@ -276,6 +297,11 @@
         handleFinishFailed,
         handleSubmit,
         formRef,
+        searchData,
+        filteredData,
+        search,
+        onClickSearchList,
+        projectTmp,
       };
     },
   });

@@ -166,7 +166,7 @@
           formState.category = newValue.categoryName;
           formState.price = newValue.price;
           formState.status = newValue.status;
-          formState.manageDep = newValue.manageDep.name;
+          formState.manageDep = newValue.manageDep && newValue.manageDep.name ? newValue.manageDep.name : "";
           formState.project = newValue.projectId && newValue.projectId.name ? newValue.projectId.name : "";
         }
       });
