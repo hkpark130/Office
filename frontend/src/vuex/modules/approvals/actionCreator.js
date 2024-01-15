@@ -12,7 +12,6 @@ const actions = {
         try {
             commit('getApprovalBegin');
             const query = await DataService.get(`/api/approval-device/${ApprovalId}`);
-            console.log('aaaaaaaaaaaaaa: ', query.data);
             commit('getApprovalSuccess', query.data);
         } catch (err) {
             commit('getApprovalErr', err);

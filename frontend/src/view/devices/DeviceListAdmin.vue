@@ -64,56 +64,129 @@ import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent } from 'vue';
 import { useStore } from 'vuex';
 
+const sortWithNullCheck = (aValue, bValue) => {
+    // Null 값을 제일 뒤로 둘거임
+    // 둘 다 null이면 순서를 변경하지 않음
+    if (aValue === '' && bValue === '') {
+      return 0;
+    }
+
+    // aValue가 null이면 b가 먼저 오도록 함
+    if (aValue === '') {
+      return 1;
+    }
+
+    // bValue가 null이면 a가 먼저 오도록 함
+    if (bValue === '') {
+      return -1;
+    }
+
+    // 둘 다 null이 아닐 경우, localeCompare로 문자열 비교
+    return aValue.localeCompare(bValue);
+    // 정수인 경우 aValue - bValue 로 비교해줘야 함
+  };
+
 const columns = [
   {
     title: '품목',
     dataIndex: 'categoryName',
     key: 'categoryName',
+    sorter: (a, b) => {
+        const aValue = a.categoryNameKey?a.categoryNameKey:'';
+        const bValue = b.categoryNameKey?b.categoryNameKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '관리번호',
     dataIndex: 'id',
     key: 'id',
+    sorter: (a, b) => {
+        const aValue = a.key?a.key:'';
+        const bValue = b.key?b.key:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '사용자',
     dataIndex: 'user',
     key: 'username',
+    sorter: (a, b) => {
+        const aValue = a.userKey?a.userKey:'';
+        const bValue = b.userKey?b.userKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '관리부서',
     dataIndex: 'manageDep',
     key: 'manageDepName',
+    sorter: (a, b) => {
+        const aValue = a.manageDepKey?a.manageDepKey:'';
+        const bValue = b.manageDepKey?b.manageDepKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '프로젝트',
     dataIndex: 'project',
     key: 'projectName',
+    sorter: (a, b) => {
+        const aValue = a.projectKey?a.projectKey:'';
+        const bValue = b.projectKey?b.projectKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '용도',
     dataIndex: 'purpose',
     key: 'purpose',
+    sorter: (a, b) => {
+        const aValue = a.purposeKey?a.purposeKey:'';
+        const bValue = b.purposeKey?b.purposeKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '구입일자',
     dataIndex: 'purchaseDate',
     key: 'purchaseDate',
+    sorter: (a, b) => {
+        const aValue = a.purchaseDateKey?a.purchaseDateKey:'';
+        const bValue = b.purchaseDateKey?b.purchaseDateKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
+    
   },
   {
     title: '모델명',
     dataIndex: 'model',
     key: 'model',
+    sorter: (a, b) => {
+        const aValue = a.modelKey?a.modelKey:'';
+        const bValue = b.modelKey?b.modelKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: '제조사',
     dataIndex: 'company',
     key: 'company',
+    sorter: (a, b) => {
+        const aValue = a.companyKey?a.companyKey:'';
+        const bValue = b.companyKey?b.companyKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: 'S/N',
     dataIndex: 'sn',
     key: 'sn',
+    sorter: (a, b) => {
+        const aValue = a.snKey?a.snKey:'';
+        const bValue = b.snKey?b.snKey:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
   },
   {
     title: 'Action',
@@ -167,8 +240,9 @@ const Orders = defineComponent({
                 month: 'long',
                 day: 'numeric',
               });
-
+              
         return {
+          key: id,
           id: (
             <div>
               <span class="order-id spnDetails">{id}</span>
@@ -196,7 +270,9 @@ const Orders = defineComponent({
               ) : null}
             </div>
           ),
+          categoryNameKey: categoryName,
           categoryName: <span class="customer-name">{categoryName}</span>,
+          userKey: username,
           user: <span class="customer-name">{username}</span>,
           purpose: (
             <div>
@@ -208,11 +284,18 @@ const Orders = defineComponent({
               </span>
             </div>
           ),
+          purposeKey: purpose,
+          manageDepKey: manageDepName,
           manageDep: <span class="ordered-amount">{manageDepName}</span>,
+          projectKey: projectName,
           project: <span class="ordered-amount">{projectName}</span>,
+          modelKey: model,
           model: <span class="ordered-amount">{model}</span>,
+          companyKey: company,
           company: <span class="ordered-amount">{company}</span>,
+          snKey: sn,
           sn: <span class="ordered-amount">{sn}</span>,
+          purchaseDateKey: purchaseDate,
           purchaseDate: <span class="ordered-date">{formattedPurchaseDate}</span>,
           action: (
             <div class="table-actions">
