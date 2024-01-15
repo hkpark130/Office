@@ -259,7 +259,6 @@ const Orders = defineComponent({
           categoryName: categoryName,
           type: type,
           approvalInfo: approvalInfo,
-          deadline: deadline,
           category: <span class="order-id">{deviceId} <br/>{categoryName}</span>,
           user: <span class="customer-name">{userName}</span>,
           info: <a-tag class={approvalInfoClass}>{approvalInfo}</a-tag>,

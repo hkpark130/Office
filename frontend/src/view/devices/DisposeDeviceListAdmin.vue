@@ -29,16 +29,6 @@
                   </a-radio-group>
                 </div>
               </a-col>
-              <a-col :xxl="4" :xs="24">
-                <div class="table-toolbox-actions">
-                  <sdButton size="small" type="secondary" transparented> Export </sdButton>
-                  <router-link :to="`/device-application/${deviceId}`">
-                    <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
-                    사용신청
-                    </sdButton>
-                  </router-link>
-                </div>
-              </a-col>
             </a-row>
           </TopToolBox>
         </a-col>
