@@ -164,7 +164,7 @@ public class ApprovalDevicesService {
         Users user = usersService.findByUsername(username).orElseThrow(() ->
                 new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + username));
-        List<ApprovalDevices> approvalDevicesList = approvalDevicesRepository.findByUserId(user);
+        List<ApprovalDevices> approvalDevicesList = approvalDevicesRepository.findByUserId(user.getId());
         return approvalDevicesList.stream()
                 .map(ApprovalDeviceDto::new)
                 .toList();
