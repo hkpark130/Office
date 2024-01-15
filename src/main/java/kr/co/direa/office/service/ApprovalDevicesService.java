@@ -3,6 +3,8 @@ package kr.co.direa.office.service;
 import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.DeviceDto;
+import kr.co.direa.office.exception.CustomException;
+import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.repository.ApprovalDevicesRepository;
 import kr.co.direa.office.repository.DevicesRepository;
 import kr.co.direa.office.repository.NotificationsRepository;
@@ -55,16 +57,19 @@ public class ApprovalDevicesService {
 
     public void setApprovalInfoById(Long id, String approvalInfo) {
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 신청이 없습니다. id=" + id));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + id));
         approvalDevices.setApprovalInfo(approvalInfo);
         approvalDevicesRepository.save(approvalDevices);
     }
 
     public ApprovalDeviceDto convertFromRequest(Map<String, Object> request) {
         Devices device = devicesRepository.findById(request.get("deviceId").toString())
-                .orElseThrow(() -> new IllegalArgumentException("해당 기기가 없습니다. id=" + request.get("deviceId")));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + request.get("deviceId")));
         Users user = usersRepository.findByUsername(request.get("userName").toString())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. username=" + request.get("userName")));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=" + request.get("userName")));
 
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
@@ -83,7 +88,8 @@ public class ApprovalDevicesService {
 
     public ApprovalDeviceDto convertFromRequestWithOutDeviceId(Map<String, Object> request) {
         Users user = usersRepository.findByUsername(request.get("userName").toString())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. username=" + request.get("userName")));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=" + request.get("userName")));
 
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
@@ -134,7 +140,9 @@ public class ApprovalDevicesService {
     }
 
     public List<ApprovalDeviceDto> findAllByUsername(String username) {
-        Users user = usersService.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. username=" + username));
+        Users user = usersService.findByUsername(username).orElseThrow(() ->
+                new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=" + username));
         List<ApprovalDevices> approvalDevicesList = approvalDevicesRepository.findByUserId(user);
         return approvalDevicesList.stream()
                 .map(ApprovalDeviceDto::new)
@@ -144,7 +152,8 @@ public class ApprovalDevicesService {
 
     public ApprovalDeviceDto findById(String id) {
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(Long.parseLong(id))
-                .orElseThrow(() -> new IllegalArgumentException("해당 신청이 없습니다. id=" + id));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + id));
         return new ApprovalDeviceDto(approvalDevices);
     }
 }
