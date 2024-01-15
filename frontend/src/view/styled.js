@@ -1742,6 +1742,10 @@ const TableWrapper = Styled.div`
         background-color: pink;
     }
 
+    .urgent-row > td.ant-table-column-sort {
+        background-color: pink;
+    }
+
     .spnTooltip {
         z-index:10;display:none; padding:14px 20px;
         margin-top:-30px; margin-left:28px;
