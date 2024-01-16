@@ -2,7 +2,7 @@
     <SocialMediaWrapper>
       <sdCards title="장비 현황" >
         <a-row :gutter="25">
-            <a-col v-for="(item, index) in devices" :key="index" :xxl="8" :md="4" :xs="8">
+            <a-col v-for="(item, index) in response" :key="index" :xxl="8" :md="4" :xs="8">
             <SocialMediaContent
                 :title="item.amount"
                 :subTitle="item.name"
@@ -24,13 +24,17 @@
   const SocialMediaOverview = defineComponent({
     name: 'SocialMediaOverview',
     components: { SocialMediaWrapper, SocialMediaContent },
-    data() {
+    setup() {
       onMounted(async() => {
-        const data = await DataService.get('/api/devices');
-        response.data = data.data;
+        await DataService.get('/api/devices').then(
+          (v) => {
+            console.log(v.data);
+            response.value = v.data;
+          }
+        );
       });
       return {
-          devices: response.data,
+        response,
       };
     },
     

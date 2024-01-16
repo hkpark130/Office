@@ -1,6 +1,5 @@
 package kr.co.direa.office.service;
 
-import kr.co.direa.office.domain.Categories;
 import kr.co.direa.office.domain.Projects;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.ProjectDto;
