@@ -43,5 +43,6 @@ export default createStore({
     approvals,
     comments,
     addCategory,
+    editDevice,
   },
 });

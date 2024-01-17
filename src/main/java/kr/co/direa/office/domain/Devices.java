@@ -56,7 +56,7 @@ public class Devices extends BaseTimeEntity{
     private String sn;
 
     @Column(name = "status")
-    private Boolean status;
+    private String status;
 
     @Column(name = "purpose")
     private String purpose;
@@ -73,7 +73,7 @@ public class Devices extends BaseTimeEntity{
     @Builder
     public Devices(String id, Users userId, Departments manageDep, Categories categoryId, String spec,
                    Long price, String model, String description, String tag, String company,
-                   Projects projectId, String sn, Boolean status, String purpose, Date purchaseDate,
+                   Projects projectId, String sn, String status, String purpose, Date purchaseDate,
                    List<ApprovalDevices> approvalDevices) {
         this.id = id;
         this.userId = userId;

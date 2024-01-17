@@ -11,6 +11,8 @@ import java.util.List;
 public interface DevicesRepository extends JpaRepository<Devices, String> {
 
     Long countByCategoryId(Categories category);
+
+    @Query("SELECT d FROM devices d WHERE d.status <> '폐기'")
     List<Devices> findByStatusTrue();
 
     @Query("SELECT d FROM devices d " +

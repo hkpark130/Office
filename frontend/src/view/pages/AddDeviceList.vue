@@ -48,7 +48,7 @@
                       </div>
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -87,7 +87,7 @@
       const submitValues = ref({});
       const formRef = ref();
       const { dispatch } = useStore();
-      const { push } = useRouter();
+      const { push, go } = useRouter();
 
       const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
@@ -287,7 +287,7 @@
         "purpose": "사무",
         "user": "김철수",
         "manageDepName": "경영지원부",
-        "status": "true",
+        "status": "정상",
         "projectName": "농협",
         "spec": "RAM: 16G\nCPU: 8core",
         "price": "80,000",
@@ -319,6 +319,10 @@
           };
         })
       );
+
+      const handleCancel = () => {
+        go(-1);
+      };
   
       return {
         fileUploadProps,
@@ -333,6 +337,7 @@
         formRef,
         formatData,
         formatKeys,
+        handleCancel,
       };
     },
   });

@@ -69,8 +69,9 @@
                                   <a-col :span="12">
                                     <a-form-item label="상태" name="status" required>
                                       <a-radio-group v-model:value="formState.status">
-                                        <a-radio :value=true>Y</a-radio>
-                                        <a-radio :value=false>N</a-radio>
+                                        <a-radio value="정상">정상</a-radio>
+                                        <a-radio value="노후">노후</a-radio>
+                                        <a-radio value="폐기">폐기</a-radio>
                                       </a-radio-group>
                                     </a-form-item>
                                   </a-col>
@@ -117,7 +118,7 @@
 
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -154,7 +155,7 @@
     async setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
-      const { push } = useRouter();
+      const { push, go } = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
@@ -257,6 +258,10 @@
         const imageTypePattern = /^image\//;
         return imageTypePattern.test(file.type);
       }
+
+      const handleCancel = () => {
+        go(-1);
+      };
   
       return {
         fileList,
@@ -271,6 +276,7 @@
         handleSubmit,
         formRef,
         disabled,
+        handleCancel,
       };
     },
   });
