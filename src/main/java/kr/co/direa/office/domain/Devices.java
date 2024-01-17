@@ -26,7 +26,7 @@ public class Devices extends BaseTimeEntity{
     @JoinColumn(name ="manage_dep", referencedColumnName = "id")
     private Departments manageDep;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name ="category_id", referencedColumnName = "id")
     private Categories categoryId;
 

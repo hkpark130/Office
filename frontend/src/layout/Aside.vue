@@ -93,6 +93,13 @@
           </router-link>
         </a-menu-item>
 
+        <a-menu-item @click="toggleCollapsed" key="addCategory">
+          <router-link to="/add-category">
+            <sdFeatherIcons type="plus-circle" />
+            <span> 카테고리 등록 </span>
+          </router-link>
+        </a-menu-item>
+
         <a-sub-menu key="manageDevice">
           <template v-slot:title
             ><sdFeatherIcons type="server" /><span>장비 관리 대장</span></template

@@ -1,6 +1,5 @@
 package kr.co.direa.office.dto;
 
-import kr.co.direa.office.domain.Categories;
 import kr.co.direa.office.domain.Projects;
 import lombok.Builder;
 import lombok.Getter;

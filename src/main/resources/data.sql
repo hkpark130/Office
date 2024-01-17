@@ -1,7 +1,7 @@
-INSERT INTO categories (id, name, img) values (1, '노트북', 'notebook.png');
-INSERT INTO categories (id, name, img) values (2, '서버', 'server.png');
-INSERT INTO categories (id, name, img) values (3, '모니터', 'monitor.png');
-INSERT INTO categories (id, name, img) values (4, '프린터', 'printer.png');
+INSERT INTO categories (name, img) values ('노트북', 'notebook.png');
+INSERT INTO categories (name, img) values ('서버', 'server.png');
+INSERT INTO categories (name, img) values ('모니터', 'monitor.png');
+INSERT INTO categories (name, img) values ('프린터', 'printer.png');
 
 INSERT INTO DEPARTMENTS (name) VALUES ('경영지원부');
 INSERT INTO DEPARTMENTS (name) VALUES ('제품2팀');
