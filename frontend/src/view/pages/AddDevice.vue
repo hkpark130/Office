@@ -94,10 +94,11 @@
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="개발 가능 여부" name="status">
+                                <a-form-item label="장비 상태" name="status">
                                   <a-radio-group v-model:value="formState.status">
-                                    <a-radio value="true">개발 가능</a-radio>
-                                    <a-radio value="false">개발 불가능</a-radio>
+                                    <a-radio value="정상">정상</a-radio>
+                                    <a-radio value="노후">노후</a-radio>
+                                    <a-radio value="폐기">폐기</a-radio>
                                   </a-radio-group>
                                 </a-form-item>
 
@@ -213,7 +214,7 @@
         categoryName: "노트북",
         price: 0,
         projectName: "본사",
-        status: "true",
+        status: "정상",
         purpose: "개발",
         description: "",
         model: "",

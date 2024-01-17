@@ -123,6 +123,16 @@ const columns = [
     },
   },
   {
+    title: '상태',
+    dataIndex: 'status',
+    key: 'status',
+    sorter: (a, b) => {
+      const aValue = a.status?a.status:'';
+      const bValue = b.status?b.status:'';
+      return sortWithNullCheck(aValue, bValue);
+    },
+  },
+  {
     title: '태그',
     dataIndex: 'tag',
     key: 'tag',
@@ -177,7 +187,7 @@ const AvailableDevices = defineComponent({
 
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryId, approvalInfo, purpose, spec, id, tag, description, approvalType, deadline } = value;
+        const { categoryId, approvalInfo, purpose, spec, id, tag, description, approvalType, deadline, status } = value;
         const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
         const deadlineDate = (deadline === null)?null:new Date(deadline).toLocaleDateString('ko-KR',
               {
@@ -188,6 +198,7 @@ const AvailableDevices = defineComponent({
         return {
           key: id, // radio 선택시 기준 값
           categoryName: categoryId.name,
+          status: status,
           purposeKey: purpose,
           infoKey: approvalInfo,
           id: <span class="order-id">{id}</span>,

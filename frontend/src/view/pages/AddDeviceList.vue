@@ -287,7 +287,7 @@
         "purpose": "사무",
         "user": "김철수",
         "manageDepName": "경영지원부",
-        "status": "true",
+        "status": "정상",
         "projectName": "농협",
         "spec": "RAM: 16G\nCPU: 8core",
         "price": "80,000",

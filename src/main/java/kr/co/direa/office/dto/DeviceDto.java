@@ -28,7 +28,7 @@ public class DeviceDto implements Serializable {
     private String tag;
     private String company;
     private String sn;
-    private Boolean status;
+    private String status;
     private String purpose;
     private Date purchaseDate;
     private String categoryName;

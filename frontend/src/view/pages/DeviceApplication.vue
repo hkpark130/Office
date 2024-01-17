@@ -21,7 +21,7 @@
                           <a-col :xs="24">
                             <div class="add-product-content">
                               <sdCards title="장비 사용 신청">
-                                <a-form-item label="관리번호">
+                                <a-form-item label="관리번호" required>
                                   <a-input v-model:value="formState.deviceId" disabled/>
                                 </a-form-item>
 
@@ -29,6 +29,7 @@
                                   name="category"
                                   :initialValue="formState.categoryName"
                                   label="품목"
+                                  required
                                 >
                                   <a-select
                                     v-model:value="formState.category"
@@ -40,6 +41,14 @@
                                       :value="category.name"
                                     >{{ category.name }}</a-select-option>
                                   </a-select>
+                                </a-form-item>
+
+                                <a-form-item label="상태" name="status" required>
+                                  <a-radio-group v-model:value="formState.status" disabled>
+                                    <a-radio value="정상">정상</a-radio>
+                                    <a-radio value="노후">노후</a-radio>
+                                    <a-radio value="폐기">폐기</a-radio>
+                                  </a-radio-group>
                                 </a-form-item>
 
                                 <a-row :gutter="15">

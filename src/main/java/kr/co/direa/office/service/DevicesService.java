@@ -38,8 +38,8 @@ public class DevicesService {
     }
 
     public List<DeviceDto> findByStatusTrue() {
-        // Device의 status가 true인 기기 중에서 폐기된 기기이거나 대여중인 기기가 아닌 기기만 가져옴
-        // + 타입이 반납이 아닌 승인대기인 기기도 제외
+        // Device의 status가 폐기가 아닌 기기 중에서 신청이 폐기 처리된 기기이거나 대여중인 기기가 아닌 기기만 가져옴
+        // + 타입이 반납이 아닌 승인대기인 기기도 제외, (반납예정은 포함한다는 것)
 
         List<Devices> devicesList = devicesRepository.findByStatusTrue();
         return devicesList.stream()

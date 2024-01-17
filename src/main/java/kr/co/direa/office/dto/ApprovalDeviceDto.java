@@ -21,7 +21,7 @@ public class ApprovalDeviceDto implements Serializable {
     private String reason;
     private Users approverId;
     private String deviceId;
-    private Boolean deviceStatus;
+    private String deviceStatus;
     private String devicePurpose;
     private String categoryName;
     private String img;

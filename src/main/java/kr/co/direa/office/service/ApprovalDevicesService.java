@@ -102,6 +102,7 @@ public class ApprovalDevicesService {
 
     public List<DeviceDto> findAllExceptTypeAndApprovalInfo(String type, String approvalInfo) {
         // ApprovalDevice의 type이 '폐기'이고 approvalInfo가 '승인완료'인 것을 제외하고 나머지를 가져오는 로직
+        // + Device의 status가 '폐기'인 Device의도 제외
         // 완전히 폐기 처리된 기기 제외
 
         List<Devices> devicesList = devicesRepository.findAll();
@@ -113,7 +114,7 @@ public class ApprovalDevicesService {
                     return latestApprovalDevice.map(approvalDevices ->
                             !(approvalDevices.getType().equals(type) &&
                                     approvalDevices.getApprovalInfo().equals(approvalInfo))
-                    ).orElse(true);
+                    ).orElse( !("폐기".equals(device.getStatus())) );
                 })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
@@ -140,6 +141,7 @@ public class ApprovalDevicesService {
 
     public List<DeviceDto> findByTypeAndApprovalInfo(String type, String approvalInfo) {
         // ApprovalDevice의 type이 '폐기'이고 approvalInfo가 '승인완료'인 기기 가져오는 로직
+        // + Device의 status가 폐기인 기기도 추가
         // 완전히 폐기 처리된 기기
 
         List<Devices> devicesList = devicesRepository.findAll();
@@ -149,9 +151,11 @@ public class ApprovalDevicesService {
                             .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                                     Comparator.nullsLast(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
-                            approvalDevices.getType().equals(type) &&
-                                    approvalDevices.getApprovalInfo().equals(approvalInfo)
-                    ).orElse(false); // 조건 완전 일치(폐기 처리된) 하는 기기만
+                             (
+                                type.equals(approvalDevices.getType()) &&
+                                approvalInfo.equals(approvalDevices.getApprovalInfo())
+                             )
+                    ).orElse("폐기".equals(device.getStatus()));
                 })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
