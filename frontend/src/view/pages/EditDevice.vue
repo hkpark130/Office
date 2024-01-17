@@ -1,11 +1,24 @@
 <template>
-    <sdPageHeader title="장비 등록"></sdPageHeader>
+    <sdPageHeader title="장비 편집"></sdPageHeader>
     <Main>
       <a-row :gutter="15">
         <a-col :xs="24">
           <sdCards headless>
             <a-row :gutter="25" justify="center">
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
+                <a-row class="ant-row-middle" justify="center">
+                  <a-col :md="18" :xs="23" >
+                    <a-input placeholder="편집할 장비의 `관리번호` 를 입력해주세요." v-model:value="searcgDeviceId" />
+                  </a-col>
+                  <a-col :md="1" :xs="1" :class="rtl ? 'text-left' : 'text-right'">
+                    <a to="#" @click="searchDevice">
+                      <span class="certain-category-icon">
+                        <sdFeatherIcons type="search" size="25"/>
+                      </span>
+                    </a>
+                  </a-col>
+                </a-row>
+
                 <AddProductForm>
                   <a-form
                     :ref="formRef"
@@ -22,9 +35,10 @@
                             <div class="add-product-content">
                               <sdCards title="About Device">
                                 <a-form-item
-                                  name="category"
+                                  name="categoryName"
                                   :initialValue="formState.categoryName"
                                   label="품목"
+                                  required
                                 >
                                   <a-select
                                     v-model:value="formState.categoryName"
@@ -38,16 +52,9 @@
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="관리번호">
+                                <a-form-item label="관리번호" required>
                                   <div class="input-prepend-wrap">
-                                    <a-input name="id" v-model:value="formState.id"/>
-                                    <span class="input-append">
-                                      <button class="btn-icon" type="button" :onClick="checkDup" transparented>중복체크</button> 
-                                      <sdFeatherIcons v-if="checkFinished == true" 
-                                      :style="{
-                                            backgroundColor: '#20C997',
-                                        }" type="circle" size="44" />
-                                    </span>
+                                    <a-input name="id" v-model:value="formState.id" disabled/>
                                   </div>
                                 </a-form-item>
 
@@ -77,8 +84,26 @@
                                 </a-form-item>
 
                                 <a-form-item
+                                  name="manageDepName"
+                                  initialValue=""
+                                  label="관리부서"
+                                >
+                                  <a-select
+                                    v-model:value="formState.manageDepName"
+                                    style="width: 100%"
+                                  >
+                                    <a-select-option
+                                      v-for="department in departments"
+                                      :key="department.id"
+                                      :value="department.name"
+                                    >{{ department.name }}</a-select-option>
+                                  </a-select>
+                                </a-form-item>
+
+                                <a-form-item
                                   name="purpose"
                                   label="용도"
+                                  required
                                 >
                                   <a-select
                                     name="purpose"
@@ -94,7 +119,7 @@
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="개발 가능 여부" name="status">
+                                <a-form-item label="개발 가능 여부" name="status" required>
                                   <a-radio-group v-model:value="formState.status">
                                     <a-radio value="true">개발 가능</a-radio>
                                     <a-radio value="false">개발 불가능</a-radio>
@@ -157,7 +182,6 @@
                                     <DatePickerWrapper>
                                       <a-date-picker 
                                         v-model:value="formState.purchaseDate"
-                                        style="width: 100%"
                                       />
                                     </DatePickerWrapper>
                                   </DatePickerWrap>
@@ -193,28 +217,32 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
   import { AddProductForm } from "./style";
+  import { DatePickerWrap } from './ui-elements-styled';
   import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
+  import dayjs from 'dayjs';
 
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm },
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
     setup() {
       const submitValues = ref({});
       const formRef = ref();
       const { state, dispatch } = useStore();
       const { push } = useRouter();
-      const checkFinished = ref(false);
       const projectTmp = ref();
+      const searcgDeviceId = ref();
 
       const categories = computed(() => state.caregoryList.data);
       const projects = computed(() => state.projectList.data);
+      const departments = computed(() => state.departmentList.data);
 
       const searchData = toRef(projects.value);
       const filteredData = toRef(projects.value);
+      const getDeviceById = ref();
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
@@ -222,12 +250,25 @@
         });
         filteredData.value = data;
       };
+
+      const searchDevice = async () => {
+        const response = await dispatch('checkDuplication', searcgDeviceId.value);
+        if (response) {
+          alert('장비를 찾을 수 없습니다.');
+          return;
+        } else {
+          formState.id = searcgDeviceId.value;
+          await dispatch('getDeviceById', formState.id);
+          getDeviceById.value = state.deviceById.getDeviceData;
+        }
+      };
   
       const formState = reactive({
         id: "",
         categoryName: "노트북",
         price: 0,
         projectName: "본사",
+        manageDepName: "경영지원부",
         status: "true",
         purpose: "개발",
         description: "",
@@ -235,6 +276,7 @@
         company: "",
         sn: "",
         spec: "",
+        auto: "manual",
         purchaseDate: "",
         layout: "vertical",
       });
@@ -244,19 +286,31 @@
         projectTmp.value = v;
       }
 
-      watch(() => formState.id, (newId, oldId) => {
+      watch(() => getDeviceById.value, (newId, oldId) => {
         if (newId !== oldId) {
-          checkFinished.value = false;
+          formState.categoryName = getDeviceById.value.categoryName;
+          formState.price = getDeviceById.value.price;
+          formState.projectName = getDeviceById.value.projectName;
+          formState.manageDepName = getDeviceById.value.manageDepName;
+          formState.status = getDeviceById.value.status.toString();
+          formState.purpose = getDeviceById.value.purpose;
+          formState.description = getDeviceById.value.description;
+          formState.model = getDeviceById.value.model;
+          formState.company = getDeviceById.value.company;
+          formState.spec = getDeviceById.value.spec;
+          formState.sn = getDeviceById.value.sn;
+          formState.purchaseDate = (getDeviceById.value.purchaseDate === null) ? 
+            null : dayjs(getDeviceById.value.purchaseDate);
         }
       });
   
       const handleFinish = () => {
-        if (!checkFinished.value) {
-          alert('관리번호 중복체크를 해주세요.');
+        if (!formState.id) {
+          alert('관리번호를 입력해 주세요.');
           return;
         }
         
-        dispatch('submitAddDevicePost', formState);
+        dispatch('submitEditDevicePut', formState);
         alert('등록되었습니다.');
         push('/');
       };
@@ -264,60 +318,23 @@
       const handleFinishFailed = (errors) => {
         console.log(errors);
       };
-
-      const checkDup = async () => {
-        if (formState.id === "") {
-          alert('관리번호를 입력해주세요.');
-          return;
-        }
-
-        const response = await dispatch('checkDuplication', formState.id);
-        if (response) {
-          alert('사용 가능한 관리번호입니다.');
-          checkFinished.value = true;
-        } else {
-          alert('이미 사용 중인 관리번호입니다.');
-          checkFinished.value = false;
-        }
-
-      };
-  
-      const handleSubmit = (values) => {
-        submitValues.value = values;
-      };
-  
-      const rules = {
-        name: [
-          {
-            required: true,
-            message: "Please input Activity name",
-            trigger: "blur",
-          },
-        ],
-      };
-  
-      const resetForm = () => {
-        formRef.value.ruleformState.resetFields();
-      };
   
       return {
-        checkDup,
         projects,
         categories,
-        checkFinished,
-        rules,
-        resetForm,
         submitValues,
         formState,
         handleFinish,
         handleFinishFailed,
-        handleSubmit,
         formRef,
         searchData,
         filteredData,
         search,
         onClickSearchList,
         projectTmp,
+        searchDevice,
+        searcgDeviceId,
+        departments,
       };
     },
   });

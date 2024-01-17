@@ -63,6 +63,11 @@ export default [
     component: () => import(/* webpackChunkName: "AddApproval" */ '@/view/pages/AddApproval.vue'),
   },
   {
+    name: 'edit-device',
+    path: '/edit-device',
+    component: () => import(/* webpackChunkName: "EditDevice" */ '@/view/pages/EditDevice.vue'),
+  },
+  {
     name: 'add-device',
     path: '/add-device',
     component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDevice.vue'),

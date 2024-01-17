@@ -93,4 +93,20 @@ public class Devices extends BaseTimeEntity{
         this.approvalDevices = approvalDevices;
     }
 
+    public void update(Categories category, Projects project, Departments manageDep, long price,
+                       Boolean status, String purpose, String description, String model, String company,
+                       String sn, String spec, Date purchaseDate) {
+        this.categoryId = category;
+        this.projectId = project;
+        this.manageDep = manageDep;
+        this.price = price;
+        this.status = status;
+        this.purpose = purpose;
+        this.description = description;
+        this.model = model;
+        this.company = company;
+        this.sn = sn;
+        this.spec = spec;
+        this.purchaseDate = purchaseDate;
+    }
 }

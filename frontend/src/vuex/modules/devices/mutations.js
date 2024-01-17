@@ -83,6 +83,18 @@ export default {
     state.error = err;
   },
 
+  putEditDeviceBegin(state) {
+    state.loading = true;
+  },
+  putEditDeviceSuccess(state, data) {
+    state.loading = false;
+    state.posts = data;
+  },
+  putEditDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
   checkDuplicationBegin(state) {
     state.loading = true;
   },
