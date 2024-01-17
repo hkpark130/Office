@@ -1,5 +1,6 @@
 package kr.co.direa.office.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.exception.CustomException;
@@ -89,5 +90,33 @@ public class DevicesService {
         return myDevices.stream()
                 .map(DeviceDto::new)
                 .toList();
+    }
+
+    @Transactional
+    public void update(DeviceDto requestDto) {
+        Devices device = devicesRepository.findById(requestDto.getId()).orElseThrow(() ->
+                new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + requestDto.getId()));
+        Categories category = (requestDto.getCategoryName() != null)?
+                categoriesService.findByName(requestDto.getCategoryName()):null;
+        Projects project = (requestDto.getProjectName() != null)?
+                projectsService.findByName(requestDto.getProjectName()):null;
+        Departments manageDep = (requestDto.getManageDepName() != null)?
+                departmentsService.findByName(requestDto.getManageDepName()):null;
+
+        device.update(
+                category,
+                project,
+                manageDep,
+                (requestDto.getPrice() == null)?0:requestDto.getPrice(),
+                requestDto.getStatus(),
+                requestDto.getPurpose(),
+                requestDto.getDescription(),
+                requestDto.getModel(),
+                requestDto.getCompany(),
+                requestDto.getSn(),
+                requestDto.getSpec(),
+                requestDto.getPurchaseDate()
+        );
     }
 }

@@ -79,6 +79,13 @@
           </router-link>
         </a-menu-item>
 
+        <a-menu-item @click="toggleCollapsed" key="editDevice">
+          <router-link to="/edit-device">
+            <sdFeatherIcons type="edit-3" />
+            <span> 장비 편집 </span>
+          </router-link>
+        </a-menu-item>
+
         <a-menu-item @click="toggleCollapsed" key="addDeviceList">
           <router-link to="/add-device-list">
             <sdFeatherIcons type="file-plus" />

@@ -6,6 +6,7 @@ import devices from './modules/devices/actionCreator';
 import devicePurchase from './modules/devices/devicePurchase';
 import deviceById from './modules/devices/getDeviceById';
 import addDevice from './modules/devices/addDevice';
+import editDevice from './modules/devices/editDevice';
 import disposeDevicesAdmin from './modules/disposeDevicesAdmin/actionCreator';
 import devicesAdmin from './modules/devicesAdmin/actionCreator';
 import myList from './modules/myList/actionCreator';
@@ -40,5 +41,6 @@ export default createStore({
     getActivities,
     approvals,
     comments,
+    editDevice,
   },
 });

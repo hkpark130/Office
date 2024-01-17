@@ -14,7 +14,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-
+        log.error("error", ex);
         String errorMessage = "An error occurred: " + ex.getMessage();
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
