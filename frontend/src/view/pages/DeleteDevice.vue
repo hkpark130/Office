@@ -118,7 +118,7 @@
 
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -155,7 +155,7 @@
     async setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
-      const { push } = useRouter();
+      const { push, go } = useRouter();
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
@@ -258,6 +258,10 @@
         const imageTypePattern = /^image\//;
         return imageTypePattern.test(file.type);
       }
+
+      const handleCancel = () => {
+        go(-1);
+      };
   
       return {
         fileList,
@@ -272,6 +276,7 @@
         handleSubmit,
         formRef,
         disabled,
+        handleCancel,
       };
     },
   });

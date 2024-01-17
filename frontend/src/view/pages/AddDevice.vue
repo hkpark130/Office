@@ -170,7 +170,7 @@
                       </div>
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -207,7 +207,7 @@
       const submitValues = ref({});
       const formRef = ref();
       const { state, dispatch } = useStore();
-      const { push } = useRouter();
+      const { push, go } = useRouter();
       const checkFinished = ref(false);
       const projectTmp = ref();
 
@@ -300,6 +300,10 @@
       const resetForm = () => {
         formRef.value.ruleformState.resetFields();
       };
+
+      const handleCancel = () => {
+        go(-1);
+      };
   
       return {
         checkDup,
@@ -319,6 +323,7 @@
         search,
         onClickSearchList,
         projectTmp,
+        handleCancel,
       };
     },
   });

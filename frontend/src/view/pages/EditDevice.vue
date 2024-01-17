@@ -193,7 +193,7 @@
                       </div>
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -232,7 +232,7 @@
       const submitValues = ref({});
       const formRef = ref();
       const { state, dispatch } = useStore();
-      const { push } = useRouter();
+      const { push, go } = useRouter();
       const projectTmp = ref();
       const searcgDeviceId = ref();
 
@@ -319,6 +319,10 @@
         console.log(errors);
       };
   
+      const handleCancel = () => {
+        go(-1);
+      };
+
       return {
         projects,
         categories,
@@ -335,6 +339,7 @@
         searchDevice,
         searcgDeviceId,
         departments,
+        handleCancel,
       };
     },
   });
