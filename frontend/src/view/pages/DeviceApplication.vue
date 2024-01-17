@@ -112,6 +112,22 @@
                                     :rows="5"
                                   />
                                 </a-form-item>
+
+                                <a-form-item
+                                  name="deadline"
+                                  label="마감일"
+                                  required
+                                >
+                                  <DatePickerWrap>
+                                    <DatePickerWrapper>
+                                      <a-date-picker 
+                                        :disabledDate="disabledDate"
+                                        v-model:value="formState.deadline"
+                                        style="width: 100%"
+                                      />
+                                    </DatePickerWrapper>
+                                  </DatePickerWrap>
+                                </a-form-item>
                               </sdCards>
                             </div>
                           </a-col>
@@ -144,7 +160,8 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
+  import { DatePickerWrap } from './ui-elements-styled';
   import { AddProductForm } from "./style";
   import { computed, ref, reactive, defineComponent, watch } from "vue";
   import { useRouter } from 'vue-router';
@@ -152,7 +169,7 @@
   
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm },
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
     setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
@@ -192,7 +209,12 @@
         reason: "",
         type: "대여",
         layout: "vertical",
+        deadline: "",
       });
+
+      const disabledDate = (current) => {
+        return current && current.valueOf() < Date.now();
+      }
   
       const handleFinish = () => {
         dispatch('submitDeviceApplicationPost', formState);
@@ -248,6 +270,7 @@
         departments,
         onChange,
         disabled,
+        disabledDate,
       };
     },
   });

@@ -1,9 +1,5 @@
 package kr.co.direa.office.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import kr.co.direa.office.domain.Notifications;
-import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
@@ -106,6 +102,15 @@ public class DeviceController {
     @PostMapping(value = "/add-device")
     ResponseEntity<?> addDevice(@RequestBody DeviceDto requestDto) {
         devicesService.save(requestDto);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @PutMapping(value = "/edit-device")
+    ResponseEntity<?> updateDevice(@RequestBody DeviceDto requestDto) {
+        devicesService.update(requestDto);
 
         return ResponseEntity.ok(
                 "success"

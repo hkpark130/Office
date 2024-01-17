@@ -37,6 +37,9 @@ public abstract class Approvals extends BaseTimeEntity {
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
+//    @ManyToMany(cascade = CascadeType.PERSIST)
+//    private Set<Tag> tags = new HashSet<>();
+
     public Approvals() {
 
     }

@@ -6,6 +6,7 @@ import devices from './modules/devices/actionCreator';
 import devicePurchase from './modules/devices/devicePurchase';
 import deviceById from './modules/devices/getDeviceById';
 import addDevice from './modules/devices/addDevice';
+import editDevice from './modules/devices/editDevice';
 import disposeDevicesAdmin from './modules/disposeDevicesAdmin/actionCreator';
 import devicesAdmin from './modules/devicesAdmin/actionCreator';
 import myList from './modules/myList/actionCreator';
@@ -18,6 +19,7 @@ import getNotifications from './modules/notification/actionCreator';
 import getActivities from './modules/activities/actionCreator';
 import approvals from './modules/approvals/actionCreator';
 import comments from './modules/comments/actionCreator';
+import addCategory from './modules/categories/addCategory';
 
 export default createStore({
   modules: {
@@ -40,5 +42,6 @@ export default createStore({
     getActivities,
     approvals,
     comments,
+    addCategory,
   },
 });

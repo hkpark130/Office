@@ -63,6 +63,11 @@ export default [
     component: () => import(/* webpackChunkName: "AddApproval" */ '@/view/pages/AddApproval.vue'),
   },
   {
+    name: 'edit-device',
+    path: '/edit-device',
+    component: () => import(/* webpackChunkName: "EditDevice" */ '@/view/pages/EditDevice.vue'),
+  },
+  {
     name: 'add-device',
     path: '/add-device',
     component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDevice.vue'),
@@ -70,7 +75,12 @@ export default [
   {
     name: 'add-device-list',
     path: '/add-device-list',
-    component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDeviceList.vue'),
+    component: () => import(/* webpackChunkName: "AddDeviceList" */ '@/view/pages/AddDeviceList.vue'),
+  },
+  {
+    name: 'add-category',
+    path: '/add-category',
+    component: () => import(/* webpackChunkName: "AddCategory" */ '@/view/pages/AddCategory.vue'),
   },
   {
     name: 'deviceListForAdmin',
