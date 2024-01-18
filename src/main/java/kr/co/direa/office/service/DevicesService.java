@@ -38,30 +38,19 @@ public class DevicesService {
         return devicesRepository.countByCategoryId(category);
     }
 
-    public List<DeviceDto> findByStatusTrue() {
-        // Device의 status가 true인 기기 중에서 폐기된 기기이거나 대여중인 기기가 아닌 기기만 가져옴
-        // + 타입이 반납이 아닌 승인대기인 기기도 제외
+    public List<DeviceDto> findByIsUsableTrue() {
+        // Device의 is_usable이 true인 기기와 반납예정 기기만 가져옴
 
-        List<Devices> devicesList = devicesRepository.findByStatusTrue();
+        List<Devices> devicesList = devicesRepository.findByIsUsableTrue();
         return devicesList.stream()
                 .filter(device -> {
                     Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
                             .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                                     Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
-                            !(
-                                (
-                                    ("폐기").equals(approvalDevices.getType()) &&
-                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
-                                ) ||
-                                (
-                                    ("대여").equals(approvalDevices.getType()) &&
-                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
-                                ) ||
-                                (
-                                    !("반납").equals(approvalDevices.getType()) &&
-                                    ("승인대기").equals(approvalDevices.getApprovalInfo())
-                                )
+                            (
+                                ("반납").equals(approvalDevices.getType()) &&
+                                ("승인대기").equals(approvalDevices.getApprovalInfo())
                             )
                     ).orElse(true);
                 })
@@ -110,6 +99,7 @@ public class DevicesService {
                 manageDep,
                 (requestDto.getPrice() == null)?0:requestDto.getPrice(),
                 requestDto.getStatus(),
+                requestDto.getIsUsable(),
                 requestDto.getPurpose(),
                 requestDto.getDescription(),
                 requestDto.getModel(),

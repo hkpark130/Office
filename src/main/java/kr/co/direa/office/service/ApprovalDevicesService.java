@@ -100,21 +100,11 @@ public class ApprovalDevicesService {
         return approvalDeviceDto;
     }
 
-    public List<DeviceDto> findAllExceptTypeAndApprovalInfo(String type, String approvalInfo) {
-        // ApprovalDevice의 type이 '폐기'이고 approvalInfo가 '승인완료'인 것을 제외하고 나머지를 가져오는 로직
+    public List<DeviceDto> findByStatusNot(String status) {
         // 완전히 폐기 처리된 기기 제외
 
-        List<Devices> devicesList = devicesRepository.findAll();
+        List<Devices> devicesList = devicesRepository.findByStatusNot(status);
         return devicesList.stream()
-                .filter(device -> {
-                    Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
-                            .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                                    Comparator.nullsLast(Comparator.naturalOrder())));
-                    return latestApprovalDevice.map(approvalDevices ->
-                            !(approvalDevices.getType().equals(type) &&
-                                    approvalDevices.getApprovalInfo().equals(approvalInfo))
-                    ).orElse(true);
-                })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
                     deviceDto.setHistory(getHistory(deviceDto.getId(), false));
@@ -138,21 +128,9 @@ public class ApprovalDevicesService {
         return historyList;
     }
 
-    public List<DeviceDto> findByTypeAndApprovalInfo(String type, String approvalInfo) {
-        // ApprovalDevice의 type이 '폐기'이고 approvalInfo가 '승인완료'인 기기 가져오는 로직
-        // 완전히 폐기 처리된 기기
-
-        List<Devices> devicesList = devicesRepository.findAll();
+    public List<DeviceDto> findByStatus(String status) {
+        List<Devices> devicesList = devicesRepository.findByStatus(status);
         return devicesList.stream()
-                .filter(device -> {
-                    Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
-                            .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                                    Comparator.nullsLast(Comparator.naturalOrder())));
-                    return latestApprovalDevice.map(approvalDevices ->
-                            approvalDevices.getType().equals(type) &&
-                                    approvalDevices.getApprovalInfo().equals(approvalInfo)
-                    ).orElse(false); // 조건 완전 일치(폐기 처리된) 하는 기기만
-                })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
                     deviceDto.setHistory(getHistory(deviceDto.getId(), true));
@@ -176,5 +154,15 @@ public class ApprovalDevicesService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
         return new ApprovalDeviceDto(approvalDevices);
+    }
+
+    public void setReturnByIdAsAdmin(Long approvalId) {
+        ApprovalDevices approvalDevices = approvalDevicesRepository.findById(approvalId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + approvalId));
+
+        // (반납, 승인대기)에서 -> (반납, 승인완료)로 가지말고 삭제?
+//        approvalDevices.setApprovalInfo();
+
     }
 }

@@ -46,7 +46,6 @@ public class ApprovalController {
         );
     }
 
-    // 구현하자
     @PostMapping(value = "/device-return")
     ResponseEntity<?> deviceReturn(
             @RequestBody Map<String, Object> request
@@ -145,5 +144,17 @@ public class ApprovalController {
                 "success"
         );
     }
+
+    @GetMapping(value = "/admin-device-return/{approvalId}")
+    ResponseEntity<?> approvalDeviceReturn(
+            @PathVariable Long approvalId
+    ) {
+        approvalDevicesService.setReturnByIdAsAdmin(approvalId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
 
 }

@@ -64,6 +64,16 @@ const actions = {
     }
   },
 
+  async adminReturnDevice({ commit }, approvalId) {
+    try {
+      commit('adminReturnDeviceBegin');
+      await DataService.get(`/api/admin-device-return/${approvalId}`);
+      commit('adminReturnDeviceSuccess', approvalId);
+    } catch (err) {
+      commit('adminReturnDeviceErr', err);
+    }
+  },
+
   async fetchAvailableDeviceList({ commit }) {
     try {
       commit('fetchAvailableDeviceListBegin');
