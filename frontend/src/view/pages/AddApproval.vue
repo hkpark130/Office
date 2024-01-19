@@ -107,7 +107,7 @@
                       </div>
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -135,6 +135,7 @@
   import { AddProductForm } from "./style";
   import { ref, reactive, defineComponent } from "vue";
   import { message } from "ant-design-vue";
+  import { useRouter } from 'vue-router';
   
   const fileList = [
     // {
@@ -156,6 +157,7 @@
       const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
+      const { go } = useRouter();
   
       const fileUploadProps = {
         name: "file",
@@ -220,6 +222,10 @@
       const resetForm = () => {
         formRef.value.ruleformState.resetFields();
       };
+
+      const handleCancel = () => {
+        go(-1);
+      };
   
       return {
         fileList,
@@ -234,6 +240,7 @@
         handleFinishFailed,
         handleSubmit,
         formRef,
+        handleCancel,
       };
     },
   });

@@ -52,12 +52,18 @@ public class ApprovalDevicesService {
         approvalDevicesRepository.save(requestDto.toEntity());
     }
 
-    public void setApprovalInfoById(Long id, String approvalInfo) {
+    public void setApprovalInfoById(Long id, String approvalInfo, Boolean isUsable) {
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
+
+        if (approvalDevices.getDeviceId() != null && isUsable != null) {
+            approvalDevices.getDeviceId().setIsUsable(isUsable);
+            devicesRepository.save(approvalDevices.getDeviceId());
+        } // 타입별로 유저블 변경해야함
         approvalDevices.setApprovalInfo(approvalInfo);
         approvalDevicesRepository.save(approvalDevices);
+
     }
 
     public ApprovalDeviceDto convertFromRequest(Map<String, Object> request) {
@@ -68,6 +74,7 @@ public class ApprovalDevicesService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.get("userName")));
 
+        device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo("승인대기");

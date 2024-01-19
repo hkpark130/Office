@@ -146,7 +146,7 @@
                       
                       <div class="add-form-action">
                         <a-form-item>
-                          <sdButton class="btn-cancel" size="large">
+                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
                             Cancel
                           </sdButton>
                           <sdButton
@@ -188,7 +188,7 @@
       const formRef = ref();
       const projectTmp = ref();
 
-      const { push } = useRouter();
+      const { push, go } = useRouter();
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
       const projects = computed(() => state.projectList.data);
@@ -241,6 +241,10 @@
       const handleFinishFailed = (errors) => {
         console.log(errors);
       };
+
+      const handleCancel = () => {
+        go(-1);
+      };
   
       return {
         file,
@@ -259,6 +263,7 @@
         search,
         onClickSearchList,
         projectTmp,
+        handleCancel,
       };
     },
   });

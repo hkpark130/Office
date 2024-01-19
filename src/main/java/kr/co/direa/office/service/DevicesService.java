@@ -41,7 +41,7 @@ public class DevicesService {
     public List<DeviceDto> findByIsUsableTrue() {
         // Device의 is_usable이 true인 기기와 반납예정 기기만 가져옴
 
-        List<Devices> devicesList = devicesRepository.findByIsUsableTrue();
+        List<Devices> devicesList = devicesRepository.findAll();
         return devicesList.stream()
                 .filter(device -> {
                     Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
@@ -49,10 +49,16 @@ public class DevicesService {
                                     Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
                             (
-                                ("반납").equals(approvalDevices.getType()) &&
-                                ("승인대기").equals(approvalDevices.getApprovalInfo())
-                            )
-                    ).orElse(true);
+                                (
+                                    ("반납").equals(approvalDevices.getType()) &&
+                                    ("승인대기").equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    ("반납").equals(approvalDevices.getType()) &&
+                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
+                                )
+                            ) // 최근 신청기록이 있으면 (반납/승인[대기,완료]) 만 가져오기 <- 반납예정 상태
+                    ).orElse(device.getIsUsable()); // 최근 신청기록이 없어도 가져오기 <- 사용가능 상태
                 })
                 .map(DeviceDto::new).toList();
     }

@@ -118,6 +118,16 @@ const columns = [
       },
   },
   {
+    title: '상태',
+    dataIndex: 'status',
+    key: 'status',
+    sorter: (a, b) => {
+        const aValue = a.status?a.status:'';
+        const bValue = b.status?b.status:'';
+        return sortWithNullCheck(aValue, bValue);
+      },
+  },
+  {
     title: '관리부서',
     dataIndex: 'manageDep',
     key: 'manageDepName',
@@ -156,7 +166,6 @@ const columns = [
         const bValue = b.purchaseDateKey?b.purchaseDateKey:'';
         return sortWithNullCheck(aValue, bValue);
       },
-    
   },
   {
     title: '모델명',
@@ -294,6 +303,7 @@ const Orders = defineComponent({
           categoryName: <span class="customer-name">{categoryName}</span>,
           userKey: username,
           user: <span class="customer-name">{username}</span>,
+          status: status,
           purpose: (
             <div>
               <span class="ordered-amount spnDetails">{purpose}</span>

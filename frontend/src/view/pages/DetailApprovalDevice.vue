@@ -79,8 +79,9 @@
                                 <a-col :span="12">
                                   <a-form-item label="상태" name="status" required>
                                     <a-radio-group v-model:value="formState.status" disabled>
-                                      <a-radio :value=true>Y</a-radio>
-                                      <a-radio :value=false>N</a-radio>
+                                      <a-radio value="정상">정상</a-radio>
+                                      <a-radio value="노후">노후</a-radio>
+                                      <a-radio value="폐기">폐기</a-radio>
                                     </a-radio-group>
                                   </a-form-item>
                                 </a-col>
@@ -193,7 +194,6 @@ const AddProduct = defineComponent({
   async setup() {
     const { state, dispatch } = useStore();
     const router = useRouter();
-    const { push } = useRouter();
     const file = ref(null);
     const list = ref(null);
     const submitValues = ref({});
@@ -231,18 +231,6 @@ const AddProduct = defineComponent({
       layout: "vertical",
     });
 
-    const approvalFinish = () => {
-      dispatch('approvalDeviceFinishPost', formState);
-      alert('\'승인\'되었습니다.');
-      push('/');
-    };
-
-    const approvalReturn = () => {
-      dispatch('approvalDeviceReturnPost', formState);
-      alert('\'반려\'되었습니다.');
-      push('/');
-    };
-
     const disabled = ref(true);
 
     const resetForm = () => {
@@ -270,8 +258,6 @@ const AddProduct = defineComponent({
       resetForm,
       submitValues,
       formState,
-      approvalFinish,
-      approvalReturn,
       formRef,
       disabled,
       comments,

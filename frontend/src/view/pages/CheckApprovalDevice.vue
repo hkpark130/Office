@@ -64,6 +64,7 @@
                                     <a-select
                                       name="purpose"
                                       v-model:value="formState.purpose"
+                                      disabled
                                     >
                                       <a-select-option value="개발"
                                         >개발</a-select-option
@@ -77,9 +78,10 @@
 
                                 <a-col :span="12">
                                   <a-form-item label="상태" name="status" required>
-                                    <a-radio-group v-model:value="formState.status">
-                                      <a-radio :value=true>Y</a-radio>
-                                      <a-radio :value=false>N</a-radio>
+                                    <a-radio-group v-model:value="formState.status" disabled>
+                                      <a-radio value="정상">정상</a-radio>
+                                      <a-radio value="노후">노후</a-radio>
+                                      <a-radio value="폐기">폐기</a-radio>
                                     </a-radio-group>
                                   </a-form-item>
                                 </a-col>
@@ -93,6 +95,7 @@
                                 <a-textarea
                                   v-model:value="formState.reason"
                                   :rows="5"
+                                  disabled
                                 />
                               </a-form-item>
                             </sdCards>
@@ -169,10 +172,12 @@ const AddProduct = defineComponent({
       userName: getApprovalById.value.userName,
       reason: getApprovalById.value.reason,
       type: getApprovalById.value.type,
+      isUsable: null,
       layout: "vertical",
     });
 
     const approvalFinish = () => {
+      formState.isUsable = (formState.type === '반납')?true:false;
       dispatch('approvalDeviceFinishPost', formState);
       alert('\'승인\'되었습니다.');
       push('/');

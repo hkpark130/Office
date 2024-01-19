@@ -23,8 +23,6 @@ import java.util.Map;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class ApprovalController {
-    private final DevicesService devicesService;
-    private final CategoriesService categoriesService;
     private final ApprovalDevicesService approvalDevicesService;
     private final NotificationsService notificationsService;
 
@@ -107,9 +105,11 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceFinish(
             @RequestBody Map<String, Object> request
     ) {
+        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
         approvalDevicesService.setApprovalInfoById(
                 Long.valueOf(request.get("approvalId").toString()),
-                "승인완료"
+                "승인완료",
+                isUsable
         );
 
         // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
@@ -128,9 +128,11 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceReturn(
             @RequestBody Map<String, Object> request
     ) {
+        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
         approvalDevicesService.setApprovalInfoById(
                 Long.valueOf(request.get("approvalId").toString()),
-                "반려"
+                "반려",
+                isUsable
         );
 
         // TODO: 유저에게 반려 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
