@@ -31,4 +31,8 @@ public class Categories {
         this.img = img;
     }
 
+    public Categories(String name, String img) {
+        this.name = name;
+        this.img = img;
+    }
 }

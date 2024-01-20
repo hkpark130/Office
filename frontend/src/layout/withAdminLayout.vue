@@ -181,7 +181,7 @@
             >
               <a-row>
                 <a-col :md="12" :xs="24">
-                  <span class="admin-footer__copyright">2023 © Direa</span>
+                  <span class="admin-footer__copyright">2024 © Direa</span>
                 </a-col>
               </a-row>
             </Footer>

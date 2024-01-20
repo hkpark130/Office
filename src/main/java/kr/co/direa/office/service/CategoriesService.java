@@ -29,4 +29,9 @@ public class CategoriesService {
         return categoriesRepository.findByName(categoryName);
     }
 
+    public void save(CategoryDto requestDto) {
+        categoriesRepository.save(
+                new Categories(requestDto.getName(), "etc.png")
+        );
+    }
 }

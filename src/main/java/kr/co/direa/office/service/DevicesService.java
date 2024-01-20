@@ -1,5 +1,6 @@
 package kr.co.direa.office.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.exception.CustomException;
@@ -37,32 +38,27 @@ public class DevicesService {
         return devicesRepository.countByCategoryId(category);
     }
 
-    public List<DeviceDto> findByStatusTrue() {
-        // Device의 status가 true인 기기 중에서 폐기된 기기이거나 대여중인 기기가 아닌 기기만 가져옴
-        // + 타입이 반납이 아닌 승인대기인 기기도 제외
+    public List<DeviceDto> findByIsUsableTrue() {
+        // Device의 is_usable이 true인 기기와 반납예정 기기만 가져옴
 
-        List<Devices> devicesList = devicesRepository.findByStatusTrue();
+        List<Devices> devicesList = devicesRepository.findAll();
         return devicesList.stream()
                 .filter(device -> {
                     Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
                             .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                                     Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
-                            !(
+                            (
                                 (
-                                    ("폐기").equals(approvalDevices.getType()) &&
-                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
-                                ) ||
-                                (
-                                    ("대여").equals(approvalDevices.getType()) &&
-                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
-                                ) ||
-                                (
-                                    !("반납").equals(approvalDevices.getType()) &&
+                                    ("반납").equals(approvalDevices.getType()) &&
                                     ("승인대기").equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    ("반납").equals(approvalDevices.getType()) &&
+                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
                                 )
-                            )
-                    ).orElse(true);
+                            ) // 최근 신청기록이 있으면 (반납/승인[대기,완료]) 만 가져오기 <- 반납예정 상태
+                    ).orElse(device.getIsUsable()); // 최근 신청기록이 없어도 가져오기 <- 사용가능 상태
                 })
                 .map(DeviceDto::new).toList();
     }
@@ -89,5 +85,34 @@ public class DevicesService {
         return myDevices.stream()
                 .map(DeviceDto::new)
                 .toList();
+    }
+
+    @Transactional
+    public void update(DeviceDto requestDto) {
+        Devices device = devicesRepository.findById(requestDto.getId()).orElseThrow(() ->
+                new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + requestDto.getId()));
+        Categories category = (requestDto.getCategoryName() != null)?
+                categoriesService.findByName(requestDto.getCategoryName()):null;
+        Projects project = (requestDto.getProjectName() != null)?
+                projectsService.findByName(requestDto.getProjectName()):null;
+        Departments manageDep = (requestDto.getManageDepName() != null)?
+                departmentsService.findByName(requestDto.getManageDepName()):null;
+
+        device.update(
+                category,
+                project,
+                manageDep,
+                (requestDto.getPrice() == null)?0:requestDto.getPrice(),
+                requestDto.getStatus(),
+                requestDto.getIsUsable(),
+                requestDto.getPurpose(),
+                requestDto.getDescription(),
+                requestDto.getModel(),
+                requestDto.getCompany(),
+                requestDto.getSn(),
+                requestDto.getSpec(),
+                requestDto.getPurchaseDate()
+        );
     }
 }

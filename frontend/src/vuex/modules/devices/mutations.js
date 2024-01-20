@@ -71,6 +71,17 @@ export default {
     state.error = err;
   },
 
+  adminReturnDeviceBegin(state) {
+    state.loading = true;
+  },
+  adminReturnDeviceSuccess(state,) {
+    state.loading = false;
+  },
+  adminReturnDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
   postAddDeviceBegin(state) {
     state.loading = true;
   },
@@ -79,6 +90,18 @@ export default {
     state.posts = data;
   },
   postAddDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  putEditDeviceBegin(state) {
+    state.loading = true;
+  },
+  putEditDeviceSuccess(state, data) {
+    state.loading = false;
+    state.posts = data;
+  },
+  putEditDeviceErr(state, err) {
     state.loading = false;
     state.error = err;
   },

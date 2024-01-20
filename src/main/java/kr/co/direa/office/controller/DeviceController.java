@@ -1,9 +1,5 @@
 package kr.co.direa.office.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import kr.co.direa.office.domain.Notifications;
-import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
@@ -58,8 +54,7 @@ public class DeviceController {
 
     @GetMapping(value = "/devicelist-admin")
     ResponseEntity<?> deviceListAdmin() {
-        List<DeviceDto> filteredDevices =
-                approvalDevicesService.findAllExceptTypeAndApprovalInfo("폐기", "승인완료");
+        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatusNot("폐기");
 
         return ResponseEntity.ok(
                 filteredDevices
@@ -68,8 +63,7 @@ public class DeviceController {
 
     @GetMapping(value = "/dispose-devicelist-admin")
     ResponseEntity<?> disposeDeviceListAdmin() {
-        List<DeviceDto> filteredDevices =
-                approvalDevicesService.findByTypeAndApprovalInfo("폐기", "승인완료");
+        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatus("폐기");
 
         return ResponseEntity.ok(
                 filteredDevices
@@ -96,7 +90,7 @@ public class DeviceController {
 
     @GetMapping(value = "/available-devicelist")
     ResponseEntity<?> getAvailableDeviceList() {
-        List<DeviceDto> deviceDtoList = devicesService.findByStatusTrue();
+        List<DeviceDto> deviceDtoList = devicesService.findByIsUsableTrue();
 
         return ResponseEntity.ok(
                 deviceDtoList
@@ -106,6 +100,15 @@ public class DeviceController {
     @PostMapping(value = "/add-device")
     ResponseEntity<?> addDevice(@RequestBody DeviceDto requestDto) {
         devicesService.save(requestDto);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @PutMapping(value = "/edit-device")
+    ResponseEntity<?> updateDevice(@RequestBody DeviceDto requestDto) {
+        devicesService.update(requestDto);
 
         return ResponseEntity.ok(
                 "success"

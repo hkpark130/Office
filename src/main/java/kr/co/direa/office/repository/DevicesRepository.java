@@ -11,12 +11,6 @@ import java.util.List;
 public interface DevicesRepository extends JpaRepository<Devices, String> {
 
     Long countByCategoryId(Categories category);
-    List<Devices> findByStatusTrue();
-
-    @Query("SELECT d FROM devices d " +
-            "WHERE d.id IN (SELECT deviceId FROM approval_devices " +
-            "WHERE approvalInfo NOT LIKE '폐기완료' AND approvalInfo NOT LIKE '사용 신청 완료')")
-    List<Devices> findDevicesWithApprovalInfo();
 
     @Query(value = "SELECT d.* " +
             "FROM devices d " +
@@ -26,4 +20,11 @@ public interface DevicesRepository extends JpaRepository<Devices, String> {
             "    WHERE a.user_id = :userId AND (ad.type = '대여' AND a.approval_info = '승인완료')" +
             ")", nativeQuery = true)
     List<Devices> findRentedDevicesByUserId(@Param("userId") Long userId);
+
+    List<Devices> findByIsUsableTrue();
+
+    @Query(value = "SELECT d.* FROM devices d WHERE d.status = :status", nativeQuery = true)
+    List<Devices> findByStatus(@Param("status") String status);
+
+    List<Devices> findByStatusNot(String status);
 }

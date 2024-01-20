@@ -28,13 +28,15 @@ public class DeviceDto implements Serializable {
     private String tag;
     private String company;
     private String sn;
-    private Boolean status;
+    private String status;
+    private Boolean isUsable;
     private String purpose;
     private Date purchaseDate;
     private String categoryName;
     private String projectName;
     private String approvalInfo;
     private String approvalType;
+    private Long approvalId;
     private LocalDateTime deadline;
     private List<Map<String, Object>> history;
 
@@ -56,6 +58,7 @@ public class DeviceDto implements Serializable {
         this.company = entity.getCompany();
         this.sn = entity.getSn();
         this.status = entity.getStatus();
+        this.isUsable = entity.getIsUsable();
         this.purpose = entity.getPurpose();
         this.purchaseDate = entity.getPurchaseDate();
         this.projectName = (this.projectId != null) ? this.projectId.getName() : null;
@@ -67,8 +70,7 @@ public class DeviceDto implements Serializable {
             this.approvalInfo = latestApprovalDevice.get().getApprovalInfo();
             this.approvalType = latestApprovalDevice.get().getType();
             this.deadline = latestApprovalDevice.get().getDeadline();
-        } else {
-            this.approvalInfo = "사용가능";
+            this.approvalId = latestApprovalDevice.get().getId();
         }
     }
 
@@ -87,6 +89,7 @@ public class DeviceDto implements Serializable {
                 .company(company)
                 .sn(sn)
                 .status(status)
+                .isUsable(isUsable)
                 .purpose(purpose)
                 .purchaseDate(purchaseDate)
                 .build();
