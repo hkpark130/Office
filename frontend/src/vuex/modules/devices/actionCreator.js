@@ -74,6 +74,26 @@ const actions = {
     }
   },
 
+  async adminDisposeDevice({ commit }, deviceId) {
+    try {
+      commit('adminDisposeDeviceBegin');
+      await DataService.get(`/api/admin-device-dispose/${deviceId}`);
+      commit('adminDisposeDeviceSuccess', deviceId);
+    } catch (err) {
+      commit('adminDisposeDeviceErr', err);
+    }
+  },
+
+  async adminRecoveryDevice({ commit }, deviceId) {
+    try {
+      commit('adminRecoveryDeviceBegin');
+      await DataService.get(`/api/admin-device-recovery/${deviceId}`);
+      commit('adminRecoveryDeviceSuccess', deviceId);
+    } catch (err) {
+      commit('adminRecoveryDeviceErr', err);
+    }
+  },
+
   async fetchAvailableDeviceList({ commit }) {
     try {
       commit('fetchAvailableDeviceListBegin');

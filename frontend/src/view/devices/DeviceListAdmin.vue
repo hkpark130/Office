@@ -232,21 +232,20 @@ const Orders = defineComponent({
       dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value });
     };
 
-    const removeItem = (deviceId) => {
-      const index = orders.value.findIndex((item) => item.id === deviceId);
-      if (index !== -1) {
-        orders.value.splice(index, 1);
-      }
-    };
-
-    const adminReturnDevice = (approvalId, deviceId) => {
+    const adminReturnDevice = (approvalId) => {
       dispatch('adminReturnDevice', approvalId)
         .then(() => {
-          const index = orders.value.findIndex((item) => item.id === deviceId);
-          if (index !== -1) {
-            orders.value.splice(index, 1);
-          }
+          location.reload();
           alert('반납 처리되었습니다.');
+        }
+      );
+    };
+
+    const adminDisposeDevice = (deviceId) => {
+      dispatch('adminDisposeDevice', deviceId)
+        .then(() => {
+          location.reload();
+          alert('폐기 처리되었습니다.');
         }
       );
     };
@@ -255,7 +254,7 @@ const Orders = defineComponent({
       orders.value.map((value) => {
         let returnIcon = null;
         const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo,
-          username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId } = value;
+          username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId, status } = value;
         const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
               {
                 year: 'numeric',
@@ -331,7 +330,7 @@ const Orders = defineComponent({
             <div class="table-actions">
               <>
                 {returnIcon}
-                <sdButton class="btn-icon" onClick={() => removeItem(id)} type="danger" to="#" shape="circle">
+                <sdButton class="btn-icon" onClick={() => adminDisposeDevice(id)} type="danger" to="#" shape="circle">
                   <sdFeatherIcons type="trash-2" size={16} title="폐기" />
                 </sdButton>
               </>

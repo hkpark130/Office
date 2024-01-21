@@ -21,4 +21,10 @@ public interface ApprovalDevicesRepository extends JpaRepository<ApprovalDevices
             "WHERE USER_ID = :userId ORDER BY CASE WHEN a.APPROVAL_INFO = '승인대기' " +
             "THEN 0 ELSE 1 END, CREATED_DATE DESC", nativeQuery = true)
     List<ApprovalDevices> findByUserId(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
+            "ORDER BY CASE WHEN a.APPROVAL_INFO = '승인대기' THEN 0 ELSE 1 END, CREATED_DATE DESC", nativeQuery = true)
+    List<ApprovalDevices> findAsAdmin();
+
+
 }

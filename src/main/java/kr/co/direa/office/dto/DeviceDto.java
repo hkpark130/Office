@@ -25,7 +25,7 @@ public class DeviceDto implements Serializable {
     private Long price;
     private String model;
     private String description;
-    private String tag;
+    private List<String> tags;
     private String company;
     private String sn;
     private String status;
@@ -54,7 +54,6 @@ public class DeviceDto implements Serializable {
         this.price = entity.getPrice();
         this.model = entity.getModel();
         this.description = entity.getDescription();
-        this.tag = entity.getTag();
         this.company = entity.getCompany();
         this.sn = entity.getSn();
         this.status = entity.getStatus();
@@ -62,6 +61,9 @@ public class DeviceDto implements Serializable {
         this.purpose = entity.getPurpose();
         this.purchaseDate = entity.getPurchaseDate();
         this.projectName = (this.projectId != null) ? this.projectId.getName() : null;
+        this.tags = entity.getDeviceTags().stream()
+                .map(deviceTag -> deviceTag.getTag().getName())
+                .toList();
 
         Optional<ApprovalDevices> latestApprovalDevice = entity.getApprovalDevices().stream()
                 .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
@@ -85,7 +87,6 @@ public class DeviceDto implements Serializable {
                 .price(price)
                 .model(model)
                 .description(description)
-                .tag(tag)
                 .company(company)
                 .sn(sn)
                 .status(status)

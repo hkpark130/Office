@@ -67,6 +67,7 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent } from 'vue';
 import { useStore } from 'vuex';
+import Tag from '../../components/tags/Tag';
 import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
@@ -136,6 +137,8 @@ const columns = [
     title: '태그',
     dataIndex: 'tag',
     key: 'tag',
+    ellipsis: true,
+    width: '100',
   },
   {
     title: '비고',
@@ -187,7 +190,7 @@ const AvailableDevices = defineComponent({
 
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryId, approvalInfo, purpose, spec, id, tag, description, approvalType, deadline, status } = value;
+        const { categoryId, approvalInfo, purpose, spec, id, description, approvalType, deadline, status } = value;
         const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
         const deadlineDate = (deadline === null)?null:new Date(deadline).toLocaleDateString('ko-KR',
               {
@@ -195,6 +198,10 @@ const AvailableDevices = defineComponent({
                 month: 'long',
                 day: 'numeric',
               });
+        const tags = ['태그1', '태그2', '태그3', '태그3', '태그3', '태그3', '태그3', '태그3', '태그3', '태그3'];
+        const tagComponents = tags.map((tag, index) => (
+          <Tag key={index} tagType="colorful" color="blue" data={tag}/>
+        ));
         return {
           key: id, // radio 선택시 기준 값
           categoryName: categoryId.name,
@@ -213,7 +220,11 @@ const AvailableDevices = defineComponent({
               {(approvalInfo === '승인대기' && approvalType === '반납') ? `반납예정 ${deadlineDate}`:"사용가능" }
             </span>
           ),
-          tag: <span class="ordered-amount">{tag}</span>,
+          tag: (
+            <div class="taglist-wrap" style="display: flex; flex-wrap: wrap;">
+              {tagComponents}
+            </div>
+          ),
           purpose: (
             <div>
               <span class="ordered-amount spnDetails">{purpose}</span>

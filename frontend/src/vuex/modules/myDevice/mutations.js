@@ -11,6 +11,17 @@ export default {
     state.error = err;
   },
 
+  editMyDeviceBegin(state) {
+    state.loading = true;
+  },
+  editMyDeviceSuccess(state) {
+    state.loading = false;
+  },
+  editMyDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
   getMyDevicesBegin(state) {
     state.loading = true;
   },

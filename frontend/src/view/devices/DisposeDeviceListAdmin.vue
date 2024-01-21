@@ -187,11 +187,13 @@ const Orders = defineComponent({
       dispatch('disposeDeviceFilter', { column: filterKey.value, value: e.target.value });
     };
 
-    const removeItem = (deviceId) => {
-      const index = orders.value.findIndex((item) => item.id === deviceId);
-      if (index !== -1) {
-        orders.value.splice(index, 1);
-      }
+    const adminRecoveryDevice = (deviceId) => {
+      dispatch('adminRecoveryDevice', deviceId)
+        .then(() => {
+          location.reload();
+          alert('복구 처리되었습니다.');
+        }
+      );
     };
 
     const dataSource = computed(() =>
@@ -263,7 +265,7 @@ const Orders = defineComponent({
           action: (
             <div class="table-actions">
               <>
-                <sdButton class="btn-icon" onClick={() => removeItem(id)} type="info" to="#" shape="circle">
+                <sdButton class="btn-icon" onClick={() => adminRecoveryDevice(id)} type="info" to="#" shape="circle">
                   <font-awesome-icon icon={FontAwesomeIcon["faRecycle"]} size={16} title="복구" />
                 </sdButton>
               </>

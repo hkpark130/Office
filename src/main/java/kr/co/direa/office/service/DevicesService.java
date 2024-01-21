@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static kr.co.direa.office.constant.Constants.*;
 
 @RequiredArgsConstructor
 @Service
@@ -50,12 +53,12 @@ public class DevicesService {
                     return latestApprovalDevice.map(approvalDevices ->
                             (
                                 (
-                                    ("반납").equals(approvalDevices.getType()) &&
-                                    ("승인대기").equals(approvalDevices.getApprovalInfo())
+                                    APPROVAL_RETURN.equals(approvalDevices.getType()) &&
+                                    APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())
                                 ) ||
                                 (
-                                    ("반납").equals(approvalDevices.getType()) &&
-                                    ("승인완료").equals(approvalDevices.getApprovalInfo())
+                                    APPROVAL_RETURN.equals(approvalDevices.getType()) &&
+                                    APPROVAL_COMPLETED.equals(approvalDevices.getApprovalInfo())
                                 )
                             ) // 최근 신청기록이 있으면 (반납/승인[대기,완료]) 만 가져오기 <- 반납예정 상태
                     ).orElse(device.getIsUsable()); // 최근 신청기록이 없어도 가져오기 <- 사용가능 상태
@@ -114,5 +117,14 @@ public class DevicesService {
                 requestDto.getSpec(),
                 requestDto.getPurchaseDate()
         );
+    }
+
+    public void editDescription(Map<String, Object> request) {
+        Devices device = devicesRepository.findById(request.get("id").toString())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + request.get("id")));
+        device.setStatus(request.get("status").toString());
+        device.setDescription(request.get("description").toString());
+        devicesRepository.save(device);
     }
 }

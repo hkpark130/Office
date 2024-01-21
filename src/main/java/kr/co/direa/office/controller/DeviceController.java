@@ -88,6 +88,17 @@ public class DeviceController {
         );
     }
 
+    @PostMapping(value = "/edit-mydevice")
+    ResponseEntity<?> editMyDevice(
+            @RequestBody Map<String, Object> request
+    ) {
+        devicesService.editDescription(request);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
     @GetMapping(value = "/available-devicelist")
     ResponseEntity<?> getAvailableDeviceList() {
         List<DeviceDto> deviceDtoList = devicesService.findByIsUsableTrue();
