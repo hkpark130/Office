@@ -12,10 +12,4 @@ public final class Constants {
     public static final String DISPOSE_TYPE = "폐기";
     public static final String APPROVAL_RETURN = "반납";
     public static final String APPROVAL_RENTAL = "대여";
-
-
-
-
-
-
 }

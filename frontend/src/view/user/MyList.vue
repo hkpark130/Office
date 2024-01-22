@@ -182,6 +182,13 @@ const Orders = defineComponent({
       push("/detail-approval-device/"+approvalId);
     };
 
+    const cancelApproval = (approvalId) => {
+      dispatch('approvalDeviceCancel', approvalId).then(() => {
+        alert('취소되었습니다.');
+        location.reload();
+      });
+    };
+
     const onCancel = () => {
       formState.visible = false;
     };
@@ -228,9 +235,9 @@ const Orders = defineComponent({
             }
           }
 
-        if (approvalInfo === '승인대기') {
+        if (approvalInfo !== '승인완료') {
           deleteIcon = 
-          <sdButton class="btn-icon" type="danger" to="#" shape="circle">
+          <sdButton onClick={() => cancelApproval(approvalId)} class="btn-icon" type="danger" to="#" shape="circle">
             <sdFeatherIcons type="trash-2" size={16} title="삭제" />
           </sdButton>;
           
@@ -239,12 +246,12 @@ const Orders = defineComponent({
               <sdFeatherIcons type="edit" size={16} title="편집" />
             </sdButton>;
 
-          if (state.getUser.isAdmin) {
+          if (state.getUser.isAdmin && approvalInfo !== '반려') {
             checkIcon = 
               <sdButton onClick={() => checkApproval(approvalId)} class="btn-icon" type="success" shape="circle">
                 <sdFeatherIcons type="check" size={16} title="승인/반려" />
               </sdButton>
-            }
+          }
         }
         statusTag = (
           <div class="taglist-wrap">

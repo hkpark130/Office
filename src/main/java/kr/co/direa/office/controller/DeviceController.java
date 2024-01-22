@@ -39,7 +39,7 @@ public class DeviceController {
         List<Map<String, Object>> response = new ArrayList<>();
 
         for (CategoryDto categoryDto : categoryDtoList) {
-            Long deviceCount = devicesService.countByCategoryId(categoryDto.toEntity());
+            Long deviceCount = devicesService.countByCategoryIdAndIsUsable(categoryDto.toEntity(), true);
             map = new HashMap<>();
             map.put("amount", deviceCount);
             map.put("name", categoryDto.getName());

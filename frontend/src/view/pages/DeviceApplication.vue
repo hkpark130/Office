@@ -218,9 +218,10 @@
       }
   
       const handleFinish = () => {
-        dispatch('submitDeviceApplicationPost', formState);
-        alert('신청되었습니다.');
-        push('/');
+        dispatch('submitDeviceApplicationPost', formState).then(() => {
+          alert('신청되었습니다.');
+          push('/');
+        });
       };
   
       const handleFinishFailed = (errors) => {

@@ -22,4 +22,15 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  approvalDeviceCancelBegin(state) {
+    state.loading = true;
+  },
+  approvalDeviceCancelSuccess(state) {
+    state.loading = false;
+  },
+  approvalDeviceCancelErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

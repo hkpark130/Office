@@ -54,3 +54,5 @@ INSERT INTO APPROVAL_DEVICES (id, device_id, img, type) values (5, 'DIR-N-101', 
 
 INSERT INTO TAGS (name) values ('OS 설치 필요');
 INSERT INTO TAGS (name) values ('부팅 느림');
+
+-- INSERT INTO DEVICE_TAG (tag_id, device_id) values (1, 'DIR-N-101');

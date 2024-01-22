@@ -3,10 +3,12 @@ package kr.co.direa.office.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "device_tag")
 @Table(name = "device_tag")
 @Getter
+@Setter
 public class DeviceTag extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

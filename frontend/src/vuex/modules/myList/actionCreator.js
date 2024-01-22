@@ -36,6 +36,16 @@ const actions = {
       commit('getMyApprovalErr', err);
     }
   },
+
+  async approvalDeviceCancel({ commit }, approvalId) {
+    try {
+      commit('approvalDeviceCancelBegin');
+      await DataService.delete(`/api/approval-device-cancel/${approvalId}`);
+      commit('approvalDeviceCancelSuccess');
+    } catch (err) {
+      commit('approvalDeviceCancelErr', err);
+    }
+  },
 };
 
 export default {

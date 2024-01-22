@@ -8,7 +8,7 @@
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
                 <AddProductForm>
                   <a-form
-                    :ref="formRef"
+                    ref="formRef"
                     style="width: 100%"
                     :model="formState"
                     :layout="formState.layout"
@@ -104,7 +104,7 @@
                                 <a-form-item name="tag" label="tag">
                                   <TagInput>
                                       <div>
-                                          <template v-for="(tag, index) in tags">
+                                          <template v-for="(tag, index) in formState.tag">
                                               <a-tooltip
                                                   v-if="tag.length > 20"
                                                   :key="tag"
@@ -112,7 +112,7 @@
                                               >
                                                   <a-tag
                                                       :key="tag"
-                                                      :closable="index !== 0"
+                                                      :closable="true"
                                                       @close="() => handleClose(tag)"
                                                   >
                                                       {{ `${tag.slice(0, 20)}...` }}
@@ -121,7 +121,7 @@
                                               <a-tag
                                                   v-else
                                                   :key="index + 1"
-                                                  :closable="index !== 0"
+                                                  :closable="true"
                                                   @close="() => handleClose(tag)"
                                               >
                                                   {{ tag }}
@@ -170,6 +170,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -204,7 +205,7 @@
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
-      const formRef = ref();
+      const formRef = ref(null);
 
       await dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
       
@@ -225,7 +226,7 @@
         reason: "",
         type: "반납",
         isUsable: false,
-        tag: ['Movies', 'Books', 'Music', 'Sports'],
+        tag: ['부팅 느림', 'OS 미설치'],
         layout: "vertical",
       });
 
@@ -233,10 +234,16 @@
         return current && current.valueOf() < Date.now();
       }
   
-      const handleFinish = () => {
-        dispatch('submitDeviceReturnPost', formState);
-        alert('신청되었습니다.');
-        push('/');
+      const handleFinish = async () => {
+        try {
+          await formRef.value.validate();
+          dispatch('submitDeviceReturnPost', formState).then(() => {
+            alert('신청되었습니다.');
+            push('/');
+          });
+        } catch (error) {
+          console.error(error);
+        }
       };
   
       const handleFinishFailed = (errors) => {
@@ -244,17 +251,12 @@
       };
 
       const disabled = ref(true);
-  
-      const resetForm = () => {
-        formRef.value.ruleformState.resetFields();
-      };
 
       const handleCancel = () => {
         go(-1);
       };
 
       const inputVisible = ref(false);
-      const tags = ref(['UI/UX', 'Branding', 'Product Design', 'Web Design']);
       const inputValue = ref('');
 
       const showInput = () => {
@@ -262,14 +264,13 @@
       };
 
       const handleClose = (removedTag) => {
-        const removedtags = tags.value.filter((tag) => tag !== removedTag);
-        tags.value = removedtags;
+        const removedtags = formState.tag.filter((tag) => tag !== removedTag);
+        formState.tag = removedtags;
       };
 
       const handleInputConfirm = () => {
-        console.log("aa: ",inputValue.value);
-        if (inputValue.value && tags.value.indexOf(inputValue.value) === -1) {
-            tags.value = [...tags.value, inputValue.value];
+        if (inputValue.value && formState.tag.indexOf(inputValue.value) === -1) {
+          formState.tag = [...formState.tag, inputValue.value];
         }
         inputVisible.value = false;
         inputValue.value = '';
@@ -278,7 +279,6 @@
       return {
         file,
         list,
-        resetForm,
         submitValues,
         formState,
         handleFinish,
