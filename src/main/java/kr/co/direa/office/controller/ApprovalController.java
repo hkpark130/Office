@@ -2,21 +2,18 @@ package kr.co.direa.office.controller;
 
 import kr.co.direa.office.domain.Notifications;
 import kr.co.direa.office.dto.ApprovalDeviceDto;
-import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
-import kr.co.direa.office.service.CategoriesService;
-import kr.co.direa.office.service.DevicesService;
 import kr.co.direa.office.service.NotificationsService;
+import kr.co.direa.office.service.TagsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static kr.co.direa.office.constant.Constants.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +22,7 @@ import java.util.Map;
 public class ApprovalController {
     private final ApprovalDevicesService approvalDevicesService;
     private final NotificationsService notificationsService;
+    private final TagsService tagsService;
 
     @PostMapping(value = "/device-application")
     ResponseEntity<?> deviceApplication(
@@ -49,6 +47,7 @@ public class ApprovalController {
             @RequestBody Map<String, Object> request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        tagsService.updateByDeviceId(request);
         approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
@@ -84,8 +83,12 @@ public class ApprovalController {
     ResponseEntity<?> myApprovalList(
             @PathVariable String username
     ) {
-        // TODO: 관리자면 findAll 반환하도록 구현해야함
-        List<ApprovalDeviceDto> approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
+        List<ApprovalDeviceDto> approvalDeviceDtoList;
+        if (ADMIN.equals(username)) {
+            approvalDeviceDtoList = approvalDevicesService.findAsAdmin();
+        } else {
+            approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
+        }
 
         return ResponseEntity.ok(
                 approvalDeviceDtoList
@@ -108,7 +111,7 @@ public class ApprovalController {
         Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
         approvalDevicesService.setApprovalInfoById(
                 Long.valueOf(request.get("approvalId").toString()),
-                "승인완료",
+                APPROVAL_COMPLETED,
                 isUsable
         );
 
@@ -131,7 +134,7 @@ public class ApprovalController {
         Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
         approvalDevicesService.setApprovalInfoById(
                 Long.valueOf(request.get("approvalId").toString()),
-                "반려",
+                APPROVAL_REJECT,
                 isUsable
         );
 
@@ -158,5 +161,26 @@ public class ApprovalController {
         );
     }
 
+    @GetMapping(value = "/admin-device-dispose/{deviceId}")
+    ResponseEntity<?> approvalDeviceDispose(
+            @PathVariable String deviceId
+    ) {
+        approvalDevicesService.setDisposeByIdAsAdmin(deviceId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @GetMapping(value = "/admin-device-recovery/{deviceId}")
+    ResponseEntity<?> approvalDeviceRecovery(
+            @PathVariable String deviceId
+    ) {
+        approvalDevicesService.setRecoveryByIdAsAdmin(deviceId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
 
 }

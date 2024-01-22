@@ -11,8 +11,6 @@
                     :ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -102,6 +100,61 @@
                                     </DatePickerWrapper>
                                   </DatePickerWrap>
                                 </a-form-item>
+
+                                <a-form-item name="tag" label="tag">
+                                  <TagInput>
+                                      <div>
+                                          <template v-for="(tag, index) in formState.tag">
+                                              <a-tooltip
+                                                  v-if="tag.length > 20"
+                                                  :key="tag"
+                                                  :title="tag"
+                                              >
+                                                  <a-tag
+                                                      :key="tag"
+                                                      :closable="true"
+                                                      @close="() => handleClose(tag)"
+                                                  >
+                                                      {{ `${tag.slice(0, 20)}...` }}
+                                                  </a-tag>
+                                              </a-tooltip>
+                                              <a-tag
+                                                  v-else
+                                                  :key="index + 1"
+                                                  :closable="true"
+                                                  @close="() => handleClose(tag)"
+                                              >
+                                                  {{ tag }}
+                                              </a-tag>
+                                          </template>
+                                          <div>
+                                              <a-input
+                                                  v-if="inputVisible"
+                                                  type="text"
+                                                  size="small"
+                                                  :style="{ width: '78px' }"
+                                                  v-model:value="inputValue"
+                                                  @keypress.enter="handleInputConfirm()"
+                                              />
+                                              <a-tag
+                                                  v-else
+                                                  style="
+                                                      background: #fff;
+                                                      borderstyle: dashed;
+                                                  "
+                                                  @click="showInput"
+                                              >
+                                                  <sdFeatherIcons
+                                                      type="plus"
+                                                      size="14"
+                                                  />
+                                                  New Tag
+                                              </a-tag>
+                                          </div>
+                                      </div>
+                                  </TagInput>
+                              </a-form-item>
+
                               </sdCards>
                             </div>
                           </a-col>
@@ -117,6 +170,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -134,7 +188,7 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper, TagInput } from "../styled";
   import { AddProductForm } from "./style";
   import { DatePickerWrap } from './ui-elements-styled';
   import { computed, ref, reactive, defineComponent } from "vue";
@@ -143,7 +197,7 @@
   
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap, TagInput },
     async setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
@@ -172,6 +226,7 @@
         reason: "",
         type: "반납",
         isUsable: false,
+        tag: ['부팅 느림', 'OS 미설치'],
         layout: "vertical",
       });
 
@@ -188,34 +243,49 @@
       const handleFinishFailed = (errors) => {
         console.log(errors);
       };
-  
-      const handleSubmit = (values) => {
-        submitValues.value = values;
-      };
 
       const disabled = ref(true);
-  
-      const resetForm = () => {
-        formRef.value.ruleformState.resetFields();
-      };
 
       const handleCancel = () => {
         go(-1);
+      };
+
+      const inputVisible = ref(false);
+      const inputValue = ref('');
+
+      const showInput = () => {
+        inputVisible.value = true;
+      };
+
+      const handleClose = (removedTag) => {
+        const removedtags = formState.tag.filter((tag) => tag !== removedTag);
+        formState.tag = removedtags;
+      };
+
+      const handleInputConfirm = () => {
+        if (inputValue.value && formState.tag.indexOf(inputValue.value) === -1) {
+          formState.tag = [...formState.tag, inputValue.value];
+        }
+        inputVisible.value = false;
+        inputValue.value = '';
       };
   
       return {
         file,
         list,
-        resetForm,
         submitValues,
         formState,
         handleFinish,
         handleFinishFailed,
-        handleSubmit,
         formRef,
         disabled,
         disabledDate,
         handleCancel,
+        showInput,
+        inputVisible,
+        handleClose,
+        handleInputConfirm,
+        inputValue,
       };
     },
   });

@@ -43,8 +43,8 @@ public class ApprovalDevicesService {
         this.usersService = usersService;
     }
 
-    public List<ApprovalDeviceDto> findAll() {
-        List<ApprovalDevices> approvalDevicesList =  approvalDevicesRepository.findAll();
+    public List<ApprovalDeviceDto> findAsAdmin() {
+        List<ApprovalDevices> approvalDevicesList =  approvalDevicesRepository.findAsAdmin();
         return approvalDevicesList.stream()
                 .map(ApprovalDeviceDto::new)
                 .collect(Collectors.toList());
@@ -77,9 +77,10 @@ public class ApprovalDevicesService {
                         "해당 유저가 없습니다. username=" + request.get("userName")));
 
         device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
+        device.setStatus(request.get("status").toString());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
-        approvalDeviceDto.setApprovalInfo("승인대기");
+        approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
         approvalDeviceDto.setReason(request.get("reason").toString());
         approvalDeviceDto.setDeviceId(device.getId());
         approvalDeviceDto.setType(request.get("type").toString());
@@ -98,7 +99,7 @@ public class ApprovalDevicesService {
 
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
-        approvalDeviceDto.setApprovalInfo("승인대기");
+        approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
         approvalDeviceDto.setReason(request.get("reason").toString());
         approvalDeviceDto.setType(request.get("type").toString());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
@@ -178,6 +179,34 @@ public class ApprovalDevicesService {
         updateApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
         device.setIsUsable(true);
         devicesRepository.save(approvalDevices.getDeviceId());
+    }
+
+    public void setDisposeByIdAsAdmin(String deviceId) {
+        Devices device = devicesRepository.findById(deviceId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기 없음 deviceId=" + deviceId));
+
+        device.setStatus(DISPOSE_TYPE);
+        device.setIsUsable(false);
+        devicesRepository.save(device);
+        Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
+                .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
+                        Comparator.nullsFirst(Comparator.naturalOrder())));
+        latestApprovalDevice.ifPresent(approvalDevices -> updateApprovalTypeAsAdmin(approvalDevices, DISPOSE_TYPE, device));
+    }
+
+    public void setRecoveryByIdAsAdmin(String deviceId) {
+        Devices device = devicesRepository.findById(deviceId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기 없음 deviceId=" + deviceId));
+
+        device.setStatus(NORMAL_TYPE);
+        device.setIsUsable(true);
+        devicesRepository.save(device);
+        Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
+                .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
+                        Comparator.nullsFirst(Comparator.naturalOrder())));
+        latestApprovalDevice.ifPresent(approvalDevices -> updateApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device));
     }
 
     private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {

@@ -24,6 +24,16 @@ const actions = {
     }
   },
 
+  async editMyDevice({ commit }, data) {
+    try {
+      commit('editMyDeviceBegin');
+      await DataService.post('/api/edit-mydevice', data);
+      commit('editMyDeviceSuccess');
+    } catch (err) {
+      commit('editMyDeviceErr', err);
+    }
+  },
+
   async getMyDevices({ commit }, name) {
     try {
       commit('getMyDevicesBegin');
