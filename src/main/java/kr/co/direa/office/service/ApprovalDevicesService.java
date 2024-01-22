@@ -18,6 +18,8 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static kr.co.direa.office.constant.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class ApprovalDevicesService {
@@ -167,9 +169,36 @@ public class ApprovalDevicesService {
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(approvalId)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + approvalId));
+        Devices device = approvalDevices.getDeviceId();
+        if (device == null) {
+            throw new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                    "해당 기기 없음 deviceId=" + approvalDevices.getDeviceId());
+        }
 
-        // (반납, 승인대기)에서 -> (반납, 승인완료)로 가지말고 삭제?
-//        approvalDevices.setApprovalInfo();
+        updateApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
+        device.setIsUsable(true);
+        devicesRepository.save(approvalDevices.getDeviceId());
+    }
 
+    private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
+        Users admin = usersRepository.findByUsername(ADMIN)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=admin"));
+
+        if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
+            approvalDevices.setApproverId(admin);
+            approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDevicesRepository.save(approvalDevices);
+        }
+
+        if (!type.equals(approvalDevices.getType())) {
+            ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
+            approvalDeviceDto.setUserId(admin);
+            approvalDeviceDto.setApproverId(admin);
+            approvalDeviceDto.setType(type);
+            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDeviceDto.setDeviceId(device.getId());
+            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+        }
     }
 }
