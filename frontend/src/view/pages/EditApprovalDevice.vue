@@ -1,5 +1,5 @@
 <template>
-  <sdPageHeader title="승인 / 반려"></sdPageHeader>
+  <sdPageHeader title="수정"></sdPageHeader>
   <Main>
     <a-row :gutter="15">
       <a-col :xs="24">
@@ -18,7 +18,7 @@
                       <a-row :gutter="15">
                         <a-col :xs="24">
                           <div class="add-product-content">
-                            <sdCards title="승인 / 반려">
+                            <sdCards title="수정">
 
                               <a-form-item label="관리번호">
                                 <a-input v-model:value="formState.deviceId" disabled/>
@@ -94,7 +94,6 @@
                                 <a-textarea
                                   v-model:value="formState.reason"
                                   :rows="5"
-                                  disabled
                                 />
                               </a-form-item>
                             </sdCards>
@@ -105,21 +104,17 @@
 
                     <div class="add-form-action">
                       <a-form-item>
-                        <sdButton 
-                          type="danger" 
-                          size="large"
-                          @click="approvalReturn"
-                        >
-                          반려
+                        <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
+                          Cancel
                         </sdButton>
                         <sdButton
                           size="large"
                           htmlType="submit"
-                          type="success"
-                          @click="approvalFinish"
+                          type="primary"
+                          @click="approvalEdit"
                           raised
                         >
-                          승인
+                          Save
                         </sdButton>
                       </a-form-item>
                     </div>
@@ -146,17 +141,18 @@ const AddProduct = defineComponent({
   async setup() {
     const { state, dispatch } = useStore();
     const router = useRouter();
-    const { push } = useRouter();
+    const { go } = useRouter();
     const file = ref(null);
     const list = ref(null);
     const submitValues = ref({});
     const formRef = ref();
+    const disabled = ref(true);
 
     await dispatch('getApprovalById', router.currentRoute.value.params.approvalId);
     
     const getApprovalById = computed(() => state.approvals.data);
     const getUser = computed(() => state.getUser.data);
-    console.log("qqqqq",getApprovalById.value);
+
     const formState = reactive({
       approvalId: getApprovalById.value.approvalId,
       approverName: getUser.value.name,
@@ -172,39 +168,29 @@ const AddProduct = defineComponent({
       realUser: getApprovalById.value.realUser,
       reason: getApprovalById.value.reason,
       type: getApprovalById.value.type,
-      isUsable: null,
       layout: "vertical",
     });
 
-    const approvalFinish = () => {
-      formState.isUsable = (formState.type === '반납')?true:false;
-      dispatch('approvalDeviceFinishPost', formState);
-      alert('\'승인\'되었습니다.');
-      push('/');
+    const approvalEdit = () => {
+      dispatch('EditApprovalPut', formState).then(() => {
+        alert('\'수정\'되었습니다.');
+        location.reload();
+      }); 
     };
 
-    const approvalReturn = () => {
-      dispatch('approvalDeviceReturnPost', formState);
-      alert('\'반려\'되었습니다.');
-      push('/');
-    };
-
-    const disabled = ref(true);
-
-    const resetForm = () => {
-      formRef.value.ruleformState.resetFields();
+    const handleCancel = () => {
+      go(-1);
     };
 
     return {
       file,
       list,
-      resetForm,
       submitValues,
       formState,
-      approvalFinish,
-      approvalReturn,
       formRef,
       disabled,
+      approvalEdit,
+      handleCancel,
     };
   },
 });

@@ -48,8 +48,8 @@
                                   </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
-                                  <a-form-item label="사용자" name="userName" required>
-                                    <a-input v-model:value="formState.userName" disabled/>
+                                  <a-form-item label="사용자" name="realUser" required>
+                                    <a-input v-model:value="formState.realUser" disabled/>
                                   </a-form-item>
                                 </a-col>
                               </a-row>
@@ -226,6 +226,7 @@ const AddProduct = defineComponent({
       manageDep: "",
       project: "",
       userName: getApprovalById.value.userName,
+      realUser: getApprovalById.value.realUser,
       reason: getApprovalById.value.reason,
       type: getApprovalById.value.type,
       layout: "vertical",

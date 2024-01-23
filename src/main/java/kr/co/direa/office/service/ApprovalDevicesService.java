@@ -28,19 +28,22 @@ public class ApprovalDevicesService {
     private final DevicesRepository devicesRepository;
     private final UsersRepository usersRepository;
     private final UsersService usersService;
+    private final TagsService tagsService;
 
     @Autowired
     public ApprovalDevicesService(NotificationsRepository notificationsRepository,
                                   ApprovalDevicesRepository approvalDevicesRepository,
                                   DevicesRepository devicesRepository,
                                   UsersRepository usersRepository,
-                                  UsersService usersService
+                                  UsersService usersService,
+                                  TagsService tagsService
     ) {
         this.notificationsRepository = notificationsRepository;
         this.approvalDevicesRepository = approvalDevicesRepository;
         this.devicesRepository = devicesRepository;
         this.usersRepository = usersRepository;
         this.usersService = usersService;
+        this.tagsService = tagsService;
     }
 
     public List<ApprovalDeviceDto> findAsAdmin() {
@@ -54,18 +57,51 @@ public class ApprovalDevicesService {
         approvalDevicesRepository.save(requestDto.toEntity());
     }
 
-    public void setApprovalInfoById(Long id, String approvalInfo, Boolean isUsable) {
+    public void setApprovalInfoById(Map<String, Object> request, String approvalInfo) {
+        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
+        Long id = Long.valueOf(request.get("approvalId").toString());
+        String approvalType = request.get("type").toString();
+        Users user = usersService.findByUsername(request.get("userName").toString()).orElse(null);
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
+        Devices device = approvalDevices.getDeviceId();
 
-        if (approvalDevices.getDeviceId() != null && isUsable != null) {
-            approvalDevices.getDeviceId().setIsUsable(isUsable);
-            devicesRepository.save(approvalDevices.getDeviceId());
-        } // 타입별로 유저블 변경해야함
+        if (device != null && isUsable != null && APPROVAL_COMPLETED.equals(approvalInfo)) {
+            updateDeviceStatus(device, approvalType, isUsable, user);
+            devicesRepository.save(device);
+        }
+
         approvalDevices.setApprovalInfo(approvalInfo);
+//        TODO: 누가 승인했는지 Approver 설성해줘야 함
+//        Users admin = usersRepository.findByUsername(ADMIN)
+//                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+//                        "해당 유저가 없습니다. username=admin"));
+//        approvalDevices.setApproverId(admin);
         approvalDevicesRepository.save(approvalDevices);
+    }
 
+    private void updateDeviceStatus(Devices device, String approvalType, Boolean isUsable, Users user) {
+        switch (approvalType) {
+            case APPROVAL_RETURN:
+                device.setIsUsable(true);
+                device.setUserId(null);
+                device.setRealUser(null);
+                break;
+            case APPROVAL_RENTAL:
+                device.setIsUsable(false);
+                device.setUserId(user);
+                tagsService.deleteTagsByDeviceId(device.getId());
+                break;
+            case DISPOSE_TYPE:
+                device.setIsUsable(false);
+                device.setUserId(null);
+                device.setRealUser(null);
+                break;
+            default:
+                device.setIsUsable(isUsable);
+                break;
+        }
     }
 
     public ApprovalDeviceDto convertFromRequest(Map<String, Object> request) {
@@ -75,9 +111,11 @@ public class ApprovalDevicesService {
         Users user = usersRepository.findByUsername(request.get("userName").toString())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.get("userName")));
+        String realUser = (request.get("userName") != null)?request.get("realUser").toString():null;
 
         device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
         device.setStatus(request.get("status").toString());
+        device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
@@ -86,7 +124,8 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setType(request.get("type").toString());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
         approvalDeviceDto.setDeadline(
-                ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime()
+                (request.get("deadline") != null)?
+                ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime():null
         );
 
         return approvalDeviceDto;
@@ -112,7 +151,6 @@ public class ApprovalDevicesService {
 
     public List<DeviceDto> findByStatusNot(String status) {
         // 완전히 폐기 처리된 기기 제외
-
         List<Devices> devicesList = devicesRepository.findByStatusNot(status);
         return devicesList.stream()
                 .map(device -> {
@@ -229,5 +267,29 @@ public class ApprovalDevicesService {
             approvalDeviceDto.setDeviceId(device.getId());
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         }
+    }
+
+    public void deleteById(Long approvalId) {
+        ApprovalDevices approvalDevices = approvalDevicesRepository.findById(approvalId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + approvalId));
+        Devices device = approvalDevices.getDeviceId();
+        if (device != null && APPROVAL_RENTAL.equals(approvalDevices.getType())) {
+            device.setIsUsable(true);
+            device.setRealUser(null);
+            devicesRepository.save(device);
+        }
+
+        approvalDevicesRepository.deleteById(approvalId);
+    }
+
+    public void editReasonFromRequest(Map<String, Object> request) {
+        Long id = Long.valueOf(request.get("approvalId").toString());
+        ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + id));
+
+        approvalDevices.setReason(request.get("reason").toString());
+        approvalDevicesRepository.save(approvalDevices);
     }
 }

@@ -61,6 +61,24 @@ public class ApprovalController {
         );
     }
 
+    @PostMapping(value = "/device-dispose")
+    ResponseEntity<?> deviceDispose(
+            @RequestBody Map<String, Object> request
+    ) {
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        approvalDevicesService.save(approvalDeviceDto);
+
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
     @PostMapping(value = "/device-purchase")
     ResponseEntity<?> devicePurchase(
             @RequestBody Map<String, Object> request
@@ -108,12 +126,7 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceFinish(
             @RequestBody Map<String, Object> request
     ) {
-        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
-        approvalDevicesService.setApprovalInfoById(
-                Long.valueOf(request.get("approvalId").toString()),
-                APPROVAL_COMPLETED,
-                isUsable
-        );
+        approvalDevicesService.setApprovalInfoById(request, APPROVAL_COMPLETED);
 
         // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
 //        NotificationDto notificationDto = new NotificationDto();
@@ -131,12 +144,7 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceReturn(
             @RequestBody Map<String, Object> request
     ) {
-        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
-        approvalDevicesService.setApprovalInfoById(
-                Long.valueOf(request.get("approvalId").toString()),
-                APPROVAL_REJECT,
-                isUsable
-        );
+        approvalDevicesService.setApprovalInfoById(request, APPROVAL_REJECT);
 
         // TODO: 유저에게 반려 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
 //        NotificationDto notificationDto = new NotificationDto();
@@ -144,6 +152,17 @@ public class ApprovalController {
 //
 //        notificationsService.save(notificationDto);
 //        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @PutMapping(value = "/approval-device-edit")
+    ResponseEntity<?> approvalDeviceEdit(
+            @RequestBody Map<String, Object> request
+    ) {
+        approvalDevicesService.editReasonFromRequest(request);
 
         return ResponseEntity.ok(
                 "success"
@@ -177,6 +196,17 @@ public class ApprovalController {
             @PathVariable String deviceId
     ) {
         approvalDevicesService.setRecoveryByIdAsAdmin(deviceId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @DeleteMapping(value = "/approval-device-cancel/{approvalId}")
+    ResponseEntity<?> approvalDeviceCancel(
+            @PathVariable Long approvalId
+    ) {
+        approvalDevicesService.deleteById(approvalId);
 
         return ResponseEntity.ok(
                 "success"

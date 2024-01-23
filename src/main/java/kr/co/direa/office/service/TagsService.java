@@ -48,22 +48,20 @@ public class TagsService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
                         "해당 기기가 없습니다. deviceId=" + request.get("deviceId")));
         deleteTagsByDeviceId(device.getId());
-        List<String> newTagList = new ArrayList<>();
-        if (request.get("tag") != null && ((List<String>) request.get("tag")).size() != 0) {
-            newTagList = (List<String>) request.get("tag");
-            for (int i=0 ; newTagList.size()>i ; i++) {
-                Tags tag = tagsRepository.findByName(newTagList.get(i));
-                if (tag != null){
-                    log.info("hhhhhhhhhhhhhhhhh: {}", newTagList.get(i));
-                } else {
-                    DeviceTag deviceTag = new DeviceTag();
-                    deviceTag.setDevice(device);
-                    deviceTag.setTag();
-                    log.info("kkkkkkkkkkkkkkkkk: {}", newTagList.get(i));
-                }
-            }
+        List<String> newTagList = (List<String>) request.getOrDefault("tag", new ArrayList<>());
+        List<DeviceTag> deviceTagsToSave = new ArrayList<>();
+        newTagList.forEach(tagName -> {
+            Tags tag = findOrSaveTag(tagName);
+            deviceTagsToSave.add(new DeviceTag(device, tag));
+        });
+        deviceTagRepository.saveAll(deviceTagsToSave);
+    }
+
+    private Tags findOrSaveTag(String tagName) {
+        Tags tag = tagsRepository.findByName(tagName);
+        if (tag == null) {
+            tag = tagsRepository.save(new Tags(tagName)); // 없으면 tag 테이블에도 저장
         }
-
-
+        return tag;
     }
 }

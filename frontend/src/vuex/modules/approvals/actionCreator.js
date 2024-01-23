@@ -28,6 +28,16 @@ const actions = {
         }
     },
 
+    async EditApprovalPut({ commit }, data) {
+        try {
+          commit('editApprovalPutBegin');
+          await DataService.put('/api/approval-device-edit', data);
+          commit('editApprovalPutSuccess');
+        } catch (err) {
+          commit('editApprovalPutErr', err);
+        }
+    },
+
     async approvalDeviceReturnPost({ commit }, data) {
         try {
           commit('approvalDeviceReturnBegin');

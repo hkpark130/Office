@@ -12,14 +12,15 @@ import static kr.co.direa.office.constant.Constants.*;
 
 public interface DevicesRepository extends JpaRepository<Devices, String> {
 
-    Long countByCategoryId(Categories category);
+
+    Long countByCategoryIdAndIsUsable(Categories category, boolean isUsable);
 
     @Query(value = "SELECT d.* " +
             "FROM devices d " +
             "WHERE d.id IN (" +
             "    SELECT ad.device_id " +
             "    FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
-            "    WHERE a.user_id = :userId AND (ad.type = '"+APPROVAL_RENTAL+
+            "    WHERE d.user_id = :userId AND (ad.type = '"+APPROVAL_RENTAL+
             "' AND a.approval_info = '"+APPROVAL_COMPLETED+"')" +
             ")", nativeQuery = true)
     List<Devices> findRentedDevicesByUserId(@Param("userId") Long userId);

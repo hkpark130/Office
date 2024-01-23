@@ -37,8 +37,8 @@ public class DevicesService {
                 .collect(Collectors.toList());
     }
 
-    public Long countByCategoryId(Categories category) {
-        return devicesRepository.countByCategoryId(category);
+    public Long countByCategoryIdAndIsUsable(Categories category, boolean isUsable) {
+        return devicesRepository.countByCategoryIdAndIsUsable(category, isUsable);
     }
 
     public List<DeviceDto> findByIsUsableTrue() {
@@ -52,14 +52,14 @@ public class DevicesService {
                                     Comparator.nullsFirst(Comparator.naturalOrder())));
                     return latestApprovalDevice.map(approvalDevices ->
                             (
-                                    (
-                                            APPROVAL_RETURN.equals(approvalDevices.getType()) &&
-                                                    APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())
-                                    ) ||
-                                            (
-                                                    APPROVAL_RETURN.equals(approvalDevices.getType()) &&
-                                                            APPROVAL_COMPLETED.equals(approvalDevices.getApprovalInfo())
-                                            )
+                                (
+                                    APPROVAL_RETURN.equals(approvalDevices.getType()) &&
+                                    APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    APPROVAL_RETURN.equals(approvalDevices.getType()) &&
+                                    APPROVAL_COMPLETED.equals(approvalDevices.getApprovalInfo())
+                                )
                             ) // 최근 신청기록이 있으면 (반납/승인[대기,완료]) 만 가져오기 <- 반납예정 상태
                     ).orElse(device.getIsUsable()); // 최근 신청기록이 없어도 가져오기 <- 사용가능 상태
                 })

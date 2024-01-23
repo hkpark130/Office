@@ -232,7 +232,8 @@ const Orders = defineComponent({
     console.log(orders.value);
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, spec, approvalType, approvalInfo } = value;
+        const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, 
+          realUser, spec, approvalType, approvalInfo } = value;
         const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
         let action = approvalType+"중";
 
@@ -273,7 +274,7 @@ const Orders = defineComponent({
             </div>
           ),
           categoryNameKey: categoryName,
-          user: <span class="customer-name">{username}</span>,
+          user: <span class="customer-name">{(realUser)?realUser:username}</span>,
           userKey: username,
           manageDep: <span class="customer-name">{manageDepName}</span>,
           manageDepKey: manageDepName,

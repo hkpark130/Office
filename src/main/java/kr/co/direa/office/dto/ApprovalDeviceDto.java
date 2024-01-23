@@ -18,6 +18,7 @@ public class ApprovalDeviceDto implements Serializable {
     private Long approvalId;
     private Users userId;
     private String userName;
+    private String realUser;
     private String reason;
     private Users approverId;
     private String deviceId;
@@ -39,6 +40,7 @@ public class ApprovalDeviceDto implements Serializable {
         this.approvalId = entity.getId();
         this.userId = (entity.getUserId() != null) ? entity.getUserId() : null;
         this.userName = (this.userId != null) ? this.userId.getUsername() : null;
+        this.realUser = (entity.getDeviceId() != null) ? entity.getDeviceId().getRealUser() : null;
         this.reason = entity.getReason();
         this.approverId = entity.getApproverId();
         this.deviceId = (entity.getDeviceId() != null) ? entity.getDeviceId().getId() : null;

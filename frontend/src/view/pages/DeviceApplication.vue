@@ -54,7 +54,7 @@
                                 <a-row :gutter="15">
                                   <a-col :span="12">
                                     <a-form-item label="신청자" name="userName" required>
-                                      <a-input v-model:value="formState.userName" :disabled="disabled"/>
+                                      <a-input v-model:value="formState.realUser" :disabled="disabled" @change="onChangeUser"/>
                                     </a-form-item>
                                   </a-col>
 
@@ -174,8 +174,6 @@
       const { state, dispatch } = useStore();
       const router = useRouter();
       const { push, go } = useRouter();
-      const file = ref(null);
-      const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
 
@@ -206,6 +204,7 @@
         manageDep: "",
         project: "",
         userName: getUser.value.name,
+        realUser: getUser.value.name,
         reason: "",
         type: "대여",
         isUsable: false,
@@ -218,9 +217,10 @@
       }
   
       const handleFinish = () => {
-        dispatch('submitDeviceApplicationPost', formState);
-        alert('신청되었습니다.');
-        push('/');
+        dispatch('submitDeviceApplicationPost', formState).then(() => {
+          alert('신청되었습니다.');
+          push('/');
+        });
       };
   
       const handleFinishFailed = (errors) => {
@@ -230,40 +230,28 @@
       const handleSubmit = (values) => {
         submitValues.value = values;
       };
-  
-      const rules = {
-        name: [
-          {
-            required: true,
-            message: "Please input Activity name",
-            trigger: "blur",
-          },
-        ],
-      };
 
       const disabled = ref(true);
 
       const onChange = (check) => {
         if (check.target.value === "auto") {
           disabled.value = true;
+          formState.realUser = formState.userName;
         } else {
           disabled.value = false;
+          
         }
       };
-  
-      const resetForm = () => {
-        formRef.value.ruleformState.resetFields();
-      };
+
+      const onChangeUser = (name) => {
+        formState.realUser = name.target.value;
+      }
 
       const handleCancel = () => {
         go(-1);
       };
   
       return {
-        rules,
-        file,
-        list,
-        resetForm,
         submitValues,
         formState,
         handleFinish,
@@ -277,6 +265,7 @@
         disabled,
         disabledDate,
         handleCancel,
+        onChangeUser,
       };
     },
   });

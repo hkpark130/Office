@@ -21,6 +21,9 @@ public class Devices extends BaseTimeEntity{
     @JoinColumn(name ="user_id", referencedColumnName = "id")
     private Users userId;
 
+    @Column(name = "real_user")
+    private String realUser;
+
     @OneToMany(mappedBy = "deviceId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ApprovalDevices> approvalDevices;
 

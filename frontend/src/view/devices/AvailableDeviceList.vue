@@ -159,7 +159,7 @@ const columns = [
 ];
 
 const filterColumns = columns.filter((column, index) => {
-  return column.key !== 'memo' && column.key !== 'id' && index !== columns.length - 1;
+  return column.key !== 'memo' && column.key !== 'id' && column.key !== 'tag' && index !== columns.length - 1;
 });
 
 const AvailableDevices = defineComponent({
@@ -190,7 +190,7 @@ const AvailableDevices = defineComponent({
 
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryId, approvalInfo, purpose, spec, id, description, approvalType, deadline, status } = value;
+        const { categoryId, approvalInfo, purpose, spec, id, description, approvalType, deadline, status, tags } = value;
         const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
         const deadlineDate = (deadline === null)?null:new Date(deadline).toLocaleDateString('ko-KR',
               {
@@ -198,7 +198,6 @@ const AvailableDevices = defineComponent({
                 month: 'long',
                 day: 'numeric',
               });
-        const tags = ['태그1', '태그2', '태그3', '태그3', '태그3', '태그3', '태그3', '태그3', '태그3', '태그3'];
         const tagComponents = tags.map((tag, index) => (
           <Tag key={index} tagType="colorful" color="blue" data={tag}/>
         ));
@@ -207,6 +206,7 @@ const AvailableDevices = defineComponent({
           categoryName: categoryId.name,
           status: status,
           purposeKey: purpose,
+          approvalType: approvalType,
           infoKey: approvalInfo,
           id: <span class="order-id">{id}</span>,
           category: <span class="customer-name">{ categoryId.name }</span>,
@@ -249,6 +249,11 @@ const AvailableDevices = defineComponent({
     const rowSelection = {
       onChange: (selectedRowKeys) => {
         deviceId.value = selectedRowKeys[0];
+      },
+      getCheckboxProps: (record) => {
+        return {
+            disabled: record.approvalType === '반납'
+        };
       },
       type: "radio", //기본값이 체크박스
     };

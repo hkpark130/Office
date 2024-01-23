@@ -64,6 +64,18 @@ const actions = {
     }
   },
 
+  async submitDeviceDisposePost({ commit }, data) {
+    try {
+      commit('postDeviceDisposeBegin');
+      await DataService.post('/api/device-dispose', data);
+      commit('postDeviceDisposeSuccess', data);
+    } catch (err) {
+      commit('postDeviceDisposeErr', err);
+    }
+  },
+
+  //submitDeviceDispose
+
   async adminReturnDevice({ commit }, approvalId) {
     try {
       commit('adminReturnDeviceBegin');

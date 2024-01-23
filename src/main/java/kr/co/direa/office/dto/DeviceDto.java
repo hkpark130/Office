@@ -17,6 +17,7 @@ public class DeviceDto implements Serializable {
     private String id;
     private Users userId;
     private String username;
+    private String realUser;
     private Departments manageDep;
     private String manageDepName;
     private Categories categoryId;
@@ -45,6 +46,7 @@ public class DeviceDto implements Serializable {
         this.id = entity.getId();
         this.userId = entity.getUserId();
         this.username = (this.userId != null) ? this.userId.getUsername() : null;
+        this.realUser = entity.getRealUser();
         this.manageDep = entity.getManageDep();
         this.manageDepName = (this.manageDep != null) ? this.manageDep.getName() : null;
         this.categoryId = entity.getCategoryId();

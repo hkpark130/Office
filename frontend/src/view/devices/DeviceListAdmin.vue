@@ -253,7 +253,7 @@ const Orders = defineComponent({
     const dataSource = computed(() =>
       orders.value.map((value) => {
         let returnIcon = null;
-        const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo,
+        const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo, realUser,
           username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId, status } = value;
         const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
               {
@@ -301,7 +301,7 @@ const Orders = defineComponent({
           categoryNameKey: categoryName,
           categoryName: <span class="customer-name">{categoryName}</span>,
           userKey: username,
-          user: <span class="customer-name">{username}</span>,
+          user: <span class="customer-name">{(realUser)?realUser:username}</span>,
           status: status,
           purpose: (
             <div>
