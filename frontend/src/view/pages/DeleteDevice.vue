@@ -11,8 +11,6 @@
                     :ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -78,6 +76,18 @@
                                 </a-row>
 
                                 <a-form-item
+                                  name="description"
+                                  label="비고"
+                                  required
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                    disabled
+                                  />
+                                </a-form-item>
+
+                                <a-form-item
                                   name="reason"
                                   label="사유"
                                   required
@@ -125,6 +135,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -176,7 +187,9 @@
         manageDep: "",
         project: "",
         userName: getUser.value.name,
+        realUser: getDeviceById.value.realUser,
         reason: "",
+        description: getDeviceById.value.description,
         type: "폐기",
         isUsable: false,
         layout: "vertical",

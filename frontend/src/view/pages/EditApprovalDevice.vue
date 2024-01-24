@@ -87,6 +87,17 @@
                               </a-row>
 
                               <a-form-item
+                                name="description"
+                                label="비고"
+                                required
+                              >
+                                <a-textarea
+                                  v-model:value="formState.description"
+                                  :rows="5"
+                                />
+                              </a-form-item>
+
+                              <a-form-item
                                 name="reason"
                                 label="사유"
                                 required
@@ -167,6 +178,7 @@ const AddProduct = defineComponent({
       userName: getApprovalById.value.userName,
       realUser: getApprovalById.value.realUser,
       reason: getApprovalById.value.reason,
+      description: getApprovalById.value.description,
       type: getApprovalById.value.type,
       layout: "vertical",
     });

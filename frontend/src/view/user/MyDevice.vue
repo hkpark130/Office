@@ -49,14 +49,6 @@
       <div class="todo-modal">
         <BasicFormWrapper>
           <a-form class="adTodo-form" name="todoAdd" :model="formState" @finish="editMyDevice">
-            <a-form-item label="장비 상태" name="status">
-              <a-radio-group v-model:value="formState.status">
-                <a-radio value="정상">정상</a-radio>
-                <a-radio value="노후">노후</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <br />
-            <br />
             <a-form-item
               name="description"
               label="비고"

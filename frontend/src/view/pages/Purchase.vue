@@ -8,11 +8,9 @@
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
                 <AddProductForm>
                   <a-form
-                    :ref="formRef"
+                    ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -107,7 +105,7 @@
                                         <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
                                       </div>
                                     </template>
-                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" />
+                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" @keydown.enter.prevent/>
                                   </sdPopover>
                                   
                                   <span>선택된 프로젝트: <b>{{ formState.project }}</b></span>
@@ -153,6 +151,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save

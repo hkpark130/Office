@@ -76,6 +76,18 @@
                                 </a-row>
 
                                 <a-form-item
+                                  name="description"
+                                  label="비고"
+                                  required
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                    disabled
+                                  />
+                                </a-form-item>
+
+                                <a-form-item
                                   name="reason"
                                   label="사유"
                                   required
@@ -113,6 +125,8 @@
                                                   <a-tag
                                                       :key="tag"
                                                       :closable="true"
+                                                      tagType="colorful" color="green" 
+                                                      @click="(e) => handleClick(e,tag)"
                                                       @close="() => handleClose(tag)"
                                                   >
                                                       {{ `${tag.slice(0, 20)}...` }}
@@ -122,6 +136,8 @@
                                                   v-else
                                                   :key="index + 1"
                                                   :closable="true"
+                                                  tagType="colorful" color="green" 
+                                                  @click="(e) => handleClick(e,tag)"
                                                   @close="() => handleClose(tag)"
                                               >
                                                   {{ tag }}
@@ -223,10 +239,13 @@
         project: "",
         deadline: "",
         userName: getUser.value.name,
+        realUser: getDeviceById.value.realUser,
         reason: "",
+        description: getDeviceById.value.description,
         type: "반납",
         isUsable: false,
-        tag: ['부팅 느림', 'OS 미설치'],
+        tag: ['Office 미설치', 'OS 미설치', '포맷완료'],
+        printTag: ['Office 미설치', 'OS 미설치', '포맷완료'],
         layout: "vertical",
       });
 
@@ -275,6 +294,11 @@
         inputVisible.value = false;
         inputValue.value = '';
       };
+
+      const handleClick = (e, tag) => {
+        console.log("HHHHHHHHHHHHHHHHHHHHHHHHH ", formState.tag, e, tag);
+      };
+      
   
       return {
         file,
@@ -292,6 +316,7 @@
         handleClose,
         handleInputConfirm,
         inputValue,
+        handleClick,
       };
     },
   });

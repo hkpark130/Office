@@ -229,7 +229,7 @@ const Orders = defineComponent({
           if (deadline !== null) {
             timeDiff = (new Date(deadline)).getTime() - (new Date()).getTime();
             daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-            if (daysDiff < 6) {
+            if (daysDiff < 6 && approvalInfo === '승인대기') {
               urgency = true;
               dDayTag = "긴급 "+daysDiff+" 일 남음";
             }

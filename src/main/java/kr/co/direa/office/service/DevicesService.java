@@ -123,7 +123,6 @@ public class DevicesService {
         Devices device = devicesRepository.findById(request.get("id").toString())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
                         "해당 기기가 없습니다. deviceId=" + request.get("id")));
-        device.setStatus(request.get("status").toString());
         device.setDescription(request.get("description").toString());
         devicesRepository.save(device);
     }

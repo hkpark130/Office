@@ -111,10 +111,10 @@ public class ApprovalDevicesService {
         Users user = usersRepository.findByUsername(request.get("userName").toString())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.get("userName")));
-        String realUser = (request.get("userName") != null)?request.get("realUser").toString():null;
+        String realUser = (request.get("realUser") != null)?request.get("realUser").toString():null;
 
         device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
-        device.setStatus(request.get("status").toString());
+        device.setStatus((request.get("status")!=null)?request.get("status").toString():null);
         device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);

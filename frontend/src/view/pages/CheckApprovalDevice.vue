@@ -87,6 +87,18 @@
                               </a-row>
 
                               <a-form-item
+                                name="description"
+                                label="비고"
+                                required
+                              >
+                                <a-textarea
+                                  v-model:value="formState.description"
+                                  :rows="5"
+                                  disabled
+                                />
+                              </a-form-item>
+
+                              <a-form-item
                                 name="reason"
                                 label="사유"
                                 required
@@ -156,7 +168,6 @@ const AddProduct = defineComponent({
     
     const getApprovalById = computed(() => state.approvals.data);
     const getUser = computed(() => state.getUser.data);
-    console.log("qqqqq",getApprovalById.value);
     const formState = reactive({
       approvalId: getApprovalById.value.approvalId,
       approverName: getUser.value.name,
@@ -171,6 +182,7 @@ const AddProduct = defineComponent({
       userName: getApprovalById.value.userName,
       realUser: getApprovalById.value.realUser,
       reason: getApprovalById.value.reason,
+      description: getApprovalById.value.description,
       type: getApprovalById.value.type,
       isUsable: null,
       layout: "vertical",

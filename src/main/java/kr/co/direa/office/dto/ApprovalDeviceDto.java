@@ -24,6 +24,7 @@ public class ApprovalDeviceDto implements Serializable {
     private String deviceId;
     private String deviceStatus;
     private String devicePurpose;
+    private String description;
     private String categoryName;
     private String img;
     private String type;
@@ -47,6 +48,7 @@ public class ApprovalDeviceDto implements Serializable {
         this.categoryName = (entity.getDeviceId() != null) ? entity.getDeviceId().getCategoryId().getName() : null;
         this.deviceStatus = (entity.getDeviceId() != null) ? entity.getDeviceId().getStatus() : null;
         this.devicePurpose = (entity.getDeviceId() != null) ? entity.getDeviceId().getPurpose() : null;
+        this.description = (entity.getDeviceId() != null) ? entity.getDeviceId().getDescription() : null;
         this.img = entity.getImg();
         this.type = entity.getType();
         this.createdDate = (entity.getCreatedDate() != null) ? entity.getCreatedDate() : null;

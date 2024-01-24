@@ -103,6 +103,17 @@
                                 </a-form-item>
 
                                 <a-form-item
+                                  name="description"
+                                  label="비고"
+                                  required
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                  />
+                                </a-form-item>
+
+                                <a-form-item
                                   name="reason"
                                   label="사유"
                                   required
@@ -206,6 +217,7 @@
         userName: getUser.value.name,
         realUser: getUser.value.name,
         reason: "",
+        description: getDeviceById.value.description,
         type: "대여",
         isUsable: false,
         layout: "vertical",
