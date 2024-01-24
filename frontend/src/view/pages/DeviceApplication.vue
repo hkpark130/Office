@@ -208,6 +208,7 @@
         userName: getUser.value.name,
         reason: "",
         type: "대여",
+        isUsable: false,
         layout: "vertical",
         deadline: "",
       });

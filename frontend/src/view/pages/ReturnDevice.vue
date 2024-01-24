@@ -171,6 +171,7 @@
         userName: getUser.value.name,
         reason: "",
         type: "반납",
+        isUsable: false,
         layout: "vertical",
       });
 

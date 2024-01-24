@@ -239,16 +239,36 @@ const Orders = defineComponent({
       }
     };
 
+    const adminReturnDevice = (approvalId, deviceId) => {
+      dispatch('adminReturnDevice', approvalId)
+        .then(() => {
+          const index = orders.value.findIndex((item) => item.id === deviceId);
+          if (index !== -1) {
+            orders.value.splice(index, 1);
+          }
+          alert('반납 처리되었습니다.');
+        }
+      );
+    };
+
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryName, manageDepName, projectName, purpose, model, history,
-          username, id, company, sn, purchaseDate, spec, description, status } = value;
+        let returnIcon = null;
+        const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo,
+          username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId } = value;
         const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
               {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               });
+        
+        if (approvalInfo === '승인완료' && approvalType === '대여') { // 대여중인 것만
+          returnIcon = 
+          <sdButton class="btn-icon" onClick={() => adminReturnDevice(approvalId, id)} type="info" to="#" shape="circle">
+            <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
+          </sdButton>;
+        }
               
         return {
           key: id,
@@ -310,9 +330,7 @@ const Orders = defineComponent({
           action: (
             <div class="table-actions">
               <>
-                <sdButton class="btn-icon" type="info" to="#" shape="circle">
-                  <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
-                </sdButton>
+                {returnIcon}
                 <sdButton class="btn-icon" onClick={() => removeItem(id)} type="danger" to="#" shape="circle">
                   <sdFeatherIcons type="trash-2" size={16} title="폐기" />
                 </sdButton>

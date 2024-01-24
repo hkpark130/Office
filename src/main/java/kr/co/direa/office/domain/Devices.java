@@ -3,6 +3,7 @@ package kr.co.direa.office.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity(name = "devices")
 @Table(name = "devices")
 @Getter
+@Setter
 public class Devices extends BaseTimeEntity{
     @Id
     @Column(name = "id")
@@ -58,6 +60,9 @@ public class Devices extends BaseTimeEntity{
     @Column(name = "status")
     private String status;
 
+    @Column(name = "is_usable")
+    private Boolean isUsable;
+
     @Column(name = "purpose")
     private String purpose;
 
@@ -73,7 +78,7 @@ public class Devices extends BaseTimeEntity{
     @Builder
     public Devices(String id, Users userId, Departments manageDep, Categories categoryId, String spec,
                    Long price, String model, String description, String tag, String company,
-                   Projects projectId, String sn, String status, String purpose, Date purchaseDate,
+                   Projects projectId, String sn, String status, Boolean isUsable, String purpose, Date purchaseDate,
                    List<ApprovalDevices> approvalDevices) {
         this.id = id;
         this.userId = userId;
@@ -88,19 +93,21 @@ public class Devices extends BaseTimeEntity{
         this.company = company;
         this.sn = sn;
         this.status = status;
+        this.isUsable = isUsable;
         this.purpose = purpose;
         this.purchaseDate = purchaseDate;
         this.approvalDevices = approvalDevices;
     }
 
-    public void update(Categories category, Projects project, Departments manageDep, long price,
-                       Boolean status, String purpose, String description, String model, String company,
+    public void update(Categories category, Projects project, Departments manageDep, long price, String status,
+                       Boolean isUsable, String purpose, String description, String model, String company,
                        String sn, String spec, Date purchaseDate) {
         this.categoryId = category;
         this.projectId = project;
         this.manageDep = manageDep;
         this.price = price;
         this.status = status;
+        this.isUsable = isUsable;
         this.purpose = purpose;
         this.description = description;
         this.model = model;

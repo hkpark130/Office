@@ -54,8 +54,7 @@ public class DeviceController {
 
     @GetMapping(value = "/devicelist-admin")
     ResponseEntity<?> deviceListAdmin() {
-        List<DeviceDto> filteredDevices =
-                approvalDevicesService.findAllExceptTypeAndApprovalInfo("폐기", "승인완료");
+        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatusNot("폐기");
 
         return ResponseEntity.ok(
                 filteredDevices
@@ -64,8 +63,7 @@ public class DeviceController {
 
     @GetMapping(value = "/dispose-devicelist-admin")
     ResponseEntity<?> disposeDeviceListAdmin() {
-        List<DeviceDto> filteredDevices =
-                approvalDevicesService.findByTypeAndApprovalInfo("폐기", "승인완료");
+        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatus("폐기");
 
         return ResponseEntity.ok(
                 filteredDevices
@@ -92,7 +90,7 @@ public class DeviceController {
 
     @GetMapping(value = "/available-devicelist")
     ResponseEntity<?> getAvailableDeviceList() {
-        List<DeviceDto> deviceDtoList = devicesService.findByStatusTrue();
+        List<DeviceDto> deviceDtoList = devicesService.findByIsUsableTrue();
 
         return ResponseEntity.ok(
                 deviceDtoList

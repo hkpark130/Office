@@ -71,6 +71,17 @@ export default {
     state.error = err;
   },
 
+  adminReturnDeviceBegin(state) {
+    state.loading = true;
+  },
+  adminReturnDeviceSuccess(state,) {
+    state.loading = false;
+  },
+  adminReturnDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
   postAddDeviceBegin(state) {
     state.loading = true;
   },

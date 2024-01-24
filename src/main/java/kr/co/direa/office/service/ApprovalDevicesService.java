@@ -18,6 +18,8 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static kr.co.direa.office.constant.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 public class ApprovalDevicesService {
@@ -52,12 +54,18 @@ public class ApprovalDevicesService {
         approvalDevicesRepository.save(requestDto.toEntity());
     }
 
-    public void setApprovalInfoById(Long id, String approvalInfo) {
+    public void setApprovalInfoById(Long id, String approvalInfo, Boolean isUsable) {
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
+
+        if (approvalDevices.getDeviceId() != null && isUsable != null) {
+            approvalDevices.getDeviceId().setIsUsable(isUsable);
+            devicesRepository.save(approvalDevices.getDeviceId());
+        } // 타입별로 유저블 변경해야함
         approvalDevices.setApprovalInfo(approvalInfo);
         approvalDevicesRepository.save(approvalDevices);
+
     }
 
     public ApprovalDeviceDto convertFromRequest(Map<String, Object> request) {
@@ -68,6 +76,7 @@ public class ApprovalDevicesService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.get("userName")));
 
+        device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo("승인대기");
@@ -100,22 +109,11 @@ public class ApprovalDevicesService {
         return approvalDeviceDto;
     }
 
-    public List<DeviceDto> findAllExceptTypeAndApprovalInfo(String type, String approvalInfo) {
-        // ApprovalDevice의 type이 '폐기'이고 approvalInfo가 '승인완료'인 것을 제외하고 나머지를 가져오는 로직
-        // + Device의 status가 '폐기'인 Device의도 제외
+    public List<DeviceDto> findByStatusNot(String status) {
         // 완전히 폐기 처리된 기기 제외
 
-        List<Devices> devicesList = devicesRepository.findAll();
+        List<Devices> devicesList = devicesRepository.findByStatusNot(status);
         return devicesList.stream()
-                .filter(device -> {
-                    Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
-                            .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                                    Comparator.nullsLast(Comparator.naturalOrder())));
-                    return latestApprovalDevice.map(approvalDevices ->
-                            !(approvalDevices.getType().equals(type) &&
-                                    approvalDevices.getApprovalInfo().equals(approvalInfo))
-                    ).orElse( !("폐기".equals(device.getStatus())) );
-                })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
                     deviceDto.setHistory(getHistory(deviceDto.getId(), false));
@@ -139,24 +137,9 @@ public class ApprovalDevicesService {
         return historyList;
     }
 
-    public List<DeviceDto> findByTypeAndApprovalInfo(String type, String approvalInfo) {
-        // ApprovalDevice의 type이 '폐기'이고 approvalInfo가 '승인완료'인 기기 가져오는 로직
-        // + Device의 status가 폐기인 기기도 추가
-        // 완전히 폐기 처리된 기기
-
-        List<Devices> devicesList = devicesRepository.findAll();
+    public List<DeviceDto> findByStatus(String status) {
+        List<Devices> devicesList = devicesRepository.findByStatus(status);
         return devicesList.stream()
-                .filter(device -> {
-                    Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
-                            .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
-                                    Comparator.nullsLast(Comparator.naturalOrder())));
-                    return latestApprovalDevice.map(approvalDevices ->
-                             (
-                                type.equals(approvalDevices.getType()) &&
-                                approvalInfo.equals(approvalDevices.getApprovalInfo())
-                             )
-                    ).orElse("폐기".equals(device.getStatus()));
-                })
                 .map(device -> {
                     DeviceDto deviceDto = new DeviceDto(device);
                     deviceDto.setHistory(getHistory(deviceDto.getId(), true));
@@ -180,5 +163,42 @@ public class ApprovalDevicesService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
         return new ApprovalDeviceDto(approvalDevices);
+    }
+
+    public void setReturnByIdAsAdmin(Long approvalId) {
+        ApprovalDevices approvalDevices = approvalDevicesRepository.findById(approvalId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + approvalId));
+        Devices device = approvalDevices.getDeviceId();
+        if (device == null) {
+            throw new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                    "해당 기기 없음 deviceId=" + approvalDevices.getDeviceId());
+        }
+
+        updateApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
+        device.setIsUsable(true);
+        devicesRepository.save(approvalDevices.getDeviceId());
+    }
+
+    private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
+        Users admin = usersRepository.findByUsername(ADMIN)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=admin"));
+
+        if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
+            approvalDevices.setApproverId(admin);
+            approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDevicesRepository.save(approvalDevices);
+        }
+
+        if (!type.equals(approvalDevices.getType())) {
+            ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
+            approvalDeviceDto.setUserId(admin);
+            approvalDeviceDto.setApproverId(admin);
+            approvalDeviceDto.setType(type);
+            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDeviceDto.setDeviceId(device.getId());
+            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+        }
     }
 }

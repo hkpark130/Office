@@ -207,11 +207,10 @@ const AvailableDevices = defineComponent({
             <span
               class={`status ${
                 (approvalInfo === '승인대기' && approvalType === '반납') ? 'waiting' :
-                (approvalInfo === '사용가능') ? 'Success' :
-                'error'
+                'Success'
               }`}
             >
-              {approvalType === '반납' ? `반납예정 ${deadlineDate}`:approvalInfo }
+              {(approvalInfo === '승인대기' && approvalType === '반납') ? `반납예정 ${deadlineDate}`:"사용가능" }
             </span>
           ),
           tag: <span class="ordered-amount">{tag}</span>,

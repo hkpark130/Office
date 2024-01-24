@@ -172,10 +172,12 @@ const AddProduct = defineComponent({
       userName: getApprovalById.value.userName,
       reason: getApprovalById.value.reason,
       type: getApprovalById.value.type,
+      isUsable: null,
       layout: "vertical",
     });
 
     const approvalFinish = () => {
+      formState.isUsable = (formState.type === '반납')?true:false;
       dispatch('approvalDeviceFinishPost', formState);
       alert('\'승인\'되었습니다.');
       push('/');
