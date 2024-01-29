@@ -43,14 +43,6 @@
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="상태" name="status" required>
-                                  <a-radio-group v-model:value="formState.status" disabled>
-                                    <a-radio value="정상">정상</a-radio>
-                                    <a-radio value="노후">노후</a-radio>
-                                    <a-radio value="폐기">폐기</a-radio>
-                                  </a-radio-group>
-                                </a-form-item>
-
                                 <a-row :gutter="15">
                                   <a-col :span="12">
                                     <a-form-item label="신청자" name="userName" required>
@@ -126,7 +118,7 @@
 
                                 <a-form-item
                                   name="deadline"
-                                  label="마감일"
+                                  label="마감일/사용예정일"
                                   required
                                 >
                                   <DatePickerWrap>

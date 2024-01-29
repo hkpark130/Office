@@ -111,7 +111,7 @@ const columns = [
     },
   },
   {
-    title: '마감일',
+    title: '마감일/사용예정일',
     dataIndex: 'deadline',
     key: 'deadline',
     sorter: (a, b) => {
@@ -164,7 +164,15 @@ const Orders = defineComponent({
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+
+    const fetchData = async () => {
+      await dispatch('getMyApproval', getUser.value.name);
+      onSorting('categoryName');
+    };
+
+    fetchData();
+
 
     const handleChangeForFilter = (e) => {
       dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });

@@ -61,7 +61,7 @@
 <script lang="jsx">
 import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
-import { computed, ref, defineComponent } from 'vue';
+import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const sortWithNullCheck = (aValue, bValue) => {
@@ -226,7 +226,11 @@ const Orders = defineComponent({
     const item = computed(() => state.devicesAdmin.data);
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+
+    onMounted(() => {
+      onSorting('categoryName');
+    });
 
     const handleChangeForFilter = (e) => {
       dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value });

@@ -15,17 +15,20 @@ import java.io.Serializable;
 public class DepartmentDto implements Serializable {
     private Long id;
     private String name;
+    private String code;
 
     @Builder
     public DepartmentDto(Departments entity){
         this.id = entity.getId();
         this.name = entity.getName();
+        this.code = entity.getCode();
     }
 
     public Departments toEntity() {
         return Departments.builder()
                 .id(id)
                 .name(name)
+                .code(code)
                 .build();
     }
 

@@ -44,36 +44,22 @@
                                   <a-input v-model:value="formState.userName" disabled/>
                                 </a-form-item>
 
-                                <a-row :gutter="15">
-                                  <a-col :span="12">
-                                    <a-form-item
-                                      name="purpose"
-                                      label="용도"
+                                <a-form-item
+                                  name="purpose"
+                                  label="용도"
+                                >
+                                  <a-select
+                                    name="purpose"
+                                    v-model:value="formState.purpose" disabled
+                                  >
+                                    <a-select-option value="개발"
+                                      >개발</a-select-option
                                     >
-                                      <a-select
-                                        name="purpose"
-                                        v-model:value="formState.purpose" disabled
-                                      >
-                                        <a-select-option value="개발"
-                                          >개발</a-select-option
-                                        >
-                                        <a-select-option value="사무"
-                                          >사무</a-select-option
-                                        >
-                                      </a-select>
-                                    </a-form-item>
-                                  </a-col>
-
-                                  <a-col :span="12">
-                                    <a-form-item label="상태" name="status" required>
-                                      <a-radio-group v-model:value="formState.status">
-                                        <a-radio value="정상">정상</a-radio>
-                                        <a-radio value="노후">노후</a-radio>
-                                        <a-radio value="폐기">폐기</a-radio>
-                                      </a-radio-group>
-                                    </a-form-item>
-                                  </a-col>
-                                </a-row>
+                                    <a-select-option value="사무"
+                                      >사무</a-select-option
+                                    >
+                                  </a-select>
+                                </a-form-item>
 
                                 <a-form-item
                                   name="description"
@@ -100,7 +86,7 @@
 
                                 <a-form-item
                                   name="deadline"
-                                  label="마감일"
+                                  label="마감일/사용예정일"
                                   required
                                 >
                                   <DatePickerWrap>
@@ -113,10 +99,10 @@
                                   </DatePickerWrap>
                                 </a-form-item>
 
-                                <a-form-item name="tag" label="tag">
+                                <a-form-item name="tag" label="Tag">
                                   <TagInput>
                                       <div>
-                                          <template v-for="(tag, index) in formState.tag">
+                                          <template v-for="(tag, index) in formState.printTag">
                                               <a-tooltip
                                                   v-if="tag.length > 20"
                                                   :key="tag"
@@ -125,8 +111,9 @@
                                                   <a-tag
                                                       :key="tag"
                                                       :closable="true"
-                                                      tagType="colorful" color="green" 
-                                                      @click="(e) => handleClick(e,tag)"
+                                                      tagType="colorful"
+                                                      :color="formState.tag.includes(tag) ? 'green' : ''" 
+                                                      @click="() => handleClick(tag)"
                                                       @close="() => handleClose(tag)"
                                                   >
                                                       {{ `${tag.slice(0, 20)}...` }}
@@ -136,8 +123,9 @@
                                                   v-else
                                                   :key="index + 1"
                                                   :closable="true"
-                                                  tagType="colorful" color="green" 
-                                                  @click="(e) => handleClick(e,tag)"
+                                                  tagType="colorful" 
+                                                  :color="formState.tag.includes(tag) ? 'green' : ''"
+                                                  @click="() => handleClick(tag)"
                                                   @close="() => handleClose(tag)"
                                               >
                                                   {{ tag }}
@@ -244,7 +232,7 @@
         description: getDeviceById.value.description,
         type: "반납",
         isUsable: false,
-        tag: ['Office 미설치', 'OS 미설치', '포맷완료'],
+        tag: [],
         printTag: ['Office 미설치', 'OS 미설치', '포맷완료'],
         layout: "vertical",
       });
@@ -283,20 +271,33 @@
       };
 
       const handleClose = (removedTag) => {
-        const removedtags = formState.tag.filter((tag) => tag !== removedTag);
-        formState.tag = removedtags;
+        const removedtags = formState.printTag.filter((tag) => tag !== removedTag);
+        formState.printTag = removedtags;
+        if (formState.tag.includes(removedTag)) {
+          const index = formState.tag.indexOf(removedTag);
+          if (index !== -1) {
+            formState.tag.splice(index, 1);
+          }
+        }
       };
 
       const handleInputConfirm = () => {
-        if (inputValue.value && formState.tag.indexOf(inputValue.value) === -1) {
-          formState.tag = [...formState.tag, inputValue.value];
+        if (inputValue.value && formState.printTag.indexOf(inputValue.value) === -1) {
+          formState.printTag = [...formState.printTag, inputValue.value];
         }
         inputVisible.value = false;
         inputValue.value = '';
       };
 
-      const handleClick = (e, tag) => {
-        console.log("HHHHHHHHHHHHHHHHHHHHHHHHH ", formState.tag, e, tag);
+      const handleClick = (tag) => {
+        if (formState.tag.includes(tag)) {
+          const index = formState.tag.indexOf(tag);
+          if (index !== -1) {
+            formState.tag.splice(index, 1);
+          }
+        } else {
+          formState.tag.push(tag);
+        }
       };
       
   

@@ -77,11 +77,17 @@ public class ApprovalDevicesService {
 //        Users admin = usersRepository.findByUsername(ADMIN)
 //                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
 //                        "해당 유저가 없습니다. username=admin"));
-//        approvalDevices.setApproverId(admin);
+ //     -----------------------------------------------------------------
+//        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String username = user.getUsername()??;
+//        Users approver = usersService.findByUsername(username);
+//        approvalDevices.setApproverId(approver);
+
         approvalDevicesRepository.save(approvalDevices);
     }
 
     private void updateDeviceStatus(Devices device, String approvalType, Boolean isUsable, Users user) {
+        // 승인완료 시점
         switch (approvalType) {
             case APPROVAL_RETURN:
                 device.setIsUsable(true);
@@ -114,7 +120,7 @@ public class ApprovalDevicesService {
         String realUser = (request.get("realUser") != null)?request.get("realUser").toString():null;
 
         device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
-        device.setStatus((request.get("status")!=null)?request.get("status").toString():null);
+        device.setStatus((request.get("status")!=null)?request.get("status").toString():device.getStatus());
         device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);

@@ -50,7 +50,7 @@
 <script lang="jsx">
 import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
-import { computed, ref, defineComponent } from 'vue';
+import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import * as FontAwesomeIcon from '@fortawesome/free-solid-svg-icons';
 
@@ -181,7 +181,11 @@ const Orders = defineComponent({
     const item = computed(() => state.disposeDevicesAdmin.data);
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+
+    onMounted(() => {
+      onSorting('categoryName');
+    });
 
     const handleChangeForFilter = (e) => {
       dispatch('disposeDeviceFilter', { column: filterKey.value, value: e.target.value });

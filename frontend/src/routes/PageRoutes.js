@@ -57,6 +57,11 @@ export default [
     name: 'myList',
     component: () => import(/* webpackChunkName: "MyList" */ '@/view/user/MyList.vue'),
   },
+  {
+    path: '/maps',
+    name: 'maps',
+    component: () => import(/* webpackChunkName: "Map" */ '@/view/pages/Map.vue'),
+  },
   
   {
     path: '/blank',

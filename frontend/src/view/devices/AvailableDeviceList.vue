@@ -65,7 +65,7 @@
 <script lang="jsx">
 import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
-import { computed, ref, defineComponent } from 'vue';
+import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import Tag from '../../components/tags/Tag';
 import { useRouter } from 'vue-router';
@@ -116,20 +116,10 @@ const columns = [
   {
     title: '용도',
     dataIndex: 'purpose',
-    key: 'purpose',
+    key: 'purpose',    
     sorter: (a, b) => {
       const aValue = a.purposeKey?a.purposeKey:'';
       const bValue = b.purposeKey?b.purposeKey:'';
-      return sortWithNullCheck(aValue, bValue);
-    },
-  },
-  {
-    title: '상태',
-    dataIndex: 'status',
-    key: 'status',
-    sorter: (a, b) => {
-      const aValue = a.status?a.status:'';
-      const bValue = b.status?b.status:'';
       return sortWithNullCheck(aValue, bValue);
     },
   },
@@ -138,12 +128,12 @@ const columns = [
     dataIndex: 'tag',
     key: 'tag',
     ellipsis: true,
-    width: '100',
   },
   {
     title: '비고',
     dataIndex: 'memo',
     key: 'memo',
+    width: '20%',
   },
   {
     title: '신청정보',
@@ -177,12 +167,16 @@ const AvailableDevices = defineComponent({
 
     const item = computed(() => state.devices.data);
     const stateValue = ref('');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
 
     if ( router.currentRoute.value.params.category ) {
       dispatch('deviceFilter', { column: 'categoryName', 
       value: router.currentRoute.value.params.category });
     }
+
+    onMounted(() => {
+      onSorting('categoryName');
+    });
 
     const handleChangeForFilter = (e) => {
       dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });

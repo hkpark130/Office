@@ -14,17 +14,20 @@ import java.io.Serializable;
 public class ProjectDto implements Serializable {
     private Long id;
     private String name;
+    private String code;
 
     @Builder
     public ProjectDto(Projects entity){
         this.id = entity.getId();
         this.name = entity.getName();
+        this.code = entity.getCode();
     }
 
     public Projects toEntity() {
         return Projects.builder()
                 .id(id)
                 .name(name)
+                .code(code)
                 .build();
     }
 

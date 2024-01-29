@@ -124,7 +124,7 @@
 
                                 <a-form-item
                                   name="deadline"
-                                  label="마감일"
+                                  label="마감일/사용예정일"
                                   required
                                 >
                                   <DatePickerWrap>

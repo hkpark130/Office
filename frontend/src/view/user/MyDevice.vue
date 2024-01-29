@@ -180,14 +180,19 @@ const Orders = defineComponent({
     const getUser = computed(() => state.getUser.data);
     const searchData = computed(() => state.headerSearchData);
 
-    await dispatch('getMyDevices', getUser.value.name);
-
     const orders = computed(() => state.myDevice.data);
     const item = computed(() => state.myDevice.data);
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+    await dispatch('getMyDevices', getUser.value.name);
+    const fetchData = async () => {
+      await dispatch('getMyDevices', getUser.value.name);
+      onSorting('categoryName');
+    };
+
+    fetchData();
 
     const handleChangeForFilter = (e) => {
       dispatch('myDeviceFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
@@ -221,7 +226,7 @@ const Orders = defineComponent({
     const handleCancel = () => {
       onCancel();
     };
-    console.log(orders.value);
+
     const dataSource = computed(() =>
       orders.value.map((value) => {
         const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, 

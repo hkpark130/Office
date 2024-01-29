@@ -126,7 +126,7 @@
         </a-menu-item>
 
         <a-menu-item @click="toggleCollapsed" key="devicePosition">
-          <router-link to="/blank">
+          <router-link to="/maps">
             <sdFeatherIcons type="map-pin" />
             <span> 장비 지도 </span>
           </router-link>
