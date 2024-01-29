@@ -48,14 +48,19 @@
     <sdModal type="primary" title="수정" :visible="formState.visible" :footer="null" :onCancel="handleCancel">
       <div class="todo-modal">
         <BasicFormWrapper>
-          <a-form class="adTodo-form" name="todoAdd" :model="formState" @finish="onSubmitHandler">
-            <a-input v-model:value="formState.editApp" placeholder="상태" />
+          <a-form class="adTodo-form" name="todoAdd" :model="formState" @finish="editMyDevice">
+            <a-form-item
+              name="description"
+              label="비고"
+            >
+              <a-textarea
+                v-model:value="formState.description"
+                :rows="5"
+              />
+            </a-form-item>
             <br />
             <br />
-            <a-input v-model:value="formState.editApp" placeholder="비고" />
-            <br />
-            <br />
-            <sdButton @click="showModal" htmlType="submit" class="btn-adTodo" type="primary" size="large">
+            <sdButton htmlType="submit" class="btn-adTodo" type="primary" size="large">
               수정
             </sdButton>
           </a-form>
@@ -118,6 +123,7 @@ const columns = [
     title: '용도',
     dataIndex: 'purpose',
     key: 'purpose',
+    width: '5%',
     sorter: (a, b) => {
       const aValue = a.purposeKey?a.purposeKey:'';
       const bValue = b.purposeKey?b.purposeKey:'';
@@ -174,28 +180,43 @@ const Orders = defineComponent({
     const getUser = computed(() => state.getUser.data);
     const searchData = computed(() => state.headerSearchData);
 
-    await dispatch('getMyDevices', getUser.value.name);
-
     const orders = computed(() => state.myDevice.data);
     const item = computed(() => state.myDevice.data);
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+    await dispatch('getMyDevices', getUser.value.name);
+    const fetchData = async () => {
+      await dispatch('getMyDevices', getUser.value.name);
+      onSorting('categoryName');
+    };
+
+    fetchData();
 
     const handleChangeForFilter = (e) => {
       dispatch('myDeviceFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
     };
 
+    const editMyDevice = () => {
+      dispatch('editMyDevice', formState).then(() => {
+        location.reload();
+        alert('수정되었습니다.');
+      });
+    };
+
     const formState = reactive({
       visible: false,
-      editApp: '',
+      id: '',
+      status: '',
+      description: '',
     });
 
     const showModal = (row) => {
-      console.log(row.deviceId);
-      
       formState.visible = true;
+      formState.id = row.id;
+      formState.status = row.status;
+      formState.description = row.description;
     };
 
     const onCancel = () => {
@@ -206,17 +227,34 @@ const Orders = defineComponent({
       onCancel();
     };
 
-    const onSubmitHandler = () => {
-      if (formState.editApp !== '') {
-        formState.visible = false;
-      } else {
-        alert('Please Give a Task Title...');
-      }
-    };
-    
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, spec } = value;
+        const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, 
+          realUser, spec, approvalType, approvalInfo } = value;
+        const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
+        let action = approvalType+"중";
+
+        if (approvalInfo === "승인완료") {
+          action = (
+            <div class="table-actions">
+              <>
+                <sdButton onClick={() => showModal(value)} class="btn-icon" type="link" shape="circle">
+                  <sdFeatherIcons type="edit" size={16} title="수정" />
+                </sdButton>
+                <router-link to={"/return-device/"+id}>
+                  <sdButton class="btn-icon" type="primary" to="#" shape="circle" >
+                    <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
+                  </sdButton>
+                </router-link>
+                <router-link to={"/delete-device/"+id}>
+                  <sdButton class="btn-icon" type="danger" to="#" shape="circle">
+                    <sdFeatherIcons type="trash-2" size={16} title="폐기" />
+                  </sdButton>
+                </router-link>
+              </>
+            </div>
+          );
+        }
 
         return {
           category: (
@@ -233,7 +271,7 @@ const Orders = defineComponent({
             </div>
           ),
           categoryNameKey: categoryName,
-          user: <span class="customer-name">{username}</span>,
+          user: <span class="customer-name">{(realUser)?realUser:username}</span>,
           userKey: username,
           manageDep: <span class="customer-name">{manageDepName}</span>,
           manageDepKey: manageDepName,
@@ -248,27 +286,15 @@ const Orders = defineComponent({
             </div>
           ),
           purposeKey: purpose,
-          description: <span class="ordered-date">{description}</span>,
-          action: (
-            <div class="table-actions">
-              <>
-                
-                <sdButton onClick={() => showModal(value)} class="btn-icon" type="link" shape="circle">
-                  <sdFeatherIcons type="edit" size={16} title="수정" />
-                </sdButton>
-                <router-link to={"/return-device/"+id}>
-                  <sdButton class="btn-icon" type="primary" to="#" shape="circle" >
-                    <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
-                  </sdButton>
-                </router-link>
-                <router-link to={"/delete-device/"+id}>
-                  <sdButton class="btn-icon" type="danger" to="#" shape="circle">
-                    <sdFeatherIcons type="trash-2" size={16} title="폐기" />
-                  </sdButton>
-                </router-link>
-              </>
+          description: (
+            <div>
+              <span class="ordered-date">{truncatedDescription}</span>
+              <span class="spnTooltip" >
+                  {description}
+              </span>
             </div>
           ),
+          action: action,
         };
       }),
     );
@@ -284,7 +310,6 @@ const Orders = defineComponent({
       showModal,
       onCancel,
       handleCancel,
-      onSubmitHandler,
       dataSource,
       handleChangeForFilter,
       filterKey,
@@ -296,6 +321,7 @@ const Orders = defineComponent({
       columns,
       orders,
       stateValue,
+      editMyDevice,
     };
   },
 });

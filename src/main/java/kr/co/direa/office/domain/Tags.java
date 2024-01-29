@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
-@Entity(name = "projects")
-@Table(name = "projects")
+import java.util.List;
+
+@Entity(name = "tags")
+@Table(name = "tags")
 @Getter
-public class Projects {
+public class Tags extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -16,18 +18,20 @@ public class Projects {
     @Column(name = "name", nullable = true)
     private String name;
 
-    @Column(name = "code", nullable = true)
-    private String code;
+    @OneToMany(mappedBy = "tag")
+    private List<DeviceTag> deviceTags;
 
-    public Projects() {
+    public Tags() {
 
     }
 
     @Builder
-    public Projects(Long id, String name, String code) {
+    public Tags(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.code = code;
     }
 
+    public Tags(String name) {
+        this.name = name;
+    }
 }

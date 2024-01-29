@@ -36,6 +36,12 @@ export default [
     component: () => import(/* webpackChunkName: "CheckApprovalDevice" */ '@/view/pages/CheckApprovalDevice.vue'),
   },
   {
+    name: 'edit-approval-device',
+    path: '/edit-approval-device/:approvalId',
+    props: true,
+    component: () => import(/* webpackChunkName: "EditApprovalDevice" */ '@/view/pages/EditApprovalDevice.vue'),
+  },
+  {
     name: 'detail-approval',
     path: '/detail-approval-device/:approvalId',
     props: true,
@@ -50,6 +56,11 @@ export default [
     path: '/user/myList',
     name: 'myList',
     component: () => import(/* webpackChunkName: "MyList" */ '@/view/user/MyList.vue'),
+  },
+  {
+    path: '/maps',
+    name: 'maps',
+    component: () => import(/* webpackChunkName: "Map" */ '@/view/pages/Map.vue'),
   },
   
   {

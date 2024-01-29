@@ -64,6 +64,18 @@ const actions = {
     }
   },
 
+  async submitDeviceDisposePost({ commit }, data) {
+    try {
+      commit('postDeviceDisposeBegin');
+      await DataService.post('/api/device-dispose', data);
+      commit('postDeviceDisposeSuccess', data);
+    } catch (err) {
+      commit('postDeviceDisposeErr', err);
+    }
+  },
+
+  //submitDeviceDispose
+
   async adminReturnDevice({ commit }, approvalId) {
     try {
       commit('adminReturnDeviceBegin');
@@ -71,6 +83,26 @@ const actions = {
       commit('adminReturnDeviceSuccess', approvalId);
     } catch (err) {
       commit('adminReturnDeviceErr', err);
+    }
+  },
+
+  async adminDisposeDevice({ commit }, deviceId) {
+    try {
+      commit('adminDisposeDeviceBegin');
+      await DataService.get(`/api/admin-device-dispose/${deviceId}`);
+      commit('adminDisposeDeviceSuccess', deviceId);
+    } catch (err) {
+      commit('adminDisposeDeviceErr', err);
+    }
+  },
+
+  async adminRecoveryDevice({ commit }, deviceId) {
+    try {
+      commit('adminRecoveryDeviceBegin');
+      await DataService.get(`/api/admin-device-recovery/${deviceId}`);
+      commit('adminRecoveryDeviceSuccess', deviceId);
+    } catch (err) {
+      commit('adminRecoveryDeviceErr', err);
     }
   },
 

@@ -11,8 +11,6 @@
                     :ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -68,7 +66,7 @@
 
                                   <a-col :span="12">
                                     <a-form-item label="상태" name="status" required>
-                                      <a-radio-group v-model:value="formState.status">
+                                      <a-radio-group v-model:value="formState.status" disabled>
                                         <a-radio value="정상">정상</a-radio>
                                         <a-radio value="노후">노후</a-radio>
                                         <a-radio value="폐기">폐기</a-radio>
@@ -76,6 +74,18 @@
                                     </a-form-item>
                                   </a-col>
                                 </a-row>
+
+                                <a-form-item
+                                  name="description"
+                                  label="비고"
+                                  required
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                    disabled
+                                  />
+                                </a-form-item>
 
                                 <a-form-item
                                   name="reason"
@@ -90,7 +100,7 @@
                               </sdCards>
                             </div>
 
-                            <div class="add-product-block">
+                            <!-- <div class="add-product-block">
                               <a-row :gutter="15">
                                 <a-col :xs="24">
                                   <div class="add-product-content">
@@ -111,7 +121,7 @@
                                   </div>
                                 </a-col>
                               </a-row>
-                            </div>
+                            </div> -->
                           </a-col>
                         </a-row>
                       </div>
@@ -125,6 +135,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -171,20 +182,24 @@
         category: getDeviceById.value.categoryName,
         price: getDeviceById.value.price,
         auto: "auto",
-        status: getDeviceById.value.status,
+        status: "폐기",
         purpose: getDeviceById.value.purpose,
         manageDep: "",
         project: "",
         userName: getUser.value.name,
+        realUser: getDeviceById.value.realUser,
         reason: "",
-        type: "반납",
+        description: getDeviceById.value.description,
+        type: "폐기",
+        isUsable: false,
         layout: "vertical",
       });
   
       const handleFinish = () => {
-        dispatch('submitDeviceReturnPost', formState);
-        alert('신청되었습니다.');
-        push('/');
+        dispatch('submitDeviceDisposePost', formState).then(() => {
+          alert('신청되었습니다.');
+          push('/');
+        });
       };
   
       const handleFinishFailed = (errors) => {

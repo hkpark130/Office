@@ -48,44 +48,41 @@
                                   </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
-                                  <a-form-item label="사용자" name="userName" required>
-                                    <a-input v-model:value="formState.userName" disabled/>
+                                  <a-form-item label="사용자" name="realUser" required>
+                                    <a-input v-model:value="formState.realUser" disabled/>
                                   </a-form-item>
                                 </a-col>
                               </a-row>
 
-
-                              <a-row :gutter="15">
-                                <a-col :span="12">
-                                  <a-form-item
-                                    name="purpose"
-                                    label="용도"
+                              <a-form-item
+                                name="purpose"
+                                label="용도"
+                              >
+                                <a-select
+                                  name="purpose"
+                                  v-model:value="formState.purpose"
+                                  disabled
+                                >
+                                  <a-select-option value="개발"
+                                    >개발</a-select-option
                                   >
-                                    <a-select
-                                      name="purpose"
-                                      v-model:value="formState.purpose"
-                                      disabled
-                                    >
-                                      <a-select-option value="개발"
-                                        >개발</a-select-option
-                                      >
-                                      <a-select-option value="사무"
-                                        >사무</a-select-option
-                                      >
-                                    </a-select>
-                                  </a-form-item>
-                                </a-col>
+                                  <a-select-option value="사무"
+                                    >사무</a-select-option
+                                  >
+                                </a-select>
+                              </a-form-item>
 
-                                <a-col :span="12">
-                                  <a-form-item label="상태" name="status" required>
-                                    <a-radio-group v-model:value="formState.status" disabled>
-                                      <a-radio value="정상">정상</a-radio>
-                                      <a-radio value="노후">노후</a-radio>
-                                      <a-radio value="폐기">폐기</a-radio>
-                                    </a-radio-group>
-                                  </a-form-item>
-                                </a-col>
-                              </a-row>
+                              <a-form-item
+                                name="description"
+                                label="비고"
+                                required
+                              >
+                                <a-textarea
+                                  v-model:value="formState.description"
+                                  :rows="5"
+                                  disabled
+                                />
+                              </a-form-item>
 
                               <a-form-item
                                 name="reason"
@@ -226,7 +223,9 @@ const AddProduct = defineComponent({
       manageDep: "",
       project: "",
       userName: getApprovalById.value.userName,
+      realUser: getApprovalById.value.realUser,
       reason: getApprovalById.value.reason,
+      description: getApprovalById.value.description,
       type: getApprovalById.value.type,
       layout: "vertical",
     });

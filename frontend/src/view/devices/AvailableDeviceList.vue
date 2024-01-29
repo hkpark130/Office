@@ -65,8 +65,9 @@
 <script lang="jsx">
 import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
-import { computed, ref, defineComponent } from 'vue';
+import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import Tag from '../../components/tags/Tag';
 import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
@@ -115,7 +116,7 @@ const columns = [
   {
     title: '용도',
     dataIndex: 'purpose',
-    key: 'purpose',
+    key: 'purpose',    
     sorter: (a, b) => {
       const aValue = a.purposeKey?a.purposeKey:'';
       const bValue = b.purposeKey?b.purposeKey:'';
@@ -123,24 +124,16 @@ const columns = [
     },
   },
   {
-    title: '상태',
-    dataIndex: 'status',
-    key: 'status',
-    sorter: (a, b) => {
-      const aValue = a.status?a.status:'';
-      const bValue = b.status?b.status:'';
-      return sortWithNullCheck(aValue, bValue);
-    },
-  },
-  {
     title: '태그',
     dataIndex: 'tag',
     key: 'tag',
+    ellipsis: true,
   },
   {
     title: '비고',
     dataIndex: 'memo',
     key: 'memo',
+    width: '20%',
   },
   {
     title: '신청정보',
@@ -156,7 +149,7 @@ const columns = [
 ];
 
 const filterColumns = columns.filter((column, index) => {
-  return column.key !== 'memo' && column.key !== 'id' && index !== columns.length - 1;
+  return column.key !== 'memo' && column.key !== 'id' && column.key !== 'tag' && index !== columns.length - 1;
 });
 
 const AvailableDevices = defineComponent({
@@ -174,12 +167,16 @@ const AvailableDevices = defineComponent({
 
     const item = computed(() => state.devices.data);
     const stateValue = ref('');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
 
     if ( router.currentRoute.value.params.category ) {
       dispatch('deviceFilter', { column: 'categoryName', 
       value: router.currentRoute.value.params.category });
     }
+
+    onMounted(() => {
+      onSorting('categoryName');
+    });
 
     const handleChangeForFilter = (e) => {
       dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
@@ -187,7 +184,7 @@ const AvailableDevices = defineComponent({
 
     const dataSource = computed(() =>
       orders.value.map((value) => {
-        const { categoryId, approvalInfo, purpose, spec, id, tag, description, approvalType, deadline, status } = value;
+        const { categoryId, approvalInfo, purpose, spec, id, description, approvalType, deadline, status, tags } = value;
         const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
         const deadlineDate = (deadline === null)?null:new Date(deadline).toLocaleDateString('ko-KR',
               {
@@ -195,11 +192,15 @@ const AvailableDevices = defineComponent({
                 month: 'long',
                 day: 'numeric',
               });
+        const tagComponents = tags.map((tag, index) => (
+          <Tag key={index} tagType="colorful" color="blue" data={tag}/>
+        ));
         return {
           key: id, // radio 선택시 기준 값
           categoryName: categoryId.name,
           status: status,
           purposeKey: purpose,
+          approvalType: approvalType,
           infoKey: approvalInfo,
           id: <span class="order-id">{id}</span>,
           category: <span class="customer-name">{ categoryId.name }</span>,
@@ -213,7 +214,11 @@ const AvailableDevices = defineComponent({
               {(approvalInfo === '승인대기' && approvalType === '반납') ? `반납예정 ${deadlineDate}`:"사용가능" }
             </span>
           ),
-          tag: <span class="ordered-amount">{tag}</span>,
+          tag: (
+            <div class="taglist-wrap" style="display: flex; flex-wrap: wrap;">
+              {tagComponents}
+            </div>
+          ),
           purpose: (
             <div>
               <span class="ordered-amount spnDetails">{purpose}</span>
@@ -238,6 +243,11 @@ const AvailableDevices = defineComponent({
     const rowSelection = {
       onChange: (selectedRowKeys) => {
         deviceId.value = selectedRowKeys[0];
+      },
+      getCheckboxProps: (record) => {
+        return {
+            disabled: record.approvalType === '반납'
+        };
       },
       type: "radio", //기본값이 체크박스
     };

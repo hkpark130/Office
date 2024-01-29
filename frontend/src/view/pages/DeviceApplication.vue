@@ -43,18 +43,10 @@
                                   </a-select>
                                 </a-form-item>
 
-                                <a-form-item label="상태" name="status" required>
-                                  <a-radio-group v-model:value="formState.status" disabled>
-                                    <a-radio value="정상">정상</a-radio>
-                                    <a-radio value="노후">노후</a-radio>
-                                    <a-radio value="폐기">폐기</a-radio>
-                                  </a-radio-group>
-                                </a-form-item>
-
                                 <a-row :gutter="15">
                                   <a-col :span="12">
                                     <a-form-item label="신청자" name="userName" required>
-                                      <a-input v-model:value="formState.userName" :disabled="disabled"/>
+                                      <a-input v-model:value="formState.realUser" :disabled="disabled" @change="onChangeUser"/>
                                     </a-form-item>
                                   </a-col>
 
@@ -103,6 +95,17 @@
                                 </a-form-item>
 
                                 <a-form-item
+                                  name="description"
+                                  label="비고"
+                                  required
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                  />
+                                </a-form-item>
+
+                                <a-form-item
                                   name="reason"
                                   label="사유"
                                   required
@@ -115,7 +118,7 @@
 
                                 <a-form-item
                                   name="deadline"
-                                  label="마감일"
+                                  label="마감일/사용예정일"
                                   required
                                 >
                                   <DatePickerWrap>
@@ -174,8 +177,6 @@
       const { state, dispatch } = useStore();
       const router = useRouter();
       const { push, go } = useRouter();
-      const file = ref(null);
-      const list = ref(null);
       const submitValues = ref({});
       const formRef = ref();
 
@@ -206,7 +207,9 @@
         manageDep: "",
         project: "",
         userName: getUser.value.name,
+        realUser: getUser.value.name,
         reason: "",
+        description: getDeviceById.value.description,
         type: "대여",
         isUsable: false,
         layout: "vertical",
@@ -218,9 +221,10 @@
       }
   
       const handleFinish = () => {
-        dispatch('submitDeviceApplicationPost', formState);
-        alert('신청되었습니다.');
-        push('/');
+        dispatch('submitDeviceApplicationPost', formState).then(() => {
+          alert('신청되었습니다.');
+          push('/');
+        });
       };
   
       const handleFinishFailed = (errors) => {
@@ -230,40 +234,28 @@
       const handleSubmit = (values) => {
         submitValues.value = values;
       };
-  
-      const rules = {
-        name: [
-          {
-            required: true,
-            message: "Please input Activity name",
-            trigger: "blur",
-          },
-        ],
-      };
 
       const disabled = ref(true);
 
       const onChange = (check) => {
         if (check.target.value === "auto") {
           disabled.value = true;
+          formState.realUser = formState.userName;
         } else {
           disabled.value = false;
+          
         }
       };
-  
-      const resetForm = () => {
-        formRef.value.ruleformState.resetFields();
-      };
+
+      const onChangeUser = (name) => {
+        formState.realUser = name.target.value;
+      }
 
       const handleCancel = () => {
         go(-1);
       };
   
       return {
-        rules,
-        file,
-        list,
-        resetForm,
         submitValues,
         formState,
         handleFinish,
@@ -277,6 +269,7 @@
         disabled,
         disabledDate,
         handleCancel,
+        onChangeUser,
       };
     },
   });

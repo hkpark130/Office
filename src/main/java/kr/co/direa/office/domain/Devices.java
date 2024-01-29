@@ -21,6 +21,9 @@ public class Devices extends BaseTimeEntity{
     @JoinColumn(name ="user_id", referencedColumnName = "id")
     private Users userId;
 
+    @Column(name = "real_user")
+    private String realUser;
+
     @OneToMany(mappedBy = "deviceId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ApprovalDevices> approvalDevices;
 
@@ -48,8 +51,8 @@ public class Devices extends BaseTimeEntity{
     @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "tag")
-    private String tag;
+    @OneToMany(mappedBy = "device")
+    private List<DeviceTag> deviceTags;
 
     @Column(name = "company")
     private String company;
@@ -77,7 +80,7 @@ public class Devices extends BaseTimeEntity{
 
     @Builder
     public Devices(String id, Users userId, Departments manageDep, Categories categoryId, String spec,
-                   Long price, String model, String description, String tag, String company,
+                   Long price, String model, String description, String company,
                    Projects projectId, String sn, String status, Boolean isUsable, String purpose, Date purchaseDate,
                    List<ApprovalDevices> approvalDevices) {
         this.id = id;
@@ -89,7 +92,6 @@ public class Devices extends BaseTimeEntity{
         this.price = price;
         this.model = model;
         this.description = description;
-        this.tag = tag;
         this.company = company;
         this.sn = sn;
         this.status = status;

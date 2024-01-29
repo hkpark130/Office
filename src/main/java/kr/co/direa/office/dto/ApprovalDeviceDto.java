@@ -18,11 +18,13 @@ public class ApprovalDeviceDto implements Serializable {
     private Long approvalId;
     private Users userId;
     private String userName;
+    private String realUser;
     private String reason;
     private Users approverId;
     private String deviceId;
     private String deviceStatus;
     private String devicePurpose;
+    private String description;
     private String categoryName;
     private String img;
     private String type;
@@ -39,12 +41,14 @@ public class ApprovalDeviceDto implements Serializable {
         this.approvalId = entity.getId();
         this.userId = (entity.getUserId() != null) ? entity.getUserId() : null;
         this.userName = (this.userId != null) ? this.userId.getUsername() : null;
+        this.realUser = (entity.getDeviceId() != null) ? entity.getDeviceId().getRealUser() : null;
         this.reason = entity.getReason();
         this.approverId = entity.getApproverId();
         this.deviceId = (entity.getDeviceId() != null) ? entity.getDeviceId().getId() : null;
         this.categoryName = (entity.getDeviceId() != null) ? entity.getDeviceId().getCategoryId().getName() : null;
         this.deviceStatus = (entity.getDeviceId() != null) ? entity.getDeviceId().getStatus() : null;
         this.devicePurpose = (entity.getDeviceId() != null) ? entity.getDeviceId().getPurpose() : null;
+        this.description = (entity.getDeviceId() != null) ? entity.getDeviceId().getDescription() : null;
         this.img = entity.getImg();
         this.type = entity.getType();
         this.createdDate = (entity.getCreatedDate() != null) ? entity.getCreatedDate() : null;

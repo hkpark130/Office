@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static kr.co.direa.office.constant.Constants.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -39,7 +41,7 @@ public class DeviceController {
         List<Map<String, Object>> response = new ArrayList<>();
 
         for (CategoryDto categoryDto : categoryDtoList) {
-            Long deviceCount = devicesService.countByCategoryId(categoryDto.toEntity());
+            Long deviceCount = devicesService.countByCategoryIdAndIsUsable(categoryDto.toEntity(), true);
             map = new HashMap<>();
             map.put("amount", deviceCount);
             map.put("name", categoryDto.getName());
@@ -54,7 +56,7 @@ public class DeviceController {
 
     @GetMapping(value = "/devicelist-admin")
     ResponseEntity<?> deviceListAdmin() {
-        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatusNot("폐기");
+        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatusNot(DISPOSE_TYPE);
 
         return ResponseEntity.ok(
                 filteredDevices
@@ -63,7 +65,7 @@ public class DeviceController {
 
     @GetMapping(value = "/dispose-devicelist-admin")
     ResponseEntity<?> disposeDeviceListAdmin() {
-        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatus("폐기");
+        List<DeviceDto> filteredDevices = approvalDevicesService.findByStatus(DISPOSE_TYPE);
 
         return ResponseEntity.ok(
                 filteredDevices
@@ -85,6 +87,17 @@ public class DeviceController {
 
         return ResponseEntity.ok(
                 deviceDtoList
+        );
+    }
+
+    @PostMapping(value = "/edit-mydevice")
+    ResponseEntity<?> editMyDevice(
+            @RequestBody Map<String, Object> request
+    ) {
+        devicesService.editDescription(request);
+
+        return ResponseEntity.ok(
+                "success"
         );
     }
 

@@ -24,8 +24,6 @@
                     :ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -77,7 +75,7 @@
                                         <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
                                       </div>
                                     </template>
-                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" />
+                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)"  @keydown.enter.prevent/>
                                   </sdPopover>
                                   
                                   <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
@@ -117,13 +115,6 @@
                                       >사무</a-select-option
                                     >
                                   </a-select>
-                                </a-form-item>
-
-                                <a-form-item label="개발 가능 여부" name="status" required>
-                                  <a-radio-group v-model:value="formState.status">
-                                    <a-radio value="true">개발 가능</a-radio>
-                                    <a-radio value="false">개발 불가능</a-radio>
-                                  </a-radio-group>
                                 </a-form-item>
 
                                 <a-form-item
@@ -200,6 +191,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -269,7 +261,7 @@
         price: 0,
         projectName: "본사",
         manageDepName: "경영지원부",
-        status: "true",
+        status: "정상",
         purpose: "개발",
         description: "",
         model: "",

@@ -11,8 +11,6 @@
                     :ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -70,7 +68,7 @@
                                         <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
                                       </div>
                                     </template>
-                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" />
+                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)"  @keydown.enter.prevent/>
                                   </sdPopover>
                                   
                                   <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
@@ -177,6 +175,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -229,6 +228,7 @@
         categoryName: "노트북",
         price: 0,
         projectName: "본사",
+        manageDepName: "경영지원부",
         status: "정상",
         purpose: "개발",
         description: "",
@@ -237,6 +237,7 @@
         sn: "",
         spec: "",
         purchaseDate: "",
+        isUsable: true,
         layout: "vertical",
       });
 

@@ -96,7 +96,7 @@
         <a-menu-item @click="toggleCollapsed" key="addCategory">
           <router-link to="/add-category">
             <sdFeatherIcons type="plus-circle" />
-            <span> 카테고리 등록 </span>
+            <span> 품목 등록 </span>
           </router-link>
         </a-menu-item>
 
@@ -126,7 +126,7 @@
         </a-menu-item>
 
         <a-menu-item @click="toggleCollapsed" key="devicePosition">
-          <router-link to="/blank">
+          <router-link to="/maps">
             <sdFeatherIcons type="map-pin" />
             <span> 장비 지도 </span>
           </router-link>

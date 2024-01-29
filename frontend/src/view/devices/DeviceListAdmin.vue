@@ -61,7 +61,7 @@
 <script lang="jsx">
 import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
-import { computed, ref, defineComponent } from 'vue';
+import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const sortWithNullCheck = (aValue, bValue) => {
@@ -226,27 +226,30 @@ const Orders = defineComponent({
     const item = computed(() => state.devicesAdmin.data);
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+
+    onMounted(() => {
+      onSorting('categoryName');
+    });
 
     const handleChangeForFilter = (e) => {
       dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value });
     };
 
-    const removeItem = (deviceId) => {
-      const index = orders.value.findIndex((item) => item.id === deviceId);
-      if (index !== -1) {
-        orders.value.splice(index, 1);
-      }
-    };
-
-    const adminReturnDevice = (approvalId, deviceId) => {
+    const adminReturnDevice = (approvalId) => {
       dispatch('adminReturnDevice', approvalId)
         .then(() => {
-          const index = orders.value.findIndex((item) => item.id === deviceId);
-          if (index !== -1) {
-            orders.value.splice(index, 1);
-          }
+          location.reload();
           alert('반납 처리되었습니다.');
+        }
+      );
+    };
+
+    const adminDisposeDevice = (deviceId) => {
+      dispatch('adminDisposeDevice', deviceId)
+        .then(() => {
+          location.reload();
+          alert('폐기 처리되었습니다.');
         }
       );
     };
@@ -254,8 +257,8 @@ const Orders = defineComponent({
     const dataSource = computed(() =>
       orders.value.map((value) => {
         let returnIcon = null;
-        const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo,
-          username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId } = value;
+        const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo, realUser,
+          username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId, status } = value;
         const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
               {
                 year: 'numeric',
@@ -302,7 +305,7 @@ const Orders = defineComponent({
           categoryNameKey: categoryName,
           categoryName: <span class="customer-name">{categoryName}</span>,
           userKey: username,
-          user: <span class="customer-name">{username}</span>,
+          user: <span class="customer-name">{(realUser)?realUser:username}</span>,
           status: status,
           purpose: (
             <div>
@@ -331,7 +334,7 @@ const Orders = defineComponent({
             <div class="table-actions">
               <>
                 {returnIcon}
-                <sdButton class="btn-icon" onClick={() => removeItem(id)} type="danger" to="#" shape="circle">
+                <sdButton class="btn-icon" onClick={() => adminDisposeDevice(id)} type="danger" to="#" shape="circle">
                   <sdFeatherIcons type="trash-2" size={16} title="폐기" />
                 </sdButton>
               </>

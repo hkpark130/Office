@@ -8,11 +8,9 @@
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
                 <AddProductForm>
                   <a-form
-                    :ref="formRef"
+                    ref="formRef"
                     style="width: 100%"
                     :model="formState"
-                    @finish="handleFinish"
-                    @finishFailed="handleFinishFailed"
                     :layout="formState.layout"
                   >
                     <BasicFormWrapper>
@@ -46,36 +44,34 @@
                                   <a-input v-model:value="formState.userName" disabled/>
                                 </a-form-item>
 
-                                <a-row :gutter="15">
-                                  <a-col :span="12">
-                                    <a-form-item
-                                      name="purpose"
-                                      label="용도"
+                                <a-form-item
+                                  name="purpose"
+                                  label="용도"
+                                >
+                                  <a-select
+                                    name="purpose"
+                                    v-model:value="formState.purpose" disabled
+                                  >
+                                    <a-select-option value="개발"
+                                      >개발</a-select-option
                                     >
-                                      <a-select
-                                        name="purpose"
-                                        v-model:value="formState.purpose" disabled
-                                      >
-                                        <a-select-option value="개발"
-                                          >개발</a-select-option
-                                        >
-                                        <a-select-option value="사무"
-                                          >사무</a-select-option
-                                        >
-                                      </a-select>
-                                    </a-form-item>
-                                  </a-col>
+                                    <a-select-option value="사무"
+                                      >사무</a-select-option
+                                    >
+                                  </a-select>
+                                </a-form-item>
 
-                                  <a-col :span="12">
-                                    <a-form-item label="상태" name="status" required>
-                                      <a-radio-group v-model:value="formState.status">
-                                        <a-radio value="정상">정상</a-radio>
-                                        <a-radio value="노후">노후</a-radio>
-                                        <a-radio value="폐기">폐기</a-radio>
-                                      </a-radio-group>
-                                    </a-form-item>
-                                  </a-col>
-                                </a-row>
+                                <a-form-item
+                                  name="description"
+                                  label="비고"
+                                  required
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.description"
+                                    :rows="5"
+                                    disabled
+                                  />
+                                </a-form-item>
 
                                 <a-form-item
                                   name="reason"
@@ -90,7 +86,7 @@
 
                                 <a-form-item
                                   name="deadline"
-                                  label="마감일"
+                                  label="마감일/사용예정일"
                                   required
                                 >
                                   <DatePickerWrap>
@@ -102,6 +98,67 @@
                                     </DatePickerWrapper>
                                   </DatePickerWrap>
                                 </a-form-item>
+
+                                <a-form-item name="tag" label="Tag">
+                                  <TagInput>
+                                      <div>
+                                          <template v-for="(tag, index) in formState.printTag">
+                                              <a-tooltip
+                                                  v-if="tag.length > 20"
+                                                  :key="tag"
+                                                  :title="tag"
+                                              >
+                                                  <a-tag
+                                                      :key="tag"
+                                                      :closable="true"
+                                                      tagType="colorful"
+                                                      :color="formState.tag.includes(tag) ? 'green' : ''" 
+                                                      @click="() => handleClick(tag)"
+                                                      @close="() => handleClose(tag)"
+                                                  >
+                                                      {{ `${tag.slice(0, 20)}...` }}
+                                                  </a-tag>
+                                              </a-tooltip>
+                                              <a-tag
+                                                  v-else
+                                                  :key="index + 1"
+                                                  :closable="true"
+                                                  tagType="colorful" 
+                                                  :color="formState.tag.includes(tag) ? 'green' : ''"
+                                                  @click="() => handleClick(tag)"
+                                                  @close="() => handleClose(tag)"
+                                              >
+                                                  {{ tag }}
+                                              </a-tag>
+                                          </template>
+                                          <div>
+                                              <a-input
+                                                  v-if="inputVisible"
+                                                  type="text"
+                                                  size="small"
+                                                  :style="{ width: '78px' }"
+                                                  v-model:value="inputValue"
+                                                  @keypress.enter="handleInputConfirm()"
+                                              />
+                                              <a-tag
+                                                  v-else
+                                                  style="
+                                                      background: #fff;
+                                                      borderstyle: dashed;
+                                                  "
+                                                  @click="showInput"
+                                              >
+                                                  <sdFeatherIcons
+                                                      type="plus"
+                                                      size="14"
+                                                  />
+                                                  New Tag
+                                              </a-tag>
+                                          </div>
+                                      </div>
+                                  </TagInput>
+                              </a-form-item>
+
                               </sdCards>
                             </div>
                           </a-col>
@@ -117,6 +174,7 @@
                             size="large"
                             htmlType="submit"
                             type="primary"
+                            @click="handleFinish"
                             raised
                           >
                             Save
@@ -134,7 +192,7 @@
     </Main>
   </template>
   <script lang="jsx">
-  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
+  import { Main, BasicFormWrapper, DatePickerWrapper, TagInput } from "../styled";
   import { AddProductForm } from "./style";
   import { DatePickerWrap } from './ui-elements-styled';
   import { computed, ref, reactive, defineComponent } from "vue";
@@ -143,7 +201,7 @@
   
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
+    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap, TagInput },
     async setup() {
       const { state, dispatch } = useStore();
       const router = useRouter();
@@ -151,7 +209,7 @@
       const file = ref(null);
       const list = ref(null);
       const submitValues = ref({});
-      const formRef = ref();
+      const formRef = ref(null);
 
       await dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
       
@@ -169,9 +227,13 @@
         project: "",
         deadline: "",
         userName: getUser.value.name,
+        realUser: getDeviceById.value.realUser,
         reason: "",
+        description: getDeviceById.value.description,
         type: "반납",
         isUsable: false,
+        tag: [],
+        printTag: ['Office 미설치', 'OS 미설치', '포맷완료'],
         layout: "vertical",
       });
 
@@ -179,43 +241,83 @@
         return current && current.valueOf() < Date.now();
       }
   
-      const handleFinish = () => {
-        dispatch('submitDeviceReturnPost', formState);
-        alert('신청되었습니다.');
-        push('/');
+      const handleFinish = async () => {
+        try {
+          await formRef.value.validate();
+          dispatch('submitDeviceReturnPost', formState).then(() => {
+            alert('신청되었습니다.');
+            push('/');
+          });
+        } catch (error) {
+          console.error(error);
+        }
       };
   
       const handleFinishFailed = (errors) => {
         console.log(errors);
       };
-  
-      const handleSubmit = (values) => {
-        submitValues.value = values;
-      };
 
       const disabled = ref(true);
-  
-      const resetForm = () => {
-        formRef.value.ruleformState.resetFields();
-      };
 
       const handleCancel = () => {
         go(-1);
       };
+
+      const inputVisible = ref(false);
+      const inputValue = ref('');
+
+      const showInput = () => {
+        inputVisible.value = true;
+      };
+
+      const handleClose = (removedTag) => {
+        const removedtags = formState.printTag.filter((tag) => tag !== removedTag);
+        formState.printTag = removedtags;
+        if (formState.tag.includes(removedTag)) {
+          const index = formState.tag.indexOf(removedTag);
+          if (index !== -1) {
+            formState.tag.splice(index, 1);
+          }
+        }
+      };
+
+      const handleInputConfirm = () => {
+        if (inputValue.value && formState.printTag.indexOf(inputValue.value) === -1) {
+          formState.printTag = [...formState.printTag, inputValue.value];
+        }
+        inputVisible.value = false;
+        inputValue.value = '';
+      };
+
+      const handleClick = (tag) => {
+        if (formState.tag.includes(tag)) {
+          const index = formState.tag.indexOf(tag);
+          if (index !== -1) {
+            formState.tag.splice(index, 1);
+          }
+        } else {
+          formState.tag.push(tag);
+        }
+      };
+      
   
       return {
         file,
         list,
-        resetForm,
         submitValues,
         formState,
         handleFinish,
         handleFinishFailed,
-        handleSubmit,
         formRef,
         disabled,
         disabledDate,
         handleCancel,
+        showInput,
+        inputVisible,
+        handleClose,
+        handleInputConfirm,
+        inputValue,
+        handleClick,
       };
     },
   });

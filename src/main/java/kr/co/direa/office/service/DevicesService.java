@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,8 +37,8 @@ public class DevicesService {
                 .collect(Collectors.toList());
     }
 
-    public Long countByCategoryId(Categories category) {
-        return devicesRepository.countByCategoryId(category);
+    public Long countByCategoryIdAndIsUsable(Categories category, boolean isUsable) {
+        return devicesRepository.countByCategoryIdAndIsUsable(category, isUsable);
     }
 
     public List<DeviceDto> findByIsUsableTrue() {
@@ -116,5 +117,13 @@ public class DevicesService {
                 requestDto.getSpec(),
                 requestDto.getPurchaseDate()
         );
+    }
+
+    public void editDescription(Map<String, Object> request) {
+        Devices device = devicesRepository.findById(request.get("id").toString())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + request.get("id")));
+        device.setDescription(request.get("description").toString());
+        devicesRepository.save(device);
     }
 }

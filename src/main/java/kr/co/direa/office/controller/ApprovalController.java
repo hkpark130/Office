@@ -2,21 +2,18 @@ package kr.co.direa.office.controller;
 
 import kr.co.direa.office.domain.Notifications;
 import kr.co.direa.office.dto.ApprovalDeviceDto;
-import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
-import kr.co.direa.office.service.CategoriesService;
-import kr.co.direa.office.service.DevicesService;
 import kr.co.direa.office.service.NotificationsService;
+import kr.co.direa.office.service.TagsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static kr.co.direa.office.constant.Constants.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +22,7 @@ import java.util.Map;
 public class ApprovalController {
     private final ApprovalDevicesService approvalDevicesService;
     private final NotificationsService notificationsService;
+    private final TagsService tagsService;
 
     @PostMapping(value = "/device-application")
     ResponseEntity<?> deviceApplication(
@@ -46,6 +44,25 @@ public class ApprovalController {
 
     @PostMapping(value = "/device-return")
     ResponseEntity<?> deviceReturn(
+            @RequestBody Map<String, Object> request
+    ) {
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        tagsService.updateByDeviceId(request);
+        approvalDevicesService.save(approvalDeviceDto);
+
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @PostMapping(value = "/device-dispose")
+    ResponseEntity<?> deviceDispose(
             @RequestBody Map<String, Object> request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
@@ -84,8 +101,12 @@ public class ApprovalController {
     ResponseEntity<?> myApprovalList(
             @PathVariable String username
     ) {
-        // TODO: 관리자면 findAll 반환하도록 구현해야함
-        List<ApprovalDeviceDto> approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
+        List<ApprovalDeviceDto> approvalDeviceDtoList;
+        if (ADMIN.equals(username)) {
+            approvalDeviceDtoList = approvalDevicesService.findAsAdmin();
+        } else {
+            approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
+        }
 
         return ResponseEntity.ok(
                 approvalDeviceDtoList
@@ -105,12 +126,7 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceFinish(
             @RequestBody Map<String, Object> request
     ) {
-        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
-        approvalDevicesService.setApprovalInfoById(
-                Long.valueOf(request.get("approvalId").toString()),
-                "승인완료",
-                isUsable
-        );
+        approvalDevicesService.setApprovalInfoById(request, APPROVAL_COMPLETED);
 
         // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
 //        NotificationDto notificationDto = new NotificationDto();
@@ -128,12 +144,7 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceReturn(
             @RequestBody Map<String, Object> request
     ) {
-        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
-        approvalDevicesService.setApprovalInfoById(
-                Long.valueOf(request.get("approvalId").toString()),
-                "반려",
-                isUsable
-        );
+        approvalDevicesService.setApprovalInfoById(request, APPROVAL_REJECT);
 
         // TODO: 유저에게 반려 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
 //        NotificationDto notificationDto = new NotificationDto();
@@ -141,6 +152,17 @@ public class ApprovalController {
 //
 //        notificationsService.save(notificationDto);
 //        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @PutMapping(value = "/approval-device-edit")
+    ResponseEntity<?> approvalDeviceEdit(
+            @RequestBody Map<String, Object> request
+    ) {
+        approvalDevicesService.editReasonFromRequest(request);
 
         return ResponseEntity.ok(
                 "success"
@@ -158,5 +180,37 @@ public class ApprovalController {
         );
     }
 
+    @GetMapping(value = "/admin-device-dispose/{deviceId}")
+    ResponseEntity<?> approvalDeviceDispose(
+            @PathVariable String deviceId
+    ) {
+        approvalDevicesService.setDisposeByIdAsAdmin(deviceId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @GetMapping(value = "/admin-device-recovery/{deviceId}")
+    ResponseEntity<?> approvalDeviceRecovery(
+            @PathVariable String deviceId
+    ) {
+        approvalDevicesService.setRecoveryByIdAsAdmin(deviceId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
+
+    @DeleteMapping(value = "/approval-device-cancel/{approvalId}")
+    ResponseEntity<?> approvalDeviceCancel(
+            @PathVariable Long approvalId
+    ) {
+        approvalDevicesService.deleteById(approvalId);
+
+        return ResponseEntity.ok(
+                "success"
+        );
+    }
 
 }

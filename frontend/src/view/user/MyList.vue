@@ -111,7 +111,7 @@ const columns = [
     },
   },
   {
-    title: '마감일',
+    title: '마감일/사용예정일',
     dataIndex: 'deadline',
     key: 'deadline',
     sorter: (a, b) => {
@@ -164,7 +164,15 @@ const Orders = defineComponent({
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');
-    const filterVal = ref(['노트북', '모니터', '서버']);
+    const filterVal = ref([]);
+
+    const fetchData = async () => {
+      await dispatch('getMyApproval', getUser.value.name);
+      onSorting('categoryName');
+    };
+
+    fetchData();
+
 
     const handleChangeForFilter = (e) => {
       dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
@@ -180,6 +188,13 @@ const Orders = defineComponent({
 
     const detailApproval = (approvalId) => {
       push("/detail-approval-device/"+approvalId);
+    };
+
+    const cancelApproval = (approvalId) => {
+      dispatch('approvalDeviceCancel', approvalId).then(() => {
+        alert('취소되었습니다.');
+        location.reload();
+      });
     };
 
     const onCancel = () => {
@@ -222,15 +237,15 @@ const Orders = defineComponent({
           if (deadline !== null) {
             timeDiff = (new Date(deadline)).getTime() - (new Date()).getTime();
             daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-            if (daysDiff < 6) {
+            if (daysDiff < 6 && approvalInfo === '승인대기') {
               urgency = true;
               dDayTag = "긴급 "+daysDiff+" 일 남음";
             }
           }
 
-        if (approvalInfo === '승인대기') {
+        if (approvalInfo !== '승인완료') {
           deleteIcon = 
-          <sdButton class="btn-icon" type="danger" to="#" shape="circle">
+          <sdButton onClick={() => cancelApproval(approvalId)} class="btn-icon" type="danger" to="#" shape="circle">
             <sdFeatherIcons type="trash-2" size={16} title="삭제" />
           </sdButton>;
           
@@ -239,12 +254,12 @@ const Orders = defineComponent({
               <sdFeatherIcons type="edit" size={16} title="편집" />
             </sdButton>;
 
-          if (state.getUser.isAdmin) {
+          if (state.getUser.isAdmin && approvalInfo !== '반려') {
             checkIcon = 
               <sdButton onClick={() => checkApproval(approvalId)} class="btn-icon" type="success" shape="circle">
                 <sdFeatherIcons type="check" size={16} title="승인/반려" />
               </sdButton>
-            }
+          }
         }
         statusTag = (
           <div class="taglist-wrap">

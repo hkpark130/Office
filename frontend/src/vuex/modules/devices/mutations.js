@@ -74,10 +74,32 @@ export default {
   adminReturnDeviceBegin(state) {
     state.loading = true;
   },
-  adminReturnDeviceSuccess(state,) {
+  adminReturnDeviceSuccess(state) {
     state.loading = false;
   },
   adminReturnDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  adminDisposeDeviceBegin(state) {
+    state.loading = true;
+  },
+  adminDisposeDeviceSuccess(state) {
+    state.loading = false;
+  },
+  adminDisposeDeviceErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  adminRecoveryDeviceBegin(state) {
+    state.loading = true;
+  },
+  adminRecoveryDeviceSuccess(state) {
+    state.loading = false;
+  },
+  adminRecoveryDeviceErr(state, err) {
     state.loading = false;
     state.error = err;
   },
