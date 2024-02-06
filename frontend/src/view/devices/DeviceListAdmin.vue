@@ -63,6 +63,8 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { deviceListAdmin } from './getDeviceListAdmin';
+import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
     // Null 값을 제일 뒤로 둘거임
@@ -218,7 +220,9 @@ const Orders = defineComponent({
   components: { TopToolBox, Main, TableWrapper },
 
   setup() {
+    const response = deviceListAdmin.data;
     const { state, dispatch } = useStore();
+    state.devicesAdmin.data = response;
     const deviceId = ref(null);
     const searchData = computed(() => state.headerSearchData);
     const orders = computed(() => state.devicesAdmin.data);
@@ -227,20 +231,21 @@ const Orders = defineComponent({
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
+    const { go } = useRouter();
 
     onMounted(() => {
       onSorting('categoryName');
     });
 
     const handleChangeForFilter = (e) => {
-      dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value });
+      dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value, response: response });
     };
 
     const adminReturnDevice = (approvalId) => {
       dispatch('adminReturnDevice', approvalId)
         .then(() => {
-          location.reload();
           alert('반납 처리되었습니다.');
+          go();
         }
       );
     };
@@ -248,8 +253,8 @@ const Orders = defineComponent({
     const adminDisposeDevice = (deviceId) => {
       dispatch('adminDisposeDevice', deviceId)
         .then(() => {
-          location.reload();
           alert('폐기 처리되었습니다.');
+          go();
         }
       );
     };

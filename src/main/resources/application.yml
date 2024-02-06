@@ -2,6 +2,12 @@
 server:
   port: 80
 
+constants:
+  keycloakUrl: "http://192.168.0.48:8080"
+  clientSecret: "NSg1DVfR6puVN1Hbow0wjL6oU2214BCl"
+#  keycloakUrl: "http://192.168.2.59:8080"
+#  clientSecret: "9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM"
+
 # keycloak
 spring:
   servlet:
@@ -12,24 +18,21 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://192.168.0.48:8080/realms/sso-test
-#          issuer-uri: http://192.168.2.111:8080/realms/sso-test
+          issuer-uri: ${constants.keycloakUrl}/realms/sso-test
       client:
         provider:
           keycloak:
-            issuer-uri: http://192.168.0.48:8080/realms/sso-test
-#            issuer-uri: http://192.168.2.111:8080/realms/sso-test
+            issuer-uri: ${constants.keycloakUrl}/realms/sso-test
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-name: back-office-api
             client-id: back-office-api
-            client-secret: NSg1DVfR6puVN1Hbow0wjL6oU2214BCl
-#            client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
+            client-secret: ${clientSecret}
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
-#            redirect-uri: 'http://192.168.2.110/login/oauth2/code/external'
+#            redirect-uri: ${constants.keycloakUrl}/login/oauth2/code/external
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver

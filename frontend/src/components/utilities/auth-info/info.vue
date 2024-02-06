@@ -93,9 +93,10 @@ export default defineComponent({
     setup() {
         const { dispatch } = useStore();
         const { push } = useRouter();
+        const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
         const SignOut = (e) => {
             e.preventDefault();
-            push('/auth/login');
+            push(API_ENDPOINT+'/logout');
             dispatch('logOut');
         };
         const { state } = useStore();

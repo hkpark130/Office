@@ -1,16 +1,13 @@
 import mutations from './mutations';
-import { deviceListAdmin } from './load-data';
-
-const response = deviceListAdmin.data;
 
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
 const actions = {
-  async deviceAdminFilter({ commit }, { column, value }) {
+  async deviceAdminFilter({ commit }, { column, value, response }) {
     try {
       commit('filterDeviceAdminBegin');
       const data = response.filter((item) => {

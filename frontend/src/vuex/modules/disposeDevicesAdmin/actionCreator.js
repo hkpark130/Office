@@ -1,16 +1,13 @@
 import mutations from './mutations';
-import { disposeDeviceListAdmin } from './load-data';
-
-const response = disposeDeviceListAdmin.data;
 
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
 const actions = {
-  async disposeDeviceFilter({ commit }, { column, value }) {
+  async disposeDeviceFilter({ commit }, { column, value, response }) {
     try {
       commit('filterDisposeDeviceBegin');
       const data = response.filter((item) => {

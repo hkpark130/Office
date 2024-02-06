@@ -48,7 +48,7 @@
                                   </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
-                                  <a-form-item label="사용자" name="realUser" required>
+                                  <a-form-item label="사용자" name="realUser">
                                     <a-input v-model:value="formState.realUser" disabled/>
                                   </a-form-item>
                                 </a-col>
@@ -138,6 +138,7 @@ const AddProduct = defineComponent({
   async setup() {
     const { state, dispatch } = useStore();
     const router = useRouter();
+    const { push } = useRouter();
     const { go } = useRouter();
     const file = ref(null);
     const list = ref(null);
@@ -172,7 +173,7 @@ const AddProduct = defineComponent({
     const approvalEdit = () => {
       dispatch('EditApprovalPut', formState).then(() => {
         alert('\'수정\'되었습니다.');
-        location.reload();
+        push('/');
       }); 
     };
 

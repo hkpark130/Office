@@ -13,6 +13,7 @@ const client = axios.create({
     ...authHeader(),
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 class DataService {

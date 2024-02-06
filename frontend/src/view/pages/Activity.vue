@@ -47,6 +47,7 @@ import { ActivityContents } from './style';
 import { defineComponent, computed, onMounted } from 'vue';
 import { Main } from '../styled';
 import { useStore } from 'vuex';
+import { getActivities } from './getActivities';
 
 const ActivityContent = defineComponent({
     name: 'ActivityContent',
@@ -55,9 +56,10 @@ const ActivityContent = defineComponent({
         ActivityContents, 
     },
     setup() {
+        const response = getActivities.data;
         const { state, dispatch } = useStore();
+        state.getActivities.data = response;
         const activities = computed(() => state.getActivities.data);
-
 
         const showModal = (row) => {
             console.log(row);
@@ -66,7 +68,6 @@ const ActivityContent = defineComponent({
         onMounted(() => {
             dispatch('fetchActivities');
         });
-
 
         return {
             activities,

@@ -2,7 +2,6 @@ import { createWebHistory, createRouter } from 'vue-router';
 import adminRoutes from './AdminRoutes';
 import authRoutes from './authRoutes';
 // import store from '@/vuex/store';
-
 const routes = [
   {
     name: 'home',
@@ -33,7 +32,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  
+
   // if (to.meta.auth && store.state.auth.login) {
   //   next({ to: '/' });
   // } else if (!to.meta.auth && !store.state.auth.login) {

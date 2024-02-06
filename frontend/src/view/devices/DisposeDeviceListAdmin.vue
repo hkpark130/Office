@@ -53,6 +53,8 @@ import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import * as FontAwesomeIcon from '@fortawesome/free-solid-svg-icons';
+import { disposeDeviceListAdmin } from './getDisposeDeviceList';
+import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
   // Null 값을 제일 뒤로 둘거임
@@ -160,7 +162,7 @@ const columns = [
 ];
 
 const filterColumns = columns.filter((column, index) => {
-  return column.key !== 'memo' && 
+  return column.key !== 'description' && 
   column.key !== 'id' && 
   column.key !== 'sn' && 
   column.key !== 'model' && 
@@ -173,7 +175,9 @@ const Orders = defineComponent({
   components: { TopToolBox, Main, TableWrapper },
 
   setup() {
+    const response = disposeDeviceListAdmin.data;
     const { state, dispatch } = useStore();
+    state.disposeDevicesAdmin.data = response;
     const deviceId = ref(null);
     const searchData = computed(() => state.headerSearchData);
     const orders = computed(() => state.disposeDevicesAdmin.data);
@@ -182,20 +186,21 @@ const Orders = defineComponent({
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
+    const { go } = useRouter();
 
     onMounted(() => {
       onSorting('categoryName');
     });
 
     const handleChangeForFilter = (e) => {
-      dispatch('disposeDeviceFilter', { column: filterKey.value, value: e.target.value });
+      dispatch('disposeDeviceFilter', { column: filterKey.value, value: e.target.value, response: response });
     };
 
     const adminRecoveryDevice = (deviceId) => {
       dispatch('adminRecoveryDevice', deviceId)
         .then(() => {
-          location.reload();
           alert('복구 처리되었습니다.');
+          go();
         }
       );
     };

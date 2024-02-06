@@ -29,21 +29,6 @@ const actions = {
     }
   },
 
-  async deviceAdminFilter({ commit }, { column, value }) {
-    try {
-      commit('filterDeviceAdminBegin');
-      const data = response.filter((item) => {
-        if (value !== '') {
-          return item[column] === value;
-        }
-        return item;
-      });
-      commit('filterDeviceAdminSuccess', data);
-    } catch (err) {
-      commit('filterDeviceAdminErr', err);
-    }
-  },
-
   async submitDeviceApplicationPost({ commit }, data) {
     try {
       commit('postDeviceApplicationBegin');

@@ -254,7 +254,7 @@ const AvailableDevices = defineComponent({
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(state.devices.originData.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
       
       return {
