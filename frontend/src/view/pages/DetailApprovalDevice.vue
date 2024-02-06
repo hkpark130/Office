@@ -246,6 +246,7 @@ const AddProduct = defineComponent({
         .then(() => {
           alert('\'댓글 등록\'되었습니다.');
           value.value = '';
+          location.reload();
         }
       );
     };

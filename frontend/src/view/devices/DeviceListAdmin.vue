@@ -231,7 +231,6 @@ const Orders = defineComponent({
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
-    const { go } = useRouter();
 
     onMounted(() => {
       onSorting('categoryName');
@@ -245,7 +244,7 @@ const Orders = defineComponent({
       dispatch('adminReturnDevice', approvalId)
         .then(() => {
           alert('반납 처리되었습니다.');
-          go();
+          location.reload();
         }
       );
     };
@@ -254,7 +253,7 @@ const Orders = defineComponent({
       dispatch('adminDisposeDevice', deviceId)
         .then(() => {
           alert('폐기 처리되었습니다.');
-          go();
+          location.reload();
         }
       );
     };

@@ -28,26 +28,26 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
-        if (authentication.getPrincipal() instanceof OAuth2User) {
-            OAuth2User userDetails = (OAuth2User) authentication.getPrincipal();
-            String username = userDetails.getAttribute("preferred_username");
-
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            List<UserDto> userList = authorities.stream()
-                    .map(authority -> new UserDto(username, authority.getAuthority(), null))
-                    .collect(Collectors.toList());
-
-            for (UserDto userDto : userList) {
-                Optional<Users> existingUserOptional = usersService.findByUsername(username);
-                if (existingUserOptional.isPresent()) {
-                    Users existingUser = existingUserOptional.get();
-                    existingUser.setAuth(userDto.getAuth());
-                    usersService.save(new UserDto(existingUser));
-                } else {
-                    usersService.save(userDto);
-                }
-            }
-        }
+//        if (authentication.getPrincipal() instanceof OAuth2User) {
+//            OAuth2User userDetails = (OAuth2User) authentication.getPrincipal();
+//            String username = userDetails.getAttribute("preferred_username");
+//
+//            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//            List<UserDto> userList = authorities.stream()
+//                    .map(authority -> new UserDto(username, authority.getAuthority(), null))
+//                    .collect(Collectors.toList());
+//
+//            for (UserDto userDto : userList) {
+//                Optional<Users> existingUserOptional = usersService.findByUsername(username);
+//                if (existingUserOptional.isPresent()) {
+//                    Users existingUser = existingUserOptional.get();
+//                    existingUser.setAuth(userDto.getAuth());
+//                    usersService.save(new UserDto(existingUser));
+//                } else {
+//                    usersService.save(userDto);
+//                }
+//            }
+//        }
 
         response.sendRedirect("/");
     }

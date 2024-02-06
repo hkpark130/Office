@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class UserDto implements Serializable {
     private Long id;
     private String username;
+    private String email;
     private String auth;
     private Departments departmentId;
 
@@ -26,17 +27,21 @@ public class UserDto implements Serializable {
         this.departmentId = entity.getDepartmentId();
     }
 
-    public UserDto(String username, String auth, Departments departmentId) {
+    public UserDto(String username, String email, Departments departmentId) {
         this.username = username;
-        this.auth = auth;
+        this.email = email;
         this.departmentId = departmentId;
+    }
+
+    public UserDto(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
 
     public Users toEntity() {
         return Users.builder()
-                .id(id)
                 .username(username)
-                .auth(auth)
+                .email(email)
                 .departmentId(departmentId)
                 .build();
     }

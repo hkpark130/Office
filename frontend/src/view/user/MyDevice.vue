@@ -204,7 +204,7 @@ const Orders = defineComponent({
     const editMyDevice = () => {
       dispatch('editMyDevice', formState).then(() => {
         alert('수정되었습니다.');
-        push('/');
+        location.reload();
       });
     };
 

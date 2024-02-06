@@ -31,6 +31,7 @@ class UserController {
 //        return ResponseEntity.ok(
 //                user
 //        );
+
     ResponseEntity<?> getUser() throws IOException {
         Path filePath = Path.of(System.getProperty("user.dir") + "/user.json");
         String jsonContent = Files.readString(filePath);

@@ -6,12 +6,14 @@ import kr.co.direa.office.service.NotificationsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class NotificationController {
     private final NotificationsService notificationsService;
 

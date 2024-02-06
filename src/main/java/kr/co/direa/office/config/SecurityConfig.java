@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,31 +42,37 @@ public class SecurityConfig {
         this.usersService = usersService;
     }
 
-    private
-    CorsConfigurationSource corsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("*"));
-            config.setAllowCredentials(true);
-            return config;
-        };
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
+        config.setAllowedOriginPatterns(List.of("http://192.168.0.9:8080"));
+//        config.setAllowedOrigins(null);
+//        config.addAllowedOrigin(null);
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Origin", "X-Requested-With", "Content-Type", "Accept", "Key", "Authorization"));
+        config.setExposedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
         http.oauth2Client(Customizer.withDefaults());
         http.oauth2Login(it -> it.tokenEndpoint(Customizer.withDefaults())
-                .userInfoEndpoint(Customizer.withDefaults())
+                .userInfoEndpoint(userInfo -> userInfo.userAuthoritiesMapper(userAuthoritiesMapper()))
+                .successHandler(loginSuccessHandler())
         );
-
-        http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
-        http.cors(AbstractHttpConfigurer::disable);
-        http.csrf(AbstractHttpConfigurer::disable);
+//        http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
+//        http.cors(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
+                        auth
+                                .requestMatchers(
                                         new AntPathRequestMatcher("/login/**")
                                         , new AntPathRequestMatcher("/api/health")
                                         , new AntPathRequestMatcher("/oauth2/**")
@@ -73,23 +80,19 @@ public class SecurityConfig {
                                         , new AntPathRequestMatcher("/h2-console/**")
                                 ).permitAll()
                                 .requestMatchers(
-                                        new AntPathRequestMatcher("/api/test")
-                                        , new AntPathRequestMatcher("/test/admin/**")
+                                        new AntPathRequestMatcher("/api/dispose-devicelist-admin")
                                 ).hasAuthority("Admin")
-//                                .anyRequest().authenticated())
-                                .anyRequest().permitAll()) // 개발용
-                .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
+                                .anyRequest().authenticated())
+//                                .anyRequest().permitAll()) // 개발용
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
-        http.logout(logout -> logout.logoutSuccessHandler(logoutSuccessHandler()));
-        http.oauth2Login(
-                oauth2 -> oauth2.
-                        successHandler(loginSuccessHandler()).
-                        userInfoEndpoint(userInfo -> userInfo
-                                .userAuthoritiesMapper(userAuthoritiesMapper()))
-
-        );
+        http.logout(logout -> logout
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .logoutSuccessHandler(logoutSuccessHandler()));
 
         return http.build();
     }
@@ -121,7 +124,7 @@ public class SecurityConfig {
                     OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
 
                     List<String> group = userInfo.getClaim("groups");
-                    group.forEach(it -> mappedAuthorities.add(new SimpleGrantedAuthority(it.replace("/", ""))));
+//                    group.forEach(it -> mappedAuthorities.add(new SimpleGrantedAuthority(it.replace("/", ""))));
                 }
             });
 

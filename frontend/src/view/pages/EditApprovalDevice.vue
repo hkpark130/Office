@@ -173,7 +173,7 @@ const AddProduct = defineComponent({
     const approvalEdit = () => {
       dispatch('EditApprovalPut', formState).then(() => {
         alert('\'수정\'되었습니다.');
-        push('/');
+        location.reload();
       }); 
     };
 
