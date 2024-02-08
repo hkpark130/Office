@@ -1,21 +1,30 @@
 import mutations from './mutations';
-import { departmentList } from './load-data';
-
-const response = departmentList.data;
+import { DataService } from '@/config/dataService/dataService';
 
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
 const actions = {
-  async departmentFilter({ commit }) {
+  async departmentFilter({ commit, response }) {
     try {
       commit('filterDepartmentBegin');
       commit('filterDepartmentSuccess', response);
     } catch (err) {
       commit('filterDepartmentErr', err);
+    }
+  },
+
+  async fetchDepartmentList({ commit }) {
+    try {
+      commit('fetchDepartmentListBegin');
+      const departmentList = await DataService.get('/api/department-list');
+      commit('fetchDepartmentListSuccess', departmentList.data);
+      return departmentList.data;
+    } catch (err) {
+      commit('fetchDepartmentListErr', err);
     }
   },
 };

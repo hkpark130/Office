@@ -63,6 +63,10 @@
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
+    data() {
+      const { dispatch } = useStore();
+      dispatch('fetchCategoryList');
+    },
     setup() {
       const { state, dispatch } = useStore();
       const { push, go } = useRouter();

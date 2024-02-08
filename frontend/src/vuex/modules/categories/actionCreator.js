@@ -1,16 +1,14 @@
 import mutations from './mutations';
-import { catrgoryList } from './load-data';
-
-const response = catrgoryList.data;
+import { DataService } from '@/config/dataService/dataService';
 
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
 const actions = {
-  async catrgoryFilter({ commit }, { column, value }) {
+  async catrgoryFilter({ commit }, { column, value, response }) {
     try {
       commit('filterCatrgoryBegin');
       const data = response.filter((item) => {
@@ -22,6 +20,17 @@ const actions = {
       commit('filterCatrgorySuccess', data);
     } catch (err) {
       commit('filterCatrgoryErr', err);
+    }
+  },
+
+  async fetchCategoryList({ commit }) {
+    try {
+      commit('fetchCategoryListBegin');
+      const catrgoryList = await DataService.get('/api/catrgory-list');
+      commit('fetchCategoryListSuccess', catrgoryList.data);
+      return catrgoryList.data;
+    } catch (err) {
+      commit('fetchCategoryListErr', err);
     }
   },
 };

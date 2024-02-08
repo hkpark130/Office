@@ -220,6 +220,12 @@
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
+    data() {
+      const { dispatch } = useStore();
+      dispatch('fetchCategoryList');
+      dispatch('fetchDepartmentList');
+      dispatch('fetchProjectList');
+    },
     setup() {
       const submitValues = ref({});
       const formRef = ref();
