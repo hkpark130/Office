@@ -1,25 +1,29 @@
 import mutations from './mutations';
-// import Cookies from 'js-cookie';
-import { getUser } from './load-data';
-
-const response = getUser.data;
-const hasAdminGroup = getUser.data.attributes.groups.some(group => group === '/Admin');
+import { DataService } from '@/config/dataService/dataService';
+import Cookies from 'js-cookie';
 
 const state = () => ({
-  data: response,
-  isAdmin: hasAdminGroup,
-  // login: Cookies.get('logedIn'),
+  data: null,
+  isAdmin: null,
+  login: Cookies.get('logedIn'),
   loading: false,
   error: null,
 });
 
 const actions = {
   async getUser({ commit }) {
-    try {
-      commit('setUserBegin');
-      commit('setUserSuccess', response);
-    } catch (err) {
-      commit('setUserErr', err);
+    const loggedIn = Cookies.get('loggedIn');
+    if (loggedIn) {
+      try {
+        commit('getUserBegin');
+        const getUser = await DataService.get('/api/user');
+        commit('getUserSuccess', getUser.data);
+        return getUser.data;
+      } catch (err) {
+        commit('getUserErr', err);
+      }
+    } else {
+      return window.location.href = '/login';
     }
   },
   // async login({ commit }) {

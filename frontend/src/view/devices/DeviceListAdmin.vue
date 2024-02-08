@@ -64,7 +64,6 @@ import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { deviceListAdmin } from './getDeviceListAdmin';
-import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
     // Null 값을 제일 뒤로 둘거임

@@ -138,7 +138,6 @@ const AddProduct = defineComponent({
   async setup() {
     const { state, dispatch } = useStore();
     const router = useRouter();
-    const { push } = useRouter();
     const { go } = useRouter();
     const file = ref(null);
     const list = ref(null);

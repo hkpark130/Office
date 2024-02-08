@@ -25,6 +25,7 @@
     name: 'SocialMediaOverview',
     components: { SocialMediaWrapper, SocialMediaContent },
     setup() {
+      // alert("test");
       onMounted(async() => {
         await DataService.get('/api/devices').then(
           (v) => {

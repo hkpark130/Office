@@ -68,6 +68,10 @@ export default defineComponent({
     AtbdTopDropdwon,
     PerfectScrollbar,
   },
+  data() {
+    const { dispatch } = useStore();
+    dispatch('getUser');
+  },
   setup() {
     const { state, dispatch } = useStore();
 

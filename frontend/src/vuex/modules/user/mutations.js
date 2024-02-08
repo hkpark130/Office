@@ -26,14 +26,15 @@ export default {
     state.error = err;
   },
   
-  setUserBegin(state) {
+  getUserBegin(state) {
     state.loading = true;
   },
-  setUserSuccess(state, data) {
+  getUserSuccess(state, data) {
     state.loading = false;
     state.data = data;
+    state.isAdmin = data.attributes.groups.some(group => group === '/Admin');
   },
-  setUserErr(state, err) {
+  getUserErr(state, err) {
     state.loading = false;
     state.error = err;
   },

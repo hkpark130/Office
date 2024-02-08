@@ -74,7 +74,6 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, reactive } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
   // Null 값을 제일 뒤로 둘거임
@@ -183,8 +182,6 @@ const Orders = defineComponent({
 
     const orders = computed(() => state.myDevice.data);
     const item = computed(() => state.myDevice.data);
-    // const router = useRouter();
-    const { push } = useRouter();
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');

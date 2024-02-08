@@ -69,6 +69,7 @@ import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import Tag from '../../components/tags/Tag';
 import { useRouter } from 'vue-router';
+import { availableDeviceList } from './getAvailableDeviceList';
 
 const sortWithNullCheck = (aValue, bValue) => {
   // Null 값을 제일 뒤로 둘거임
@@ -157,7 +158,9 @@ const AvailableDevices = defineComponent({
   components: { TopToolBox, Main, TableWrapper },
 
   setup() {
+    const response = availableDeviceList.data;
     const { state, dispatch } = useStore();
+    state.devices.data = response;
     const deviceId = ref(null);
     const filterKey = ref('categoryName');
     const searchData = computed(() => state.headerSearchData);
@@ -179,7 +182,7 @@ const AvailableDevices = defineComponent({
     });
 
     const handleChangeForFilter = (e) => {
-      dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
+      dispatch('deviceFilter', { column: filterKey.value, value: e.target.value, response: response });
     };
 
     const dataSource = computed(() =>
