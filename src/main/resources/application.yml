@@ -5,8 +5,8 @@ server:
 constants:
 #  keycloakUrl: ${KEYCLOAK_URL}
 #  clientSecret: ${CLIENT_SECRET}
-  keycloakUrl: "http://192.168.0.48:8080"
-  clientSecret: "Q0WcVVGIFjQDRH57kQ6oAeWKSvyW3Cci"
+  keycloakUrl: "http://192.168.0.46:8080"
+  clientSecret: "fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
 #  clientSecret: "9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM"
 
 # keycloak

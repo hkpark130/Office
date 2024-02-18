@@ -12,7 +12,7 @@ const state = () => ({
 
 const actions = {
   async getUser({ commit }) {
-    const loggedIn = Cookies.get('JSESSIONID');
+    const loggedIn = Cookies.get('logedIn');
     if (loggedIn) {
       try {
         commit('getUserBegin');
@@ -23,7 +23,7 @@ const actions = {
         commit('getUserErr', err);
       }
     } else {
-      return window.location.href = 'http://192.168.0.9/login/back-office-api';
+      return window.location.href = 'http://192.168.0.41/login/back-office-api';
     }
   },
   // async login({ commit }) {

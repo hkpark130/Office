@@ -179,12 +179,6 @@
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
-    data() {
-      const { dispatch } = useStore();
-      dispatch('fetchCategoryList');
-      dispatch('fetchDepartmentList');
-      dispatch('fetchProjectList');
-    },
     setup() {
       const { state, dispatch } = useStore();
       const file = ref(null);
@@ -194,11 +188,19 @@
       const projectTmp = ref();
 
       const { push, go } = useRouter();
+
+      dispatch('fetchCategoryList');
+      dispatch('fetchDepartmentList');
+      dispatch('fetchProjectList');
+      dispatch('getUser');
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
       const projects = computed(() => state.projectList.data);
-      const getUser = computed(() => state.getUser.data);
-
+      const getUser = ref(() => state.getUser.data);
+      dispatch('getUser').then(() => {
+        getUser.value = ref(() => state.getUser.data);
+      });
+      
       const searchData = toRef(projects.value);
       const filteredData = toRef(projects.value);
 

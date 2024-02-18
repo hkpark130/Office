@@ -47,7 +47,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("http://192.168.0.9:8080"));
+        config.setAllowedOriginPatterns(List.of("http://192.168.0.41:8080"));
 //        config.setAllowedOrigins(null);
 //        config.addAllowedOrigin(null);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
@@ -62,13 +62,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
-        http.oauth2Client(Customizer.withDefaults());
+//        http.oauth2Client(Customizer.withDefaults());
         http.oauth2Login(it -> it.tokenEndpoint(Customizer.withDefaults())
                 .userInfoEndpoint(userInfo -> userInfo.userAuthoritiesMapper(userAuthoritiesMapper()))
                 .successHandler(loginSuccessHandler())
         );
-//        http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
-//        http.cors(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth ->
                         auth
@@ -90,6 +88,7 @@ public class SecurityConfig {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
         http.logout(logout -> logout
                 .deleteCookies("JSESSIONID")
+                .deleteCookies("logedIn")
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
                 .logoutSuccessHandler(logoutSuccessHandler()));
