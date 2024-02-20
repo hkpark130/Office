@@ -1,6 +1,10 @@
 
 server:
   port: 80
+  servlet:
+    session:
+      cookie:
+        max-age: 86400 # 86400
 
 constants:
 #  keycloakUrl: ${KEYCLOAK_URL}

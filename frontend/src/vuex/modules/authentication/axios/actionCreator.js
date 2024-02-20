@@ -2,7 +2,7 @@ import mutations from './mutations';
 import Cookies from 'js-cookie';
 
 const state = () => ({
-  login: Cookies.get('logedIn'),
+  login: Cookies.get('loggedIn'),
   loading: false,
   error: null,
 });
@@ -11,7 +11,7 @@ const actions = {
   async login({ commit }) {
     try {
       commit('loginBegin');
-      Cookies.set('logedIn', true);
+      Cookies.set('loggedIn', true);
       return commit('loginSuccess', true);
     } catch (err) {
       commit('loginErr', err);
@@ -20,8 +20,8 @@ const actions = {
   async logOut({ commit }) {
     try {
       commit('logoutBegin');
-      Cookies.remove('logedIn');
-      commit('logoutSuccess', null);
+      // Cookies.remove('loggedIn');
+      return commit('logoutSuccess', null);
     } catch (err) {
       commit('logoutErr', err);
     }

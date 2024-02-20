@@ -12,17 +12,11 @@
                     <UserDropDwon>
                         <div class="user-dropdwon">
                             <figure class="user-dropdwon__info">
-                                <img
-                                    :src="
-                                        require('../../../static/img/avatar/chat-auth.png')
-                                    "
-                                    alt=""
-                                />
                                 <figcaption>
-                                    <sdHeading as="h5"
-                                        >Abdullah Bin Talha</sdHeading
-                                    >
-                                    <p>UI Expert</p>
+                                    <sdHeading as="h5" 
+                                        >{{ username }}</sdHeading>
+                                    <p :style="{ width: '78px' }"></p>
+                                    
                                 </figcaption>
                             </figure>
                             <ul class="user-dropdwon__links">
@@ -31,28 +25,7 @@
                                         <sdFeatherIcons type="user" /> Profile
                                     </a>
                                 </li>
-                                <li>
-                                    <a to="#">
-                                        <sdFeatherIcons type="settings" />
-                                        Settings
-                                    </a>
-                                </li>
-                                <li>
-                                    <a to="#">
-                                        <sdFeatherIcons type="dollar-sign" />
-                                        Billing
-                                    </a>
-                                </li>
-                                <li>
-                                    <a to="#">
-                                        <sdFeatherIcons type="users" /> Activity
-                                    </a>
-                                </li>
-                                <li>
-                                    <a to="#">
-                                        <sdFeatherIcons type="bell" /> Help
-                                    </a>
-                                </li>
+                                
                             </ul>
                             <a
                                 @click="SignOut"
@@ -78,9 +51,8 @@
 import { InfoWraper, UserDropDwon } from './auth-info-style';
 import Notification from './Notification';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { LogoutOutlined } from '@ant-design/icons-vue';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 
 export default defineComponent({
     name: 'AuthInfo',
@@ -90,16 +62,24 @@ export default defineComponent({
         Notification,
         LogoutOutlined,
     },
-    setup() {
+    data() {
         const { dispatch } = useStore();
-        const { push } = useRouter();
+        dispatch('getUser');
+    },
+    async setup() {
+        const { state, dispatch } = useStore();
         const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
         const SignOut = (e) => {
             e.preventDefault();
-            push(API_ENDPOINT+'/logout');
-            dispatch('logOut');
+            dispatch('logOut').then(()=>{
+                window.location.href = API_ENDPOINT+'/logout';
+            });
         };
-        const { state } = useStore();
+        const username = ref('');
+        await dispatch('getUser').then(() => {
+            username.value = state.getUser.data.name;
+        });
+        
         const rtl = computed(() => state.themeLayout.rtlData);
         let flag = 'english';
 
@@ -111,6 +91,7 @@ export default defineComponent({
             rtl,
             flag,
             onFlagChangeHandle,
+            username,
         };
     },
 });

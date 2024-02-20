@@ -5,14 +5,14 @@ import Cookies from 'js-cookie';
 const state = () => ({
   data: null,
   isAdmin: null,
-  login: Cookies.get('logedIn'),
+  login: Cookies.get('loggedIn'),
   loading: false,
   error: null,
 });
 
 const actions = {
   async getUser({ commit }) {
-    const loggedIn = Cookies.get('JSESSIONID');
+    const loggedIn = Cookies.get('loggedIn');
     if (loggedIn) {
       try {
         commit('getUserBegin');
@@ -23,13 +23,13 @@ const actions = {
         commit('getUserErr', err);
       }
     } else {
-      return window.location.href = 'http://192.168.0.9/login/back-office-api';
+      return window.location.href = 'http://192.168.0.5/login/back-office-api';
     }
   },
   // async login({ commit }) {
   //   try {
   //     commit('loginBegin');
-  //     Cookies.set('logedIn', true);
+  //     Cookies.set('loggedIn', true);
   //     return commit('loginSuccess', true);
   //   } catch (err) {
   //     commit('loginErr', err);
@@ -38,7 +38,7 @@ const actions = {
   // async logOut({ commit }) {
   //   try {
   //     commit('logoutBegin');
-  //     Cookies.remove('logedIn');
+  //     Cookies.remove('loggedIn');
   //     commit('logoutSuccess', null);
   //   } catch (err) {
   //     commit('logoutErr', err);

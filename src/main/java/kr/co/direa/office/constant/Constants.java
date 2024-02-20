@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Constants {
     public static final String ADMIN = "test";
+    public static final String ADMIN_ID = "5ca394e9-52f7-44ef-bae4-fafe90d63f2e";
     public static final String APPROVAL_COMPLETED = "승인완료";
     public static final String APPROVAL_WAITING = "승인대기";
     public static final String APPROVAL_REJECT = "반려";

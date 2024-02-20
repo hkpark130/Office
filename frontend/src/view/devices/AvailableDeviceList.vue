@@ -165,10 +165,13 @@ const AvailableDevices = defineComponent({
     const filterKey = ref('categoryName');
     const searchData = computed(() => state.headerSearchData);
     const router = useRouter();
-    dispatch("fetchAvailableDeviceList");
     const orders = computed(() => state.devices.data);
-
     const item = computed(() => state.devices.data);
+    dispatch("fetchAvailableDeviceList").then(() => {
+      orders.value = computed(() => state.devices.data);
+      item.value = computed(() => state.devices.data);
+    });
+
     const stateValue = ref('');
     const filterVal = ref([]);
 

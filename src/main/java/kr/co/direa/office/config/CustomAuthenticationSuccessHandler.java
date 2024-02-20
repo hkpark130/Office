@@ -1,5 +1,6 @@
 package kr.co.direa.office.config;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.direa.office.domain.Users;
@@ -49,6 +50,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 //            }
 //        }
 
-        response.sendRedirect("http://192.168.0.9:8080/");
+        Cookie loggedInCookie = new Cookie("loggedIn", "true");
+        loggedInCookie.setMaxAge(86400); // 쿠키의 유효 시간 설정 (예: 86400초 = 24시간)
+        loggedInCookie.setPath("/"); // 쿠키가 전송될 경로 설정
+
+        // 응답에 쿠키 추가
+        response.addCookie(loggedInCookie);
+
+        response.sendRedirect("http://192.168.0.5:8080/");
     }
 }

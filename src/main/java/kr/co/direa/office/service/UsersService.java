@@ -23,9 +23,11 @@ public class UsersService {
 
     public Users findByUsernameOrInsert(UserDto userDto) {
         Users user = usersRepository.findByUsername(userDto.getUsername()).orElse(null);
-
         if (user == null) {
             user = usersRepository.save(userDto.toEntity());
+        } else {
+            user.setAuth(userDto.getAuth());
+            user = usersRepository.save(user);
         }
         return user;
     }

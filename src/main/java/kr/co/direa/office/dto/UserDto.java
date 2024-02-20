@@ -27,10 +27,11 @@ public class UserDto implements Serializable {
         this.departmentId = entity.getDepartmentId();
     }
 
-    public UserDto(String username, String email, Departments departmentId) {
+    public UserDto(String username, String email, Departments departmentId, String auth) {
         this.username = username;
         this.email = email;
         this.departmentId = departmentId;
+        this.auth = auth;
     }
 
     public UserDto(String username, String email) {
