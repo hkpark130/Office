@@ -10,14 +10,34 @@ sudo apt install maven -y
 sudo curl -sL https://deb.nodesource.com/setup_18.x | bash -
 sudo apt install nodejs
 sudo npm install npm@latest -g
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+source ~/.bashrc
+nvm install 16.14
+nvm use 16.14
+{git clone}
 cd frontend
-sudo npm install
-{ < cannot find module (vue-cli-service) 에러 발생시 >
-    sudo npm uninstall vue-cil -g
-    sudo npm install -g @vue/cli
-}
 
-sudo mvn clean package
-java -DKEYCLOAK_URL="$KEYCLOAK_URL" -DCLIENT_SECRET="$CLIENT_SECRET" -jar {jar}
+cat <<EOF > .env
+VUE_APP_API_ENDPOINT="http://192.168.0.46"
+VUE_APP_SUB_ROUTE="/"
+EOF
+
+npm install
+npm run serve
+# 실패시 'rm -rf node_modules' 다시 설치
+```
+#  새 터미널에서 스프링 실행
+
+```
+cat <<EOF > .env
+KEYCLOAK_URL="http://192.168.0.46:8080"
+CLIENT_SECRET="fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
+DB_USER="sa"
+DB_PW="1"
+DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
+EOF
+
+sudo mvn clean package -P prod
+java -Dspring.profiles.active=prod -jar target/office-0.0.1-SNAPSHOT.jar
 
 ```
