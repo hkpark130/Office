@@ -1,6 +1,5 @@
 package kr.co.direa.office.constant;
 
-import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,11 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Constants {
-    @Value("${KEYCLOAK_URL}")
-    private String keycloakUrl;
-
-    @Value("${FRONTEND}")
-    private String frontend;
     public static final String ADMIN = "test";
     public static final String APPROVAL_COMPLETED = "승인완료";
     public static final String APPROVAL_WAITING = "승인대기";
@@ -25,8 +19,10 @@ public class Constants {
     public static String KEYCLOAK_URL;
     public static String FRONTEND;
 
-    @PostConstruct
-    private void init() {
+    public Constants(
+            @Value("${constants.keycloak-url}") String keycloakUrl,
+            @Value("${constants.frontend}") String frontend
+    ) {
         KEYCLOAK_URL = keycloakUrl;
         FRONTEND = frontend;
     }

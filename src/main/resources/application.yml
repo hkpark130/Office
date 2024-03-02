@@ -7,8 +7,9 @@ server:
 
 ---
 constants:
-  keycloakUrl: "http://192.168.0.46:8080"
-  clientSecret: "fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
+  keycloak-url: "http://192.168.0.46:8080"
+  client-secret: "fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
+  frontend: "http://192.168.0.41"
 
 # keycloak
 spring:
@@ -23,18 +24,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${constants.keycloakUrl}/realms/sso-test
+          issuer-uri: ${constants.keycloak-url}/realms/sso-test
       client:
         provider:
           keycloak:
-            issuer-uri: ${constants.keycloakUrl}/realms/sso-test
+            issuer-uri: ${constants.keycloak-url}/realms/sso-test
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-name: back-office-api
             client-id: back-office-api
-            client-secret: ${constants.clientSecret}
+            client-secret: ${constants.client-secret}
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
 #            redirect-uri: ${constants.keycloakUrl}/login/oauth2/code/external
@@ -55,6 +56,10 @@ spring:
       path: /h2-console
 
 ---
+constants:
+  keycloak-url: ${KEYCLOAK_URL}
+  frontend: ${FRONTEND}
+
 spring:
   config:
     activate:
