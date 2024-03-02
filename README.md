@@ -37,6 +37,15 @@ DB_PW="1"
 DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
 EOF
 
+export $(grep -v '^#' .env | xargs)
+
+{my.cnf 수정}
+# grep bind-address /etc/mysql/mysql.conf.d/mysqld.cnf 
+# bind-address		= 127.0.0.1
+# mysqlx-bind-address	= 127.0.0.1
+
+systemctl restart mysql
+
 sudo mvn clean package
 java -jar -Dspring.profiles.active=prod target/office-0.0.1-SNAPSHOT.jar
 

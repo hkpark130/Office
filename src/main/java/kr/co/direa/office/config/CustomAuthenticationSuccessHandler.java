@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static kr.co.direa.office.constant.Constants.FRONTEND;
+
 @Configuration
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final UsersService usersService;
@@ -57,6 +59,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         // 응답에 쿠키 추가
         response.addCookie(loggedInCookie);
 
-        response.sendRedirect("http://192.168.0.41:8080/");
+        response.sendRedirect(FRONTEND);
     }
 }

@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static kr.co.direa.office.constant.Constants.FRONTEND;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -47,7 +49,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("http://192.168.0.41:8080"));
+        config.setAllowedOriginPatterns(List.of(FRONTEND));
 //        config.setAllowedOrigins(null);
 //        config.addAllowedOrigin(null);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
