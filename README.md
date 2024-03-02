@@ -37,7 +37,7 @@ DB_PW="1"
 DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
 EOF
 
-sudo mvn clean package install
+sudo mvn clean package
 java -jar -Dspring.profiles.active=prod target/office-0.0.1-SNAPSHOT.jar
 
 ```

@@ -2,10 +2,10 @@ spring:
   profiles:
     active: local
 
----
 server:
   port: 80
 
+---
 constants:
   keycloakUrl: "http://192.168.0.46:8080"
   clientSecret: "fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
@@ -55,9 +55,6 @@ spring:
       path: /h2-console
 
 ---
-server:
-  port: 3000
-
 spring:
   config:
     activate:
