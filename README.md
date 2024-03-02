@@ -23,8 +23,8 @@ VUE_APP_SUB_ROUTE="/"
 EOF
 
 npm install
-npm run serve
-# 실패시 'rm -rf node_modules' 다시 설치
+npm run serve {-- --port 3000}
+# 실패시 'rm -rf node_modules, package-lock.json' 실행 후 다시 설치
 ```
 #  새 터미널에서 스프링 실행
 
@@ -37,7 +37,7 @@ DB_PW="1"
 DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
 EOF
 
-sudo mvn clean package -P prod
-java -Dspring.profiles.active=prod -jar target/office-0.0.1-SNAPSHOT.jar
+sudo mvn clean package install
+java -jar -Dspring.profiles.active=prod target/office-0.0.1-SNAPSHOT.jar
 
 ```
