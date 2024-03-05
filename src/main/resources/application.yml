@@ -15,6 +15,8 @@ constants:
   keycloak-url: "http://192.168.0.48:8080"
   client-secret: "Q0WcVVGIFjQDRH57kQ6oAeWKSvyW3Cci"
   frontend: "http://192.168.0.5:8080"
+  admin: "test"
+  admin-id: "5ca394e9-52f7-44ef-bae4-fafe90d63f2e"
 
 # keycloak
 spring:
@@ -64,6 +66,8 @@ spring:
 constants:
   keycloak-url: ${KEYCLOAK_URL}
   frontend: ${FRONTEND}
+  admin: ${ADMIN}
+  admin-id: ${ADMIN_ID}
 
 spring:
   config:

@@ -33,6 +33,8 @@ cat <<EOF > .env
 KEYCLOAK_URL="http://192.168.0.46:8080"
 FRONTEND="http://192.168.0.46:3000"
 CLIENT_SECRET="fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
+ADMIN="test"
+ADMIN_ID="5ca394e9-52f7-44ef-bae4-fafe90d63f2e"
 DB_USER="sa"
 DB_PW="1"
 DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
