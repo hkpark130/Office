@@ -20,6 +20,7 @@ cd frontend
 cat <<EOF > .env
 VUE_APP_API_ENDPOINT="http://192.168.0.46"
 VUE_APP_SUB_ROUTE="/"
+VUE_APP_KAKAO_KEY="8a~230"
 EOF
 
 npm install

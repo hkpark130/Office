@@ -172,7 +172,6 @@ const Orders = defineComponent({
 
     const orders = computed(() => state.myList.data);
     const item = computed(() => state.myList.data);
-    console.log("11111111111111",state.myList);
 
     const formState = reactive({
       visible: false,
