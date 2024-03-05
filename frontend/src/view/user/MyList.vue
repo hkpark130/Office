@@ -74,8 +74,13 @@ const sortWithNullCheck = (aValue, bValue) => {
   }
 
   // 둘 다 null이 아닐 경우, localeCompare로 문자열 비교
-  return aValue.localeCompare(bValue);
   // 정수인 경우 aValue - bValue 로 비교해줘야 함
+  if (Number.isInteger(aValue)) {
+    return aValue - bValue;
+  } else {
+    return aValue.localeCompare(bValue);
+  }
+  
 };
 
 const columns = [
@@ -87,6 +92,16 @@ const columns = [
     sorter: (a, b) => {
       const aValue = a.type?a.type:'';
       const bValue = b.type?b.type:'';
+      return sortWithNullCheck(aValue, bValue);
+    },
+  },
+  {
+    title: '신청번호',
+    dataIndex: 'approvalId',
+    key: 'key',
+    sorter: (a, b) => {
+      const aValue = a.key?a.key:'';
+      const bValue = b.key?b.key:'';
       return sortWithNullCheck(aValue, bValue);
     },
   },
@@ -152,10 +167,12 @@ const Orders = defineComponent({
     const { push } = useRouter();
 
     const getUser = computed(() => state.getUser.data);
+    await dispatch('getUser');
     await dispatch('getMyApproval', getUser.value.name);
 
     const orders = computed(() => state.myList.data);
     const item = computed(() => state.myList.data);
+    console.log("11111111111111",state.myList);
 
     const formState = reactive({
       visible: false,
@@ -270,6 +287,7 @@ const Orders = defineComponent({
 
         return {
           key: approvalId,
+          approvalId: <span>{approvalId}</span>,
           status: <>{statusTag}</>,
           categoryName: categoryName,
           type: type,

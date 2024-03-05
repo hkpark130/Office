@@ -1,4 +1,8 @@
 
+spring:
+  profiles:
+    active: local
+
 server:
   port: 80
   servlet:
@@ -6,15 +10,17 @@ server:
       cookie:
         max-age: 86400 # 86400
 
+---
 constants:
-#  keycloakUrl: ${KEYCLOAK_URL}
-#  clientSecret: ${CLIENT_SECRET}
-  keycloakUrl: "http://192.168.0.48:8080"
-  clientSecret: "Q0WcVVGIFjQDRH57kQ6oAeWKSvyW3Cci"
-#  clientSecret: "9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM"
+  keycloak-url: "http://192.168.0.48:8080"
+  client-secret: "Q0WcVVGIFjQDRH57kQ6oAeWKSvyW3Cci"
+  frontend: "http://192.168.0.5:8080"
 
 # keycloak
 spring:
+  config:
+    activate:
+      on-profile: local
   servlet:
     multipart:
       max-file-size: 50MB
@@ -23,18 +29,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${constants.keycloakUrl}/realms/sso-test
+          issuer-uri: ${constants.keycloak-url}/realms/sso-test
       client:
         provider:
           keycloak:
-            issuer-uri: ${constants.keycloakUrl}/realms/sso-test
+            issuer-uri: ${constants.keycloak-url}/realms/sso-test
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-name: back-office-api
             client-id: back-office-api
-            client-secret: ${constants.clientSecret}
+            client-secret: ${constants.client-secret}
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
 #            redirect-uri: ${constants.keycloakUrl}/login/oauth2/code/external
@@ -53,3 +59,47 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+---
+constants:
+  keycloak-url: ${KEYCLOAK_URL}
+  frontend: ${FRONTEND}
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}/realms/sso-test
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_URL}/realms/sso-test
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            provider: keycloak
+            client-name: back-office-api
+            client-id: back-office-api
+            client-secret: ${CLIENT_SECRET}
+            scope: openid,offline_access,profile
+            authorization-grant-type: authorization_code
+  datasource:
+    url: ${DB_URL}
+    driverClassName: org.mariadb.jdbc.Driver
+    username: ${DB_USER}
+    password: ${DB_PW}
+  sql:
+    init:
+      mode: never
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update

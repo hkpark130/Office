@@ -177,6 +177,7 @@ const Orders = defineComponent({
   async setup() {
     const { state, dispatch } = useStore();
     const deviceId = ref(null);
+    await dispatch('getUser');
     const getUser = computed(() => state.getUser.data);
     const searchData = computed(() => state.headerSearchData);
 
@@ -188,8 +189,10 @@ const Orders = defineComponent({
     const filterVal = ref([]);
     await dispatch('getMyDevices', getUser.value.name);
     const fetchData = async () => {
-      await dispatch('getMyDevices', getUser.value.name);
-      onSorting('categoryName');
+      await dispatch('getUser').then(() => {
+        dispatch('getMyDevices', state.getUser.data.name);
+        onSorting('categoryName');
+      });
     };
 
     fetchData();

@@ -17,7 +17,7 @@
           >
             <ul class="atbd-top-dropdwon__nav notification-list">
               <li v-for="(notification, index) in notificationList" :key="index">
-                <a :href="notification.link">
+                <!-- <a :href="notification.link"> -->
                   <div class="atbd-top-dropdwon__content notifications" :class="notification.iconClass">
                     <div class="notification-icon" :class="notification.bgClass">
                       <sdFeatherIcons :type="notification.icon" />
@@ -29,12 +29,12 @@
                         </sdHeading>
                         <p>{{ notification.date }}</p>
                       </div>
-                      <div class="notification-status">
+                      <!-- <div class="notification-status">
                         <a-badge v-if="!notification.is_read" dot />
-                      </div>
+                      </div> -->
                     </div>
                   </div>
-                </a>
+                <!-- </a> -->
               </li>
             </ul>
           </perfect-scrollbar>
@@ -45,11 +45,10 @@
         </AtbdTopDropdwon>
         
       </template>
-      <a-badge dot :offset="[-8, -5]">
-        <a to="#" class="head-example">
-          <sdFeatherIcons type="bell" size="20" />
-        </a>
-      </a-badge>
+      <a to="#" class="head-example">
+        <a-badge dot v-if="notificationList && notificationList.length > 0" />
+        <sdFeatherIcons type="bell" size="20" />
+      </a>
     </sdPopover>
   </div>
 </template>
@@ -57,7 +56,7 @@
 import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import "vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css";
 import { AtbdTopDropdwon } from "./auth-info-style";
-import { defineComponent,  computed, ref } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import Stomp from 'webstomp-client';
 import Sockjs from 'sockjs-client';
 import { useStore } from 'vuex';
@@ -76,7 +75,7 @@ export default defineComponent({
     const { state, dispatch } = useStore();
 
     const notificationList = ref();
-    const getUser = computed(() => state.getUser.data);
+    const getUser = reactive(state.getUser.data);
 
     const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
@@ -84,16 +83,16 @@ export default defineComponent({
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, () => {
       // console.log(getUser.value.preferredUsername); TODO: 유저별로 구독하게 해야함
-      const groupName = getUser.value.attributes.groups[0].substring(1);
+      // const groupName = getUser.value.attributes.groups[0].substring(1);
       
-      stompClient.subscribe('/topic/'+groupName, message =>
+      stompClient.subscribe('/topic/'+getUser.name, message =>
         {
           notificationList.value = JSON.parse(message.body);
         }
       );
 
       // dispatch('getNotifications', getUser.value.name); TODO: 유저별로 알림을 가져와야함
-      dispatch('getNotifications', groupName);
+      dispatch('getNotifications', getUser.name);
     });
 
     return {

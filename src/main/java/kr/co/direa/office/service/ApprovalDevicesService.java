@@ -53,8 +53,9 @@ public class ApprovalDevicesService {
                 .collect(Collectors.toList());
     }
 
-    public void save(ApprovalDeviceDto requestDto) {
-        approvalDevicesRepository.save(requestDto.toEntity());
+    public Long save(ApprovalDeviceDto requestDto) {
+        ApprovalDevices approvalDevices = approvalDevicesRepository.save(requestDto.toEntity());
+        return approvalDevices.getId();
     }
 
     public void setApprovalInfoById(Map<String, Object> request, String approvalInfo) {
@@ -73,11 +74,12 @@ public class ApprovalDevicesService {
         }
 
         approvalDevices.setApprovalInfo(approvalInfo);
+
 //        TODO: 누가 승인했는지 Approver 설성해줘야 함
-//        Users admin = usersRepository.findByUsername(ADMIN)
-//                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-//                        "해당 유저가 없습니다. username=admin"));
- //     -----------------------------------------------------------------
+        Users admin = usersRepository.findByUsername(ADMIN)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=admin"));
+        approvalDevices.setApproverId(admin);
 //        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        String username = user.getUsername()??;
 //        Users approver = usersService.findByUsername(username);
@@ -123,6 +125,8 @@ public class ApprovalDevicesService {
         device.setStatus((request.get("status")!=null)?request.get("status").toString():device.getStatus());
         device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
+        approvalDeviceDto.setApprovalId((request.get("approvalId")!=null)?
+                Long.valueOf(request.get("approvalId").toString()):null);
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
         approvalDeviceDto.setReason(request.get("reason").toString());

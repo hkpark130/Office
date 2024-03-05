@@ -37,8 +37,8 @@ public class UserDataScheduler {
         }
         return null;
     }
-    @Scheduled(cron = "*/5 * * * * *")
-//    @Scheduled(cron = "0 0 1 * * *") // 매일 새벽 1시
+
+    @Scheduled(cron = "0 0 1 * * *") // 매일 새벽 1시
     public void fetchAndSaveUserData() {
         try {
             String url = KEYCLOAK_URL + "/admin/realms/sso-test/users";

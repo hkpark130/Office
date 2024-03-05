@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -24,7 +25,7 @@ public class NotificationController {
     @GetMapping(value = "get-notifications/{username}")
     public ResponseEntity<?> greeting(@PathVariable String username) {
         // TODO: keycloak 의 username 별로 토픽 나눠야 함, notificationsService.findByUsername()
-        List<NotificationDto> notificationDtoList = notificationsService.findAll().stream()
+        List<NotificationDto> notificationDtoList = notificationsService.findByUsername(username).stream()
                 .map(dto -> dto.setIcon(dto)).toList();
 
 //        notificationsService.sendNotification("/topic/device-application", notificationDtoList);
@@ -34,6 +35,5 @@ public class NotificationController {
                 notificationDtoList
         );
     }
-
 
 }

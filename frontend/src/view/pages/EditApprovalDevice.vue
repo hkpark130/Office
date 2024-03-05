@@ -166,6 +166,7 @@ const AddProduct = defineComponent({
       reason: getApprovalById.value.reason,
       description: getApprovalById.value.description,
       type: getApprovalById.value.type,
+      deadline: (new Date(getApprovalById.value.deadline)).toISOString(),
       layout: "vertical",
     });
 

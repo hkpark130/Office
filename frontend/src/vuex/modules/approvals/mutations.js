@@ -9,6 +9,7 @@ export default {
   getApprovalErr(state, err) {
     state.loading = false;
     state.error = err;
+    throw err;
   },
 
   approvalDeviceFinishBegin(state) {

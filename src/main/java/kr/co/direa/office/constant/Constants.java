@@ -17,5 +17,14 @@ public class Constants {
     public static final String DISPOSE_TYPE = "폐기";
     public static final String APPROVAL_RETURN = "반납";
     public static final String APPROVAL_RENTAL = "대여";
-    public static final String KEYCLOAK_URL = "http://192.168.0.48:8080";
+    public static String KEYCLOAK_URL;
+    public static String FRONTEND;
+
+    public Constants(
+            @Value("${constants.keycloak-url}") String keycloakUrl,
+            @Value("${constants.frontend}") String frontend
+    ) {
+        KEYCLOAK_URL = keycloakUrl;
+        FRONTEND = frontend;
+    }
 }

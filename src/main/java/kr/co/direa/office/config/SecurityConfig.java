@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static kr.co.direa.office.constant.Constants.FRONTEND;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -47,9 +49,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("http://192.168.0.5:8080"));
-//        config.setAllowedOrigins(null);
-//        config.addAllowedOrigin(null);
+        config.setAllowedOriginPatterns(List.of(FRONTEND));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("Origin", "X-Requested-With", "Content-Type", "Accept", "Key", "Authorization"));
         config.setExposedHeaders(List.of("*"));
@@ -79,6 +79,12 @@ public class SecurityConfig {
                                 ).permitAll()
                                 .requestMatchers(
                                         new AntPathRequestMatcher("/api/dispose-devicelist-admin")
+                                        ,  new AntPathRequestMatcher("/api/add-device")
+                                        ,  new AntPathRequestMatcher("/api/edit-device")
+                                        ,  new AntPathRequestMatcher("/api/add-category")
+                                        ,  new AntPathRequestMatcher("/api/devicelist-admin")
+                                        ,  new AntPathRequestMatcher("/api/approval-device-finish")
+                                        ,  new AntPathRequestMatcher("/api/approval-device-return")
                                 ).hasAuthority("Admin")
                                 .anyRequest().authenticated())
 //                                .anyRequest().permitAll()) // 개발용

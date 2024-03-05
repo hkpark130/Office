@@ -150,7 +150,12 @@ const AddProduct = defineComponent({
     const submitValues = ref({});
     const formRef = ref();
 
-    await dispatch('getApprovalById', router.currentRoute.value.params.approvalId);
+    await dispatch('getApprovalById', router.currentRoute.value.params.approvalId)
+    .catch(() => {
+      alert("신청 정보를 불러오는 과정에서 에러가 발생하였습니다.");
+      window.location.href = "/";
+    });
+    
     
     const getApprovalById = computed(() => state.approvals.data);
     const getUser = computed(() => state.getUser.data);
@@ -171,8 +176,16 @@ const AddProduct = defineComponent({
       description: getApprovalById.value.description,
       type: getApprovalById.value.type,
       isUsable: null,
+      applicant: getApprovalById.value.userName,
+      deadline: (new Date(getApprovalById.value.deadline)).toISOString(),
       layout: "vertical",
     });
+
+    if (getApprovalById.value.approvalInfo === '승인완료' || getApprovalById.value.approvalInfo === '반려') {
+      alert("승인완료 또는 반려된 신청입니다.");
+      window.location.href = "/";
+    }
+    
 
     const approvalFinish = () => {
       formState.isUsable = (formState.type === '반납')?true:false;

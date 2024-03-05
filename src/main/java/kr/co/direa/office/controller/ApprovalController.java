@@ -1,6 +1,5 @@
 package kr.co.direa.office.controller;
 
-import kr.co.direa.office.domain.Notifications;
 import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
@@ -29,13 +28,13 @@ public class ApprovalController {
             @RequestBody Map<String, Object> request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+ADMIN, notificationsService.findByUsername(ADMIN));
 
         return ResponseEntity.ok(
                 "success"
@@ -48,13 +47,13 @@ public class ApprovalController {
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
         tagsService.updateByDeviceId(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+ADMIN, notificationsService.findByUsername(ADMIN));
 
         return ResponseEntity.ok(
                 "success"
@@ -66,13 +65,13 @@ public class ApprovalController {
             @RequestBody Map<String, Object> request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+ADMIN, notificationsService.findByUsername(ADMIN));
 
         return ResponseEntity.ok(
                 "success"
@@ -84,13 +83,13 @@ public class ApprovalController {
             @RequestBody Map<String, Object> request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequestWithOutDeviceId(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+ADMIN, notificationsService.findByUsername(ADMIN));
 
         return ResponseEntity.ok(
                 "success"
@@ -129,11 +128,12 @@ public class ApprovalController {
         approvalDevicesService.setApprovalInfoById(request, APPROVAL_COMPLETED);
 
         // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
-//        NotificationDto notificationDto = new NotificationDto();
-//        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
-//
-//        notificationsService.save(notificationDto);
-//        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto, approvalDeviceDto.getApprovalId(), APPROVAL_COMPLETED);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/"+notificationDto.getReceiver(), notificationsService.findByUsername(notificationDto.getReceiver()));
 
         return ResponseEntity.ok(
                 "success"
@@ -147,11 +147,12 @@ public class ApprovalController {
         approvalDevicesService.setApprovalInfoById(request, APPROVAL_REJECT);
 
         // TODO: 유저에게 반려 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
-//        NotificationDto notificationDto = new NotificationDto();
-//        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
-//
-//        notificationsService.save(notificationDto);
-//        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.convertNotificationFromApproval(approvalDeviceDto, approvalDeviceDto.getApprovalId(), APPROVAL_REJECT);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/"+notificationDto.getReceiver(), notificationsService.findByUsername(notificationDto.getReceiver()));
 
         return ResponseEntity.ok(
                 "success"

@@ -28,15 +28,19 @@ public class Notifications extends BaseTimeEntity{
     @Column(name = "type")
     private String type;
 
+    @Column(name = "receiver")
+    private String receiver;
+
     public Notifications() {
 
     }
 
     @Builder
-    public Notifications(String subject, String link, String type) {
+    public Notifications(String subject, String link, String type, String receiver) {
         this.subject = subject;
         this.link = link;
         this.type = type;
+        this.receiver = receiver;
     }
 
 }

@@ -92,11 +92,11 @@
       const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
       const requiredColumns = [
-        "id", "categoryName"
+        "id", "categoryName", "isUsable"
       ];
 
       const optionalColumns = [
-        "user","manageDepName","projectName","purpose",
+        "manageDepName","projectName","purpose","purchaseDate",
         "status", "spec","price","model","company","sn","description"
       ];
 
@@ -225,11 +225,6 @@
           key: 'categoryName',
         },
         {
-          title: 'user',
-          dataIndex: 'user',
-          key: 'user',
-        },
-        {
           title: 'manageDepName',
           dataIndex: 'manageDepName',
           key: 'manageDepName',
@@ -275,6 +270,16 @@
           key: 'sn',
         },
         {
+          title: 'isUsable',
+          dataIndex: 'isUsable',
+          key: 'isUsable',
+        },
+        {
+          title: 'purchaseDate',
+          dataIndex: 'purchaseDate',
+          key: 'purchaseDate',
+        },
+        {
           title: 'description',
           dataIndex: 'description',
           key: 'description',
@@ -285,28 +290,28 @@
         "id": "DIR-N-107",
         "categoryName": "노트북",
         "purpose": "사무",
-        "user": "김철수",
         "manageDepName": "경영지원부",
         "status": "정상",
         "projectName": "농협",
         "spec": "RAM: 16G\nCPU: 8core",
-        "price": "80,000",
+        "price": "80000",
         "model": "LSBX2433",
         "company": "SAMSUNG",
         "sn": "ND6179NBK",
+        "isUsable": "true",
+        "purchaseDate": "2024-02-01",
         "description": "부팅 느림"
       }]);
 
       const formatData = computed(() =>
         formatState.value.map((value) => {
-          const { id, categoryName, purpose, user, manageDepName, spec, price, model, description, 
-            projectName, sn, status, company } = value;
+          const { id, categoryName, purpose, manageDepName, spec, price, model, description, 
+            projectName, sn, status, company, isUsable, purchaseDate } = value;
           return {
             key: id,
             id: <span>{id}</span>,
             categoryName: <span>{categoryName}</span>,
             purpose: <span>{purpose}</span>,
-            user: <span>{user}</span>,
             manageDepName: <span>{manageDepName}</span>,
             status: <span>{status}</span>,
             spec: <span>{spec}</span>,
@@ -316,6 +321,8 @@
             projectName: <span>{projectName}</span>,
             company: <span>{company}</span>,
             sn: <span>{sn}</span>,
+            isUsable: <span>{isUsable}</span>,
+            purchaseDate: <span>{purchaseDate}</span>,
           };
         })
       );

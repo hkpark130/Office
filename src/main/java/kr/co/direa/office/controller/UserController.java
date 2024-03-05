@@ -26,20 +26,18 @@ import java.security.Principal;
 class UserController {
 
     @GetMapping(value = "/user")
-//    ResponseEntity<?> getUser(Principal principal) {
-//        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        return ResponseEntity.ok(
-//                user
-//        );
-
-    ResponseEntity<?> getUser() throws IOException {
-        Path filePath = Path.of(System.getProperty("user.dir") + "/user.json");
-        String jsonContent = Files.readString(filePath);
-
+    ResponseEntity<?> getUser(Principal principal) {
+        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(
-                jsonContent
+                user
         );
+
+//    ResponseEntity<?> getUser() throws IOException {
+//        Path filePath = Path.of(System.getProperty("user.dir") + "/user.json");
+//        String jsonContent = Files.readString(filePath);
+//
+//        return ResponseEntity.ok(
+//                jsonContent
+//        );
     }
-
-
 }

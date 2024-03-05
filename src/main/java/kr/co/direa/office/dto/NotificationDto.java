@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static kr.co.direa.office.constant.Constants.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +27,7 @@ public class NotificationDto implements Serializable {
     private String iconClass;
     private String date;
     private String type;
+    private String receiver;
 
     @Builder
     public NotificationDto(Notifications entity){
@@ -34,6 +37,7 @@ public class NotificationDto implements Serializable {
         this.isRead = entity.getIs_read();
         this.type = entity.getType();
         this.date = entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+        this.receiver = entity.getReceiver();
     }
 
     public Notifications toEntity() {
@@ -41,16 +45,42 @@ public class NotificationDto implements Serializable {
                 .subject(subject)
                 .link(link)
                 .type(type)
+                .receiver(receiver)
                 .build();
     }
 
-    public NotificationDto convertNotificationFromApproval(ApprovalDeviceDto approvalDeviceDto) {
+    public NotificationDto convertNotificationFromApproval(ApprovalDeviceDto approvalDeviceDto,
+                                                           Long approvalId, String approvalInfo) {
         this.userName = approvalDeviceDto.getUserId().getUsername();
         this.type = approvalDeviceDto.getType();
-        this.subject = approvalDeviceDto.getDeviceId() + "의 " +
-                this.type + " 신청에 대한 " +
-                this.userName + " 님의 승인 요청";
-        this.link = "#";
+        this.receiver = this.userName;
+        this.link = "/detail-approval-device/"+approvalId;
+        if (approvalInfo != null) {
+            switch (approvalInfo) {
+                case APPROVAL_COMPLETED:
+                    this.subject = approvalDeviceDto.getDeviceId() + "의 " +
+                            this.type + " 신청이 승인되었습니다.";
+                    break;
+                case APPROVAL_REJECT:
+                    this.subject = approvalDeviceDto.getDeviceId() + "의 " +
+                            this.type + " 신청이 반려되었습니다.";
+                    break;
+                default:
+                    this.receiver = ADMIN;
+                    this.subject = approvalDeviceDto.getDeviceId() + "의 " +
+                            this.type + " 신청에 대한 " +
+                            this.userName + " 님의 승인 요청이 있습니다.";
+                    this.link = "/check-approval-device/"+approvalId;
+                    break;
+            }
+        } else {
+            this.receiver = ADMIN;
+            this.subject = approvalDeviceDto.getDeviceId() + "의 " +
+                    this.type + " 신청에 대한 " +
+                    this.userName + " 님의 승인 요청이 있습니다.";
+            this.link = "/check-approval-device/"+approvalId;
+        }
+
         this.date = getFormattedCreatedDate(approvalDeviceDto.getCreatedDate());
         setIcon(this);
 
@@ -60,10 +90,11 @@ public class NotificationDto implements Serializable {
     public NotificationDto convertNotificationFromComment(CommentDto commentDto) {
         this.userName = commentDto.getUserId().getUsername();
         this.type = "댓글";
+        this.receiver = (ADMIN.equals(this.userName))?commentDto.getApplicant():ADMIN;
         this.subject = "신청 번호 " +
                 commentDto.getApprovalId() + " 에 대한 " +
                 this.userName + " 님의 댓글이 등록되었습니다.";
-        this.link = "#";
+        this.link = "/detail-approval-device/"+commentDto.getApprovalId();
         this.date = getFormattedCreatedDate(commentDto.getCreatedDate());
         setIcon(this);
 

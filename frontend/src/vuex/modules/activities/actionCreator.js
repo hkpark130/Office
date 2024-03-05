@@ -8,13 +8,23 @@ const state = () => ({
 });
 
 const actions = {  
-  async fetchActivities({ commit }) {
+  async fetchActivities({ commit }, username) {
     try {
       commit('fetchActivitiesBegin');
-      const getActivities = await DataService.get('/api/activities');
+      const getActivities = await DataService.get(`/api/activities/${username}`);
       commit('fetchActivitiesSuccess', getActivities.data);
     } catch (err) {
       commit('fetchActivitiesErr', err);
+    }
+  },
+
+  async deleteNotification({ commit }, NotiId) {
+    try {
+      commit('deleteNotificationBegin');
+      await DataService.delete(`/api/activity/${NotiId}`);
+      commit('deleteNotificationSuccess');
+    } catch (err) {
+      commit('deleteNotificationErr', err);
     }
   },
 

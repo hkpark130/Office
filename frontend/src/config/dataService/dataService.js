@@ -88,9 +88,14 @@ client.interceptors.response.use(
     if (response) {
       if (response.status === 500) {
         // do something here
-      } else {
+      } else if (response.status === 403) {
+        window.location.href = '/403';
+      }       
+      else {
         return originalRequest;
       }
+    } else if (error.toJSON().message === "Network Error") {
+      window.location.href = API_ENDPOINT+'/logout';
     }
     return Promise.reject(error);
   },

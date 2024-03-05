@@ -15,6 +15,7 @@ import java.util.Date;
 public class CommentDto implements Serializable {
     private Long id;
     private Long approvalId;
+    private String applicant;
     private Users userId;
     private String comment;
     private LocalDateTime createdDate;
@@ -27,6 +28,7 @@ public class CommentDto implements Serializable {
     public CommentDto(Comments entity){
         this.id = entity.getId();
         this.approvalId = entity.getApprovalId().getId();
+        this.applicant = entity.getApprovalId().getUserId().getUsername();
         this.userId = entity.getUser_id();
         this.comment = entity.getComment();
         this.createdDate = entity.getCreatedDate();

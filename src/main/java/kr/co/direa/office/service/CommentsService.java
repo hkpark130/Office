@@ -64,6 +64,7 @@ public class CommentsService {
         commentDto.setApprovalId(Long.valueOf(request.get("approvalId").toString()));
         commentDto.setComment(request.get("comment").toString());
         commentDto.setUserId(user);
+        commentDto.setApplicant(request.get("applicant").toString());
         return commentDto;
     }
 }

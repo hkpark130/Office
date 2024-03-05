@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static kr.co.direa.office.constant.Constants.ADMIN;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comments")
@@ -32,7 +34,7 @@ public class CommentController {
         notificationDto.convertNotificationFromComment(commentDto);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+ADMIN, notificationsService.findByUsername(ADMIN));
 
         return ResponseEntity.ok(
                 "success"
