@@ -1,9 +1,12 @@
 package kr.co.direa.office.config;
 
 import kr.co.direa.office.service.UsersService;
+import kr.co.direa.office.util.DecryptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,14 +34,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static kr.co.direa.office.constant.Constants.FRONTEND;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
     private final UsersService usersService;
+    @Value("${constants.frontend}") private String frontend;
 
     public SecurityConfig(UsersService usersService) {
         this.usersService = usersService;
@@ -49,7 +51,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of(FRONTEND));
+
+        config.setAllowedOriginPatterns(List.of(frontend));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("Origin", "X-Requested-With", "Content-Type", "Accept", "Key", "Authorization"));
         config.setExposedHeaders(List.of("*"));
@@ -76,6 +79,7 @@ public class SecurityConfig {
                                         , new AntPathRequestMatcher("/oauth2/**")
                                         , new AntPathRequestMatcher("/logout/**")
                                         , new AntPathRequestMatcher("/h2-console/**")
+                                        , new AntPathRequestMatcher("/api/encrypt/**")
                                 ).permitAll()
                                 .requestMatchers(
                                         new AntPathRequestMatcher("/api/dispose-devicelist-admin")

@@ -2,25 +2,24 @@ package kr.co.direa.office.controller;
 
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
+import kr.co.direa.office.util.DecryptRunner;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class IndexController {
-    private final SimpMessagingTemplate messagingTemplate;
+    private final DecryptRunner decryptRunner;
     @GetMapping("/health")
     public String status() {
         return "It's working.";
+    }
 
-        // Notifications notifications = Notifications.builder().link("phk").subject("happy!!!").build();
-        // messagingTemplate.convertAndSend("/topic/dev", new NotificationDto(notifications));
+    @GetMapping("/encrypt/{data}")
+    public String encrypt(@PathVariable String data) {
+        return decryptRunner.encrypt(data);
     }
 
     @GetMapping("/error")

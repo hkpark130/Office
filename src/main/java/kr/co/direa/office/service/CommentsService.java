@@ -5,12 +5,16 @@ import kr.co.direa.office.domain.Approvals;
 import kr.co.direa.office.domain.Comments;
 import kr.co.direa.office.domain.Users;
 import kr.co.direa.office.dto.CommentDto;
+import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.repository.ApprovalDevicesRepository;
 import kr.co.direa.office.repository.ApprovalsRepository;
 import kr.co.direa.office.repository.CommentsRepository;
+import kr.co.direa.office.vo.ApplicationCommentVo;
+import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +26,7 @@ public class CommentsService {
     private final CommentsRepository commentsRepository;
     private final ApprovalDevicesRepository approvalDevicesRepository;
     private final UsersService usersService;
+    @Value("${constants.admin}") private String admin;
 
     public void save(CommentDto requestDto){
         Approvals approvalDevices = approvalDevicesRepository.findById(requestDto.getApprovalId()).orElseThrow(
@@ -55,16 +60,30 @@ public class CommentsService {
     }
 
 
-    public CommentDto convertFromRequest(Map<String, Object> request) {
-        Users user = usersService.findByUsername(request.get("userName").toString())
+    public CommentDto convertFromRequest(ApplicationCommentVo request) {
+        Users user = usersService.findByUsername(request.getUserName())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username=" + request.get("userName")));
+                        "해당 유저가 없습니다. username=" + request.getUserName()));
 
         CommentDto commentDto = new CommentDto();
-        commentDto.setApprovalId(Long.valueOf(request.get("approvalId").toString()));
-        commentDto.setComment(request.get("comment").toString());
+        commentDto.setApprovalId(request.getApprovalId());
+        commentDto.setComment(request.getComment());
         commentDto.setUserId(user);
-        commentDto.setApplicant(request.get("applicant").toString());
+        commentDto.setApplicant(request.getApplicant());
         return commentDto;
+    }
+
+    public void convertNotificationFromComment(NotificationDto notificationDto, CommentDto commentDto) {
+        notificationDto.setUserName(commentDto.getUserId().getUsername());
+        notificationDto.setType("댓글");
+        notificationDto.setReceiver((admin.equals(notificationDto.getUserName()))?commentDto.getApplicant():admin);
+
+        notificationDto.setSubject(
+                "신청 번호 " + commentDto.getApprovalId() + " 에 대한 " +
+                        notificationDto.getUserName() + " 님의 댓글이 등록되었습니다."
+        );
+        notificationDto.setLink("/detail-approval-device/"+commentDto.getApprovalId());
+        notificationDto.setDate(notificationDto.getFormattedCreatedDate(commentDto.getCreatedDate()));
+        notificationDto.setIcon();
     }
 }

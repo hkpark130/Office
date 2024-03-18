@@ -9,6 +9,7 @@ import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.repository.DeviceTagRepository;
 import kr.co.direa.office.repository.DevicesRepository;
 import kr.co.direa.office.repository.TagsRepository;
+import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +44,12 @@ public class TagsService {
         deviceTagRepository.deleteByDeviceId(deviceId);
     }
 
-    public void updateByDeviceId(Map<String, Object> request) {
-        Devices device = devicesRepository.findById(request.get("deviceId").toString())
+    public void updateByDeviceId(DeviceApplicationVo request) {
+        Devices device = devicesRepository.findById(request.getDeviceId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
-                        "해당 기기가 없습니다. deviceId=" + request.get("deviceId")));
+                        "해당 기기가 없습니다. deviceId=" + request.getDeviceId()));
         deleteTagsByDeviceId(device.getId());
-        List<String> newTagList = (List<String>) request.getOrDefault("tag", new ArrayList<>());
+        List<String> newTagList = (request.getTag()!=null)?request.getTag():new ArrayList<>();
         List<DeviceTag> deviceTagsToSave = new ArrayList<>();
         newTagList.forEach(tagName -> {
             Tags tag = findOrSaveTag(tagName);

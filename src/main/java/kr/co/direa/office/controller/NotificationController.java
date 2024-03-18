@@ -18,7 +18,7 @@ import java.util.List;
 public class NotificationController {
     private final NotificationsService notificationsService;
 
-    public NotificationController(SimpMessagingTemplate messagingTemplate, NotificationsService notificationsService) {
+    public NotificationController(NotificationsService notificationsService) {
         this.notificationsService = notificationsService;
     }
 
@@ -26,7 +26,7 @@ public class NotificationController {
     public ResponseEntity<?> greeting(@PathVariable String username) {
         // TODO: keycloak 의 username 별로 토픽 나눠야 함, notificationsService.findByUsername()
         List<NotificationDto> notificationDtoList = notificationsService.findByUsername(username).stream()
-                .map(dto -> dto.setIcon(dto)).toList();
+                .map(NotificationDto::setIcon).toList();
 
 //        notificationsService.sendNotification("/topic/device-application", notificationDtoList);
         notificationsService.sendNotification("/topic/"+username, notificationDtoList);

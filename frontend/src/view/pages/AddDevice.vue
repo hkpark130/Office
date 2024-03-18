@@ -53,10 +53,11 @@
                                   name="projectName"
                                   initialValue=""
                                   label="프로젝트"
+                                  @click="() => openPopover()"
                                 >
                                   <sdPopover
                                     :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
-                                    v-model="visible"
+                                    :visible="popoverVisible"
                                     title="프로젝트 리스트"
                                     action="click"
                                   >
@@ -214,6 +215,7 @@
       const { push, go } = useRouter();
       const checkFinished = ref(false);
       const projectTmp = ref();
+      const popoverVisible = ref(false); 
 
       const categories = computed(() => state.caregoryList.data);
       const projects = computed(() => state.projectList.data);
@@ -248,7 +250,11 @@
 
       const onClickSearchList = (v) => {
         formState.projectName = v;
-        projectTmp.value = v;
+        popoverVisible.value = false; 
+      }
+
+      const openPopover = () => {
+        popoverVisible.value = true; 
       }
 
       watch(() => formState.id, (newId, oldId) => {
@@ -330,6 +336,8 @@
         onClickSearchList,
         projectTmp,
         handleCancel,
+        popoverVisible,
+        openPopover,
       };
     },
   });

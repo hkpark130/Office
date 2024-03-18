@@ -30,7 +30,7 @@ public class NotificationsService {
     public void sendNotification(String topicName, List<NotificationDto> notificationDto) {
         messagingTemplate.convertAndSend(topicName,
                 notificationDto.stream()
-                        .map(dto -> dto.setIcon(dto))
+                        .map(NotificationDto::setIcon)
                         .toList());
     }
 
@@ -38,7 +38,7 @@ public class NotificationsService {
         List<Notifications> notifications = notificationsRepository.findAllByOrderByCreatedDateDesc();
         return notifications.stream()
             .map(NotificationDto::new)
-            .map(dto -> dto.setIcon(dto))
+            .map(NotificationDto::setIcon)
             .toList();
     }
 
@@ -46,7 +46,7 @@ public class NotificationsService {
         List<Notifications> notifications = notificationsRepository.findByReceiverOrderByCreatedDateDesc(receiver);
         return notifications.stream()
                 .map(NotificationDto::new)
-                .map(dto -> dto.setIcon(dto))
+                .map(NotificationDto::setIcon)
                 .toList();
     }
 

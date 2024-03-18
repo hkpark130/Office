@@ -11,12 +11,17 @@ server:
         max-age: 86400 # 86400
 
 ---
+jasypt:
+  encryptor:
+    password: mySecretKey
+
 constants:
-  keycloak-url: "http://192.168.0.48:8080"
-  client-secret: "Q0WcVVGIFjQDRH57kQ6oAeWKSvyW3Cci"
-  frontend: "http://192.168.0.5:8080"
-  admin: "test"
-  admin-id: "5ca394e9-52f7-44ef-bae4-fafe90d63f2e"
+  keycloak-url: ENC(6UeJ0QC/B9zHz+T/wXKKWgXJ5/FYBK7xF/dWVCpNweN14MZNdJ9fXbDYax1nBwyWg8X1huwRtyE5IhPrn9V7SQ==)
+  client-secret: ENC(qSvRXUFAk4C9Xtt/B1jEA0G7+0hvvhg1mdmeTAKTrAAOMrv1kGy3XGTuASCtksADAtj9/EUh3Lo9fEIKZV+hOuZEYOLKTKWYWVXTynEStSg=)
+  frontend: ENC(nxYeWQCik3HWPj48RMmCQqui4Icd9a6V2hGzJ3P1Z+Q3iCsfJ/Cm8iGxcytYRTYWg3/OMVItTRNEWgbPF6caeg==)
+  admin: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
+  admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
+  realm: ENC(kbWdaszp7HSheIPFaLRmc0NBJLbEmCrnVWVQmNM7QcX057IeT3I3wDU7ufjNWnCX)
 
 # keycloak
 spring:
@@ -31,11 +36,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${constants.keycloak-url}/realms/sso-test
+          issuer-uri: ${constants.keycloak-url}/realms/${constants.realm}
       client:
         provider:
           keycloak:
-            issuer-uri: ${constants.keycloak-url}/realms/sso-test
+            issuer-uri: ${constants.keycloak-url}/realms/${constants.realm}
             user-name-attribute: preferred_username
         registration:
           keycloak:
@@ -63,11 +68,17 @@ spring:
       path: /h2-console
 
 ---
+jasypt:
+  encryptor:
+    password: ${JASYPT_KEY}
+
 constants:
-  keycloak-url: ${KEYCLOAK_URL}
-  frontend: ${FRONTEND}
-  admin: ${ADMIN}
-  admin-id: ${ADMIN_ID}
+  keycloak-url: ENC(0dZk38oB1Gm3e7Xl3eb4zTevbp2RREhkLUvkdgRz/heOSh4GtqkJ5rvjcE1umUIkxoquMtiE+GX/cmhZzIL4Ig==)
+  client-secret: ENC(mwGuQuXgOPVZ+upjEIGrt9fJMwuc7omECSvUOtaZr1ylbEqN/x+Jp5eh4tx9qQb9YEhQiOz464nJVmh2jJAvkaLdMnq6uwwmX8NfN+IVAxI=)
+  frontend: ENC(Z1An8Md7xBH929+x412M2wLdnfQyYQWb7+Wv+cCcsNn5fFQOxw2tQnMLepuVzS5Mw4nC44ijm6rCjslaqb1nPQ==)
+  admin: ENC(0mMXBHi59yaWXWRLtiIXGZif4zwsf+futDzetVwJFnX3hxhhZtQZ44QDkI2gku/U)
+  admin-id: ENC(3mRJGuDfvxET2n5ICtiA4eLRcLwwXweOzaiykNc0aqOe80Q7BMcSkWpF62HEsL8sIVPjOmbTYz7QEm2+/rVjXK7PGZWydMvBIbw/3otn5Pw=)
+  realm: ENC(rW4Ij4d66yAHbzdxzQnWAcPib/iNmYJloRByJHiG0Qqm0bNDbjNzp5LrSdzvL7QG)
 
 spring:
   config:
@@ -81,25 +92,25 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_URL}/realms/sso-test
+          issuer-uri: ${constants.keycloak-url}/realms/${constants.realm}
       client:
         provider:
           keycloak:
-            issuer-uri: ${KEYCLOAK_URL}/realms/sso-test
+            issuer-uri: ${constants.keycloak-url}/realms/${constants.realm}
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-name: back-office-api
             client-id: back-office-api
-            client-secret: ${CLIENT_SECRET}
+            client-secret: ${constants.client-secret}
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
   datasource:
-    url: ${DB_URL}
+    url: ENC(d7rl62HP5wB4OokgkJ9KYFZhV/Ny8ceSs9ZoT94GxuMCwZcpSjpdJQJh5h9LXYb8LDgiPf3ZlhAkF+QasctgAAKYK/Th45/CbUwEN9MFgW9joKOkbnAQwkgi4F7cuLTQAj7Ai+UFupUxt41SBSs8BQ==)
     driverClassName: org.mariadb.jdbc.Driver
-    username: ${DB_USER}
-    password: ${DB_PW}
+    username: ENC(xfQIN2JCVUy9YElSP3OhPV8bkt7aP5u07nWszkIaGlOxeFNaBgIhEuclZua3YghAstbc172vvS3/gW/veb+IPQ==)
+    password: ENC(rx4GEztWRP1GFSjFdeJOOftRy7IE5z+vI0qB77mgiz1Qma+CsIb9NdnkB+TtFRO5Naknbk4IlZBC5vObDcDFfg==)
   sql:
     init:
       mode: never

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -49,95 +50,43 @@ public class NotificationDto implements Serializable {
                 .build();
     }
 
-    public NotificationDto convertNotificationFromApproval(ApprovalDeviceDto approvalDeviceDto,
-                                                           Long approvalId, String approvalInfo) {
-        this.userName = approvalDeviceDto.getUserId().getUsername();
-        this.type = approvalDeviceDto.getType();
-        this.receiver = this.userName;
-        this.link = "/detail-approval-device/"+approvalId;
-        if (approvalInfo != null) {
-            switch (approvalInfo) {
-                case APPROVAL_COMPLETED:
-                    this.subject = approvalDeviceDto.getDeviceId() + "의 " +
-                            this.type + " 신청이 승인되었습니다.";
-                    break;
-                case APPROVAL_REJECT:
-                    this.subject = approvalDeviceDto.getDeviceId() + "의 " +
-                            this.type + " 신청이 반려되었습니다.";
-                    break;
-                default:
-                    this.receiver = ADMIN;
-                    this.subject = approvalDeviceDto.getDeviceId() + "의 " +
-                            this.type + " 신청에 대한 " +
-                            this.userName + " 님의 승인 요청이 있습니다.";
-                    this.link = "/check-approval-device/"+approvalId;
-                    break;
-            }
-        } else {
-            this.receiver = ADMIN;
-            this.subject = approvalDeviceDto.getDeviceId() + "의 " +
-                    this.type + " 신청에 대한 " +
-                    this.userName + " 님의 승인 요청이 있습니다.";
-            this.link = "/check-approval-device/"+approvalId;
-        }
-
-        this.date = getFormattedCreatedDate(approvalDeviceDto.getCreatedDate());
-        setIcon(this);
-
-        return this;
-    }
-
-    public NotificationDto convertNotificationFromComment(CommentDto commentDto) {
-        this.userName = commentDto.getUserId().getUsername();
-        this.type = "댓글";
-        this.receiver = (ADMIN.equals(this.userName))?commentDto.getApplicant():ADMIN;
-        this.subject = "신청 번호 " +
-                commentDto.getApprovalId() + " 에 대한 " +
-                this.userName + " 님의 댓글이 등록되었습니다.";
-        this.link = "/detail-approval-device/"+commentDto.getApprovalId();
-        this.date = getFormattedCreatedDate(commentDto.getCreatedDate());
-        setIcon(this);
-
-        return this;
-    }
-
     public String getFormattedCreatedDate(LocalDateTime createdDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
         return createdDate.format(formatter);
     }
 
-    public NotificationDto setIcon(NotificationDto notificationDto) {
-        switch (notificationDto.type) {
+    public NotificationDto setIcon() {
+        switch (this.type) {
             case "대여":
-                notificationDto.icon = "inbox";
-                notificationDto.iconClass = "primary";
+                this.icon = "inbox";
+                this.iconClass = "primary";
                 break;
             case "반납":
-                notificationDto.icon = "corner-down-left";
-                notificationDto.iconClass = "primary";
+                this.icon = "corner-down-left";
+                this.iconClass = "primary";
                 break;
             case "폐기":
-                notificationDto.icon = "trash";
-                notificationDto.iconClass = "secondary";
+                this.icon = "trash";
+                this.iconClass = "secondary";
                 break;
             case "구매":
-                notificationDto.icon = "dollar-sign";
-                notificationDto.iconClass = "primary";
+                this.icon = "dollar-sign";
+                this.iconClass = "primary";
                 break;
             case "수정":
-                notificationDto.icon = "edit";
-                notificationDto.iconClass = "success";
+                this.icon = "edit";
+                this.iconClass = "success";
                 break;
             case "댓글":
-                notificationDto.icon = "message-square";
-                notificationDto.iconClass = "primary";
+                this.icon = "message-square";
+                this.iconClass = "primary";
                 break;
             default:
-                notificationDto.icon = "bell";
-                notificationDto.iconClass = "secondary";
+                this.icon = "bell";
+                this.iconClass = "secondary";
                 break;
         }
-        return notificationDto;
+        return this;
     }
 
 }

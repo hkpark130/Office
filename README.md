@@ -24,31 +24,23 @@ VUE_APP_KAKAO_KEY="8a~230"
 EOF
 
 npm install
-npm run serve {-- --port 3000}
+npm run serve
 # 실패시 'rm -rf node_modules, package-lock.json' 실행 후 다시 설치
 ```
 #  새 터미널에서 스프링 실행
 
 ```
 cat <<EOF > .env
+JASYPT_KEY="tkdydwk09!@"
 KEYCLOAK_URL="http://192.168.0.46:8080"
-FRONTEND="http://192.168.0.46:3000"
-CLIENT_SECRET="fi33bJWZExI0DYTF7IwFZ2xsxfBS2KfK"
-ADMIN="test"
-ADMIN_ID="5ca394e9-52f7-44ef-bae4-fafe90d63f2e"
-DB_USER="sa"
-DB_PW="1"
-DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
+REALM="sso"
+ADMIN="admin"
+#DB_USER="sa"
+#DB_PW="1"
+#DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
 EOF
 
 export $(grep -v '^#' .env | xargs)
-
-{my.cnf 수정}
-# grep bind-address /etc/mysql/mysql.conf.d/mysqld.cnf 
-# bind-address		= 127.0.0.1
-# mysqlx-bind-address	= 127.0.0.1
-
-systemctl restart mysql
 
 sudo mvn clean package
 java -jar -Dspring.profiles.active=prod target/office-0.0.1-SNAPSHOT.jar

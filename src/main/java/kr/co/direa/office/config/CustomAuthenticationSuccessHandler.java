@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.co.direa.office.domain.Users;
 import kr.co.direa.office.dto.UserDto;
 import kr.co.direa.office.service.UsersService;
+import kr.co.direa.office.util.DecryptRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,11 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static kr.co.direa.office.constant.Constants.FRONTEND;
-
 @Configuration
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final UsersService usersService;
+    @Value("${constants.frontend}") private String frontend;
 
     public CustomAuthenticationSuccessHandler(UsersService usersService) {
         this.usersService = usersService;
@@ -59,6 +60,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         // 응답에 쿠키 추가
         response.addCookie(loggedInCookie);
 
-        response.sendRedirect(FRONTEND);
+        response.sendRedirect(frontend);
     }
 }

@@ -8,6 +8,9 @@ import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.CategoriesService;
 import kr.co.direa.office.service.DevicesService;
+import kr.co.direa.office.util.DecryptRunner;
+import kr.co.direa.office.vo.DeviceApplicationVo;
+import kr.co.direa.office.vo.DevicesRedponseVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +32,6 @@ import static kr.co.direa.office.constant.Constants.*;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class DeviceController {
-    private final SimpMessagingTemplate messagingTemplate;
     private final DevicesService devicesService;
     private final CategoriesService categoriesService;
     private final ApprovalDevicesService approvalDevicesService;
@@ -37,15 +39,12 @@ public class DeviceController {
     @GetMapping(value = "/devices")
     ResponseEntity<?> getDevices() {
         List<CategoryDto> categoryDtoList = categoriesService.findAll();
-        Map<String, Object> map;
-        List<Map<String, Object>> response = new ArrayList<>();
+        DevicesRedponseVo map;
+        List<DevicesRedponseVo> response = new ArrayList<>();
 
         for (CategoryDto categoryDto : categoryDtoList) {
             Long deviceCount = devicesService.countByCategoryIdAndIsUsable(categoryDto.toEntity(), true);
-            map = new HashMap<>();
-            map.put("amount", deviceCount);
-            map.put("name", categoryDto.getName());
-            map.put("img", categoryDto.getImg());
+            map = new DevicesRedponseVo(deviceCount, categoryDto.getName(), categoryDto.getImg());
             response.add(map);
         }
 
@@ -92,7 +91,7 @@ public class DeviceController {
 
     @PostMapping(value = "/edit-mydevice")
     ResponseEntity<?> editMyDevice(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         devicesService.editDescription(request);
 

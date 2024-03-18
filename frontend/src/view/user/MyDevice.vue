@@ -210,14 +210,14 @@ const Orders = defineComponent({
 
     const formState = reactive({
       visible: false,
-      id: '',
+      deviceId: '',
       status: '',
       description: '',
     });
 
     const showModal = (row) => {
       formState.visible = true;
-      formState.id = row.id;
+      formState.deviceId = row.id;
       formState.status = row.status;
       formState.description = row.description;
     };

@@ -1,8 +1,10 @@
 package kr.co.direa.office;
 
 import com.opencsv.exceptions.CsvException;
+import kr.co.direa.office.util.DecryptRunner;
 import kr.co.direa.office.util.Keycloak;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -14,17 +16,16 @@ import java.util.Map;
 
 import com.opencsv.CSVReader;
 
-import static kr.co.direa.office.constant.Constants.KEYCLOAK_URL;
-
 @Slf4j
 public class SyncSSO {
     public static void main(String[] args) { // CSV 파일로 동기화 (CSV -> Keycloak)
-        String token = Keycloak.getAdminAccessToken();
+        String token = Keycloak.getAdminAccessToken(System.getenv("KEYCLOAK_URL"), System.getenv("ADMIN"), System.getenv("REALM"));
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders requestHeader = new HttpHeaders();
         String csvFile = System.getProperty("user.dir") + "/csvfile.csv";
-        String keycloakUrl = KEYCLOAK_URL + "/admin/realms/sso-test/users";
+        String keycloakUrl = System.getenv("KEYCLOAK_URL") + "/admin/realms/"+
+                System.getenv("REALM")+"/users";
 
         requestHeader.setContentType(MediaType.APPLICATION_JSON);
         requestHeader.set("Authorization", token);
