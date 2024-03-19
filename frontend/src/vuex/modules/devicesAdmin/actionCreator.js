@@ -21,6 +21,18 @@ const actions = {
       commit('filterDeviceAdminErr', err);
     }
   },
+
+  async downloadAvailableDeviceList({ commit }) {
+    const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
+    try {
+      commit('downloadAvailableDeviceListBegin');
+      window.open(API_ENDPOINT+'/api/download-available-devicelist', '_blank');
+      commit('downloadAvailableDeviceListSuccess');
+      return;
+    } catch (err) {
+      commit('downloadAvailableDeviceListErr', err);
+    }
+  },
 };
 
 export default {

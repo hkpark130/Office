@@ -1,16 +1,16 @@
 import axios from 'axios';
-import { getItem } from '../../utility/localStorageControl';
+// import { getItem } from '../../utility/localStorageControl';
 
 const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
-const authHeader = () => ({
-  Authorization: `Bearer ${getItem('access_token')}`,
-});
+// const authHeader = () => ({
+//   Authorization: `Bearer ${getItem('access_token')}`,
+// });
 
 const client = axios.create({
   baseURL: API_ENDPOINT,
   headers: {
-    ...authHeader(),
+    // ...authHeader(),
     'Content-Type': 'application/json',
   },
   withCredentials: true,
@@ -21,7 +21,7 @@ class DataService {
     return client({
       method: 'GET',
       url: path,
-      headers: { ...authHeader() },
+      // headers: { ...authHeader() },
     });
   }
 
@@ -30,7 +30,9 @@ class DataService {
       method: 'POST',
       url: path,
       data,
-      headers: { ...authHeader(), ...optionalHeader },
+      headers: { 
+        // ...authHeader(),
+         ...optionalHeader },
     });
   }
 
@@ -39,7 +41,7 @@ class DataService {
       method: 'PATCH',
       url: path,
       data: JSON.stringify(data),
-      headers: { ...authHeader() },
+      // headers: { ...authHeader() },
     });
   }
 
@@ -48,7 +50,7 @@ class DataService {
       method: 'DELETE',
       url: path,
       data: JSON.stringify(data),
-      headers: { ...authHeader() },
+      // headers: { ...authHeader() },
     });
   }
 
@@ -57,7 +59,7 @@ class DataService {
       method: 'PUT',
       url: path,
       data: JSON.stringify(data),
-      headers: { ...authHeader() },
+      // headers: { ...authHeader() },
     });
   }
 }
@@ -70,8 +72,8 @@ client.interceptors.request.use((config) => {
   // do something before executing the request
   // For example tag along the bearer access token to request header or set a cookie
   const requestConfig = config;
-  const { headers } = config;
-  requestConfig.headers = { ...headers, Authorization: `Bearer ${getItem('access_token')}` };
+  // const { headers } = config;
+  // requestConfig.headers = { ...headers, Authorization: `Bearer ${getItem('access_token')}` };
 
   return requestConfig;
 });

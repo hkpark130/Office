@@ -21,6 +21,18 @@ const actions = {
       commit('filterDisposeDeviceErr', err);
     }
   },
+
+  async downloadDisposeDeviceList({ commit }) {
+    const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
+    try {
+      commit('downloadDisposeDeviceListBegin');
+      window.open(API_ENDPOINT+'/api/download-dispose-devicelist', '_blank');
+      commit('downloadDisposeDeviceListSuccess');
+      return;
+    } catch (err) {
+      commit('downloadDisposeDeviceListErr', err);
+    }
+  },
 };
 
 export default {

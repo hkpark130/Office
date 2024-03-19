@@ -29,6 +29,14 @@
                   </a-radio-group>
                 </div>
               </a-col>
+              <a-col :xxl="4" :xs="24">
+                <div class="table-toolbox-actions">
+                  <sdButton size="small" type="secondary" @click="downloadCSV"> 
+                    <sdFeatherIcons type="file" size="12" />
+                    <span>Export</span>
+                  </sdButton>
+                </div>
+              </a-col>
             </a-row>
           </TopToolBox>
         </a-col>
@@ -286,6 +294,10 @@ const Orders = defineComponent({
         filterKey.value = selectedItems;
         filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
+
+      const downloadCSV = () => {
+        dispatch("downloadDisposeDeviceList");
+      };
       
       return {
         deviceId,
@@ -300,6 +312,7 @@ const Orders = defineComponent({
         columns,
         orders,
         stateValue,
+        downloadCSV,
       };
     },
   });

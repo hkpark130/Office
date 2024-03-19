@@ -1,5 +1,6 @@
 package kr.co.direa.office.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
@@ -7,6 +8,7 @@ import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.CategoriesService;
+import kr.co.direa.office.service.CsvExportService;
 import kr.co.direa.office.service.DevicesService;
 import kr.co.direa.office.util.DecryptRunner;
 import kr.co.direa.office.vo.DeviceApplicationVo;
@@ -35,6 +37,7 @@ public class DeviceController {
     private final DevicesService devicesService;
     private final CategoriesService categoriesService;
     private final ApprovalDevicesService approvalDevicesService;
+    private final CsvExportService csvExportService;
 
     @GetMapping(value = "/devices")
     ResponseEntity<?> getDevices() {
@@ -60,6 +63,24 @@ public class DeviceController {
         return ResponseEntity.ok(
                 filteredDevices
         );
+    }
+
+    @GetMapping(value = "/download-available-devicelist")
+    ResponseEntity<?> downloadAvailableDeviceList(HttpServletResponse servletResponse) throws IOException {
+        servletResponse.setContentType("text/csv; charset=EUC-KR");
+        servletResponse.addHeader("Content-Disposition","attachment; filename=\"devicelist.csv\"");
+        csvExportService.writeDevicesToCsv(servletResponse.getWriter(), DISPOSE_TYPE, false);
+
+        return null;
+    }
+
+    @GetMapping(value = "/download-dispose-devicelist")
+    ResponseEntity<?> downloadDisposeDeviceList(HttpServletResponse servletResponse) throws IOException {
+        servletResponse.setContentType("text/csv; charset=EUC-KR");
+        servletResponse.addHeader("Content-Disposition","attachment; filename=\"disposed-devicelist.csv\"");
+        csvExportService.writeDevicesToCsv(servletResponse.getWriter(), DISPOSE_TYPE, true);
+
+        return null;
     }
 
     @GetMapping(value = "/dispose-devicelist-admin")

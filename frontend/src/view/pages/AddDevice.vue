@@ -199,6 +199,7 @@
   import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
+  import { projectList } from '@/vuex/modules/projects/load-data';
 
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -215,13 +216,13 @@
       const { push, go } = useRouter();
       const checkFinished = ref(false);
       const projectTmp = ref();
-      const popoverVisible = ref(false); 
+      const popoverVisible = ref(false);
 
       const categories = computed(() => state.caregoryList.data);
       const projects = computed(() => state.projectList.data);
 
-      const searchData = toRef(projects.value);
-      const filteredData = toRef(projects.value);
+      const searchData = toRef(projectList.data);
+      const filteredData = toRef(projectList.data);
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {

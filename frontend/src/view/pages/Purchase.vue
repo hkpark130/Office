@@ -177,6 +177,7 @@
   import { toRef, ref, reactive, defineComponent, computed } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
+  import { projectList } from '@/vuex/modules/projects/load-data';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -199,9 +200,13 @@
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
       const projects = ref(() => state.projectList.data);
-      const getUser = computed(() => state.getUser.data);
-      const searchData = toRef(() => state.projectList.data);
-      const filteredData = toRef(() => state.projectList.data);
+      // const getUser = computed(() => state.getUser.data);
+      const searchData = toRef(projectList.data);
+      const filteredData = toRef(projectList.data);
+      const username = ref('');
+      dispatch('getUser').then(() => {
+          username.value = state.getUser.data.name;
+      });
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
@@ -215,7 +220,7 @@
         price: 0,
         project: "본사",
         purpose: "개발",
-        userName: getUser.value.name,
+        userName: username,
         reason: "",
         deadline: "",
         type: "구매",

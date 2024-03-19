@@ -53,7 +53,7 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, reactive, ref, defineComponent } from 'vue';
 import { useStore } from 'vuex';
-import Tag from '../../components/tags/Tag';
+import Tag from '@/components/tags/Tag';
 import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {

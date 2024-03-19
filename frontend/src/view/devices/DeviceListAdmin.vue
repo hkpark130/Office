@@ -31,7 +31,11 @@
               </a-col>
               <a-col :xxl="4" :xs="24">
                 <div class="table-toolbox-actions">
-                  <sdButton size="small" type="secondary" transparented> Export </sdButton>
+                  <sdButton size="small" type="secondary" @click="downloadCSV"> 
+                    <sdFeatherIcons type="file" size="12" />
+                    <span>Export</span>
+                  </sdButton>
+
                   <router-link :to="`/add-device`">
                     <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
                     장비등록
@@ -351,6 +355,10 @@ const Orders = defineComponent({
       filterKey.value = selectedItems;
       filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
     };
+
+    const downloadCSV = () => {
+      dispatch("downloadAvailableDeviceList");
+    };
     
     return {
       deviceId,
@@ -365,6 +373,7 @@ const Orders = defineComponent({
       columns,
       orders,
       stateValue,
+      downloadCSV,
     };
   },
 });

@@ -217,6 +217,7 @@
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   import dayjs from 'dayjs';
+  import { projectList } from '@/vuex/modules/projects/load-data';
 
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -240,8 +241,8 @@
       const projects = computed(() => state.projectList.data);
       const departments = computed(() => state.departmentList.data);
 
-      const searchData = toRef(projects.value);
-      const filteredData = toRef(projects.value);
+      const searchData = toRef(projectList.data);
+      const filteredData = toRef(projectList.data);
       const getDeviceById = ref();
 
       const search = (e, searchDatas) => {

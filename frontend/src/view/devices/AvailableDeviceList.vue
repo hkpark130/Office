@@ -31,7 +31,6 @@
               </a-col>
               <a-col :xxl="4" :xs="24">
                 <div class="table-toolbox-actions">
-                  <sdButton size="small" type="secondary" transparented> Export </sdButton>
                   <router-link :to="{ 
                       name: 'device-application', 
                       params: { deviceId: `${deviceId}` }, 
@@ -67,7 +66,7 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
-import Tag from '../../components/tags/Tag';
+import Tag from '@/components/tags/Tag';
 import { useRouter } from 'vue-router';
 import { availableDeviceList } from './getAvailableDeviceList';
 
