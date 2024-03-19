@@ -119,7 +119,7 @@
                 reject(Upload.LIST_IGNORE);
               }
             };
-            reader.readAsText(file); // FileReader에 직접 파일 전달
+            reader.readAsText(file, "EUC-KR"); // FileReader에 직접 파일 전달
           })
         },
         onChange(info) {
@@ -168,6 +168,9 @@
         }
 
         for (let row = 1; row < lines.length; row++) {
+          if (lines[row].length == 0) 
+            continue;
+
           inputData.value = {};
           const val = lines[row].split(',');
           for (const col in headers) {
