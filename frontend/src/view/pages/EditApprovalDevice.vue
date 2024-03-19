@@ -48,7 +48,7 @@
                                   </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
-                                  <a-form-item label="사용자" name="realUser" required>
+                                  <a-form-item label="사용자" name="realUser">
                                     <a-input v-model:value="formState.realUser" disabled/>
                                   </a-form-item>
                                 </a-col>
@@ -166,6 +166,7 @@ const AddProduct = defineComponent({
       reason: getApprovalById.value.reason,
       description: getApprovalById.value.description,
       type: getApprovalById.value.type,
+      deadline: (new Date(getApprovalById.value.deadline)).toISOString(),
       layout: "vertical",
     });
 

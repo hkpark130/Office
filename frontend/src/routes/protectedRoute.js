@@ -1,8 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import adminRoutes from './AdminRoutes';
-import authRoutes from './authRoutes';
+// import authRoutes from './authRoutes';
 // import store from '@/vuex/store';
-
 const routes = [
   {
     name: 'home',
@@ -11,13 +10,13 @@ const routes = [
     children: [...adminRoutes],
     meta: { auth: false },
   },
-  {
-    name: 'Auth',
-    path: '/auth',
-    component: () => import(/* webpackChunkName: "auth" */ '@/layout/withAuthLayout.vue'),
-    children: [...authRoutes],
-    meta: { auth: true },
-  },
+  // {
+  //   name: 'Auth',
+  //   path: '/auth',
+  //   component: () => import(/* webpackChunkName: "auth" */ '@/layout/withAuthLayout.vue'),
+  //   children: [...authRoutes],
+  //   meta: { auth: true },
+  // },
 ];
 
 const router = createRouter({
@@ -33,7 +32,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  
+
   // if (to.meta.auth && store.state.auth.login) {
   //   next({ to: '/' });
   // } else if (!to.meta.auth && !store.state.auth.login) {

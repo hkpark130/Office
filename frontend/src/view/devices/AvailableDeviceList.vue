@@ -31,7 +31,6 @@
               </a-col>
               <a-col :xxl="4" :xs="24">
                 <div class="table-toolbox-actions">
-                  <sdButton size="small" type="secondary" transparented> Export </sdButton>
                   <router-link :to="{ 
                       name: 'device-application', 
                       params: { deviceId: `${deviceId}` }, 
@@ -67,8 +66,9 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
-import Tag from '../../components/tags/Tag';
+import Tag from '@/components/tags/Tag';
 import { useRouter } from 'vue-router';
+import { availableDeviceList } from './getAvailableDeviceList';
 
 const sortWithNullCheck = (aValue, bValue) => {
   // Null 값을 제일 뒤로 둘거임
@@ -157,15 +157,20 @@ const AvailableDevices = defineComponent({
   components: { TopToolBox, Main, TableWrapper },
 
   setup() {
+    const response = availableDeviceList.data;
     const { state, dispatch } = useStore();
+    state.devices.data = response;
     const deviceId = ref(null);
     const filterKey = ref('categoryName');
     const searchData = computed(() => state.headerSearchData);
     const router = useRouter();
-    dispatch("fetchAvailableDeviceList");
     const orders = computed(() => state.devices.data);
-
     const item = computed(() => state.devices.data);
+    dispatch("fetchAvailableDeviceList").then(() => {
+      orders.value = computed(() => state.devices.data);
+      item.value = computed(() => state.devices.data);
+    });
+
     const stateValue = ref('');
     const filterVal = ref([]);
 
@@ -179,7 +184,7 @@ const AvailableDevices = defineComponent({
     });
 
     const handleChangeForFilter = (e) => {
-      dispatch('deviceFilter', { column: filterKey.value, value: e.target.value });
+      dispatch('deviceFilter', { column: filterKey.value, value: e.target.value, response: response });
     };
 
     const dataSource = computed(() =>
@@ -254,7 +259,7 @@ const AvailableDevices = defineComponent({
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(state.devices.originData.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
       
       return {

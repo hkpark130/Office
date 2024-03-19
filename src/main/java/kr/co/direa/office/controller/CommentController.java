@@ -6,7 +6,10 @@ import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.CategoriesService;
 import kr.co.direa.office.service.CommentsService;
 import kr.co.direa.office.service.NotificationsService;
+import kr.co.direa.office.vo.ApplicationCommentVo;
+import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,19 +23,21 @@ import java.util.Map;
 public class CommentController {
     private final CommentsService commentsService;
     private final NotificationsService notificationsService;
+    @Value("${constants.admin}") private String admin;
 
     @PostMapping(value = "/save")
     ResponseEntity<?> save(
-            @RequestBody Map<String, Object> request
+            @RequestBody ApplicationCommentVo request
     ) {
         CommentDto commentDto = commentsService.convertFromRequest(request);
         commentsService.save(commentDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromComment(commentDto);
+        commentsService.convertNotificationFromComment(notificationDto, commentDto);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+admin,
+                notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
                 "success"

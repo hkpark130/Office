@@ -241,6 +241,7 @@ const AddProduct = defineComponent({
         approvalId: formState.approvalId,
         userName: getUser.value.name,
         comment: value.value,
+        applicant: formState.userName
       };
       dispatch('commentPost', comment)
         .then(() => {

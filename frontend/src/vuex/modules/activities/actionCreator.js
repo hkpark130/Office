@@ -1,36 +1,33 @@
 import mutations from './mutations';
-import { getActivities } from './load-data';
 import { DataService } from '@/config/dataService/dataService';
 
-const response = getActivities.data;
-
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
-const actions = {
-  async getActivities({ commit }) {
-    try {
-      commit('getActivitiesBegin');
-      commit('getActivitiesSuccess', response);
-    } catch (err) {
-      commit('getActivitiesErr', err);
-    }
-  },
-  
-  async fetchActivities({ commit }) {
+const actions = {  
+  async fetchActivities({ commit }, username) {
     try {
       commit('fetchActivitiesBegin');
-      const getActivities = await DataService.get('/api/activities');
+      const getActivities = await DataService.get(`/api/activities/${username}`);
       commit('fetchActivitiesSuccess', getActivities.data);
     } catch (err) {
       commit('fetchActivitiesErr', err);
     }
   },
 
-  
+  async deleteNotification({ commit }, NotiId) {
+    try {
+      commit('deleteNotificationBegin');
+      await DataService.delete(`/api/activity/${NotiId}`);
+      commit('deleteNotificationSuccess');
+    } catch (err) {
+      commit('deleteNotificationErr', err);
+    }
+  },
+
 };
 
 export default {

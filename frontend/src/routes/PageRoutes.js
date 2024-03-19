@@ -120,6 +120,11 @@ export default [
     component: () => import(/* webpackChunkName: "403" */ '@/view/pages/403.vue'),
   },
   {
+    name: 'serverError',
+    path: '/500',
+    component: () => import(/* webpackChunkName: "500" */ '@/view/pages/500.vue'),
+  },
+  {
     path: '/:catchAll(.*)',
     component: () => import(/* webpackChunkName: "404" */ '@/view/pages/404.vue'),
   },

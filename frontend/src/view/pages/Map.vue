@@ -26,7 +26,7 @@
     methods:{
         loadScript() {
             const script = document.createElement("script");
-            script.src="//dapi.kakao.com/v2/maps/sdk.js?appkey="+process.env.KAKAO_KEY
+            script.src="//dapi.kakao.com/v2/maps/sdk.js?appkey="+process.env.VUE_APP_KAKAO_KEY+"&autoload=false";
             script.onload = () => window.kakao.maps.load(this.loadMap); 
 
             document.head.appendChild(script);

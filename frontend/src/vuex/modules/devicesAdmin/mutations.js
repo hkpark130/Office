@@ -10,4 +10,15 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  downloadAvailableDeviceListBegin(state) {
+    state.loading = true;
+  },
+  downloadAvailableDeviceListSuccess(state) {
+    state.loading = false;
+  },
+  downloadAvailableDeviceListErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

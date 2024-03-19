@@ -21,6 +21,9 @@ public class Users extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "username")
     private String username;
 
@@ -32,10 +35,9 @@ public class Users extends BaseTimeEntity implements UserDetails {
     private Departments departmentId;
 
     @Builder
-    public Users(Long id, String username, String auth, Departments departmentId) {
-        this.id = id;
+    public Users(String username, String email, Departments departmentId) {
         this.username = username;
-        this.auth = auth;
+        this.email = email;
         this.departmentId = departmentId;
     }
 

@@ -1,12 +1,14 @@
 package kr.co.direa.office.controller;
 
-import kr.co.direa.office.domain.Notifications;
 import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.NotificationsService;
 import kr.co.direa.office.service.TagsService;
+import kr.co.direa.office.util.DecryptRunner;
+import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,19 +25,22 @@ public class ApprovalController {
     private final ApprovalDevicesService approvalDevicesService;
     private final NotificationsService notificationsService;
     private final TagsService tagsService;
+    @Value("${constants.admin}") private String admin;
 
     @PostMapping(value = "/device-application")
     ResponseEntity<?> deviceApplication(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        approvalDevicesService.convertNotificationFromApproval(
+                notificationDto, approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+admin,
+                notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
                 "success"
@@ -44,17 +49,19 @@ public class ApprovalController {
 
     @PostMapping(value = "/device-return")
     ResponseEntity<?> deviceReturn(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
         tagsService.updateByDeviceId(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        approvalDevicesService.convertNotificationFromApproval(
+                notificationDto, approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+admin,
+                notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
                 "success"
@@ -63,16 +70,18 @@ public class ApprovalController {
 
     @PostMapping(value = "/device-dispose")
     ResponseEntity<?> deviceDispose(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        approvalDevicesService.convertNotificationFromApproval(
+                notificationDto, approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+admin,
+                notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
                 "success"
@@ -81,16 +90,18 @@ public class ApprovalController {
 
     @PostMapping(value = "/device-purchase")
     ResponseEntity<?> devicePurchase(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequestWithOutDeviceId(request);
-        approvalDevicesService.save(approvalDeviceDto);
+        Long approvalId = approvalDevicesService.save(approvalDeviceDto);
 
         NotificationDto notificationDto = new NotificationDto();
-        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
+        approvalDevicesService.convertNotificationFromApproval(
+                notificationDto, approvalDeviceDto, approvalId, null);
 
         notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        notificationsService.sendNotification("/topic/"+admin,
+                notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
                 "success"
@@ -102,7 +113,7 @@ public class ApprovalController {
             @PathVariable String username
     ) {
         List<ApprovalDeviceDto> approvalDeviceDtoList;
-        if (ADMIN.equals(username)) {
+        if (admin.equals(username)) {
             approvalDeviceDtoList = approvalDevicesService.findAsAdmin();
         } else {
             approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
@@ -124,16 +135,19 @@ public class ApprovalController {
 
     @PostMapping(value = "/approval-device-finish")
     ResponseEntity<?> approvalDeviceFinish(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         approvalDevicesService.setApprovalInfoById(request, APPROVAL_COMPLETED);
 
         // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
-//        NotificationDto notificationDto = new NotificationDto();
-//        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
-//
-//        notificationsService.save(notificationDto);
-//        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        NotificationDto notificationDto = new NotificationDto();
+        approvalDevicesService.convertNotificationFromApproval(
+                notificationDto, approvalDeviceDto, approvalDeviceDto.getApprovalId(), APPROVAL_COMPLETED);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/"+notificationDto.getReceiver(),
+                notificationsService.findByUsername(notificationDto.getReceiver()));
 
         return ResponseEntity.ok(
                 "success"
@@ -142,16 +156,19 @@ public class ApprovalController {
 
     @PostMapping(value = "/approval-device-return")
     ResponseEntity<?> approvalDeviceReturn(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         approvalDevicesService.setApprovalInfoById(request, APPROVAL_REJECT);
 
         // TODO: 유저에게 반려 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
-//        NotificationDto notificationDto = new NotificationDto();
-//        notificationDto.convertNotificationFromApproval(approvalDeviceDto);
-//
-//        notificationsService.save(notificationDto);
-//        notificationsService.sendNotification("/topic/Admin", notificationsService.findAll());
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+        NotificationDto notificationDto = new NotificationDto();
+        approvalDevicesService.convertNotificationFromApproval(
+                notificationDto, approvalDeviceDto, approvalDeviceDto.getApprovalId(), APPROVAL_REJECT);
+
+        notificationsService.save(notificationDto);
+        notificationsService.sendNotification("/topic/"+notificationDto.getReceiver(),
+                notificationsService.findByUsername(notificationDto.getReceiver()));
 
         return ResponseEntity.ok(
                 "success"
@@ -160,7 +177,7 @@ public class ApprovalController {
 
     @PutMapping(value = "/approval-device-edit")
     ResponseEntity<?> approvalDeviceEdit(
-            @RequestBody Map<String, Object> request
+            @RequestBody DeviceApplicationVo request
     ) {
         approvalDevicesService.editReasonFromRequest(request);
 

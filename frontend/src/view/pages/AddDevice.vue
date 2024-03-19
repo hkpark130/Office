@@ -53,10 +53,11 @@
                                   name="projectName"
                                   initialValue=""
                                   label="프로젝트"
+                                  @click="() => openPopover()"
                                 >
                                   <sdPopover
                                     :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
-                                    v-model="visible"
+                                    :visible="popoverVisible"
                                     title="프로젝트 리스트"
                                     action="click"
                                   >
@@ -198,10 +199,16 @@
   import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
+  import { projectList } from '@/vuex/modules/projects/load-data';
 
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm },
+    data() {
+      const { dispatch } = useStore();
+      dispatch('fetchCategoryList');
+      dispatch('fetchProjectList');
+    },
     setup() {
       const submitValues = ref({});
       const formRef = ref();
@@ -209,12 +216,13 @@
       const { push, go } = useRouter();
       const checkFinished = ref(false);
       const projectTmp = ref();
+      const popoverVisible = ref(false);
 
       const categories = computed(() => state.caregoryList.data);
       const projects = computed(() => state.projectList.data);
 
-      const searchData = toRef(projects.value);
-      const filteredData = toRef(projects.value);
+      const searchData = toRef(projectList.data);
+      const filteredData = toRef(projectList.data);
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
@@ -243,7 +251,11 @@
 
       const onClickSearchList = (v) => {
         formState.projectName = v;
-        projectTmp.value = v;
+        popoverVisible.value = false; 
+      }
+
+      const openPopover = () => {
+        popoverVisible.value = true; 
       }
 
       watch(() => formState.id, (newId, oldId) => {
@@ -325,6 +337,8 @@
         onClickSearchList,
         projectTmp,
         handleCancel,
+        popoverVisible,
+        openPopover,
       };
     },
   });

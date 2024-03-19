@@ -6,10 +6,7 @@ import kr.co.direa.office.service.NotificationsService;
 import kr.co.direa.office.service.ProjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,12 +17,25 @@ import java.util.List;
 public class HistoryController {
     private final NotificationsService notificationsService;
 
-    @GetMapping(value = "/activities")
-    ResponseEntity<?> getActivitiess() {
-        List<NotificationDto> notificationDtoList = notificationsService.findAll();
+    @GetMapping(value = "/activities/{username}")
+    ResponseEntity<?> getActivitiess(
+            @PathVariable String username
+    ) {
+        List<NotificationDto> notificationDtoList = notificationsService.findByUsername(username);
 
         return ResponseEntity.ok(
                 notificationDtoList
+        );
+    }
+
+    @DeleteMapping(value = "/activity/{notiId}")
+    ResponseEntity<?> approvalDeviceCancel(
+            @PathVariable Long notiId
+    ) {
+        notificationsService.delete(notiId);
+
+        return ResponseEntity.ok(
+                "success"
         );
     }
 

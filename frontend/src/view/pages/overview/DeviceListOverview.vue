@@ -17,7 +17,7 @@
   <script>
   import { response } from './load-data';
   import { SocialMediaWrapper } from '../style';
-  import SocialMediaContent from '../../../components/social-media/overview.vue';
+  import SocialMediaContent from '@/components/social-media/overview.vue';
   import { defineComponent, onMounted } from 'vue';
   import { DataService } from '@/config/dataService/dataService';
 
@@ -28,7 +28,6 @@
       onMounted(async() => {
         await DataService.get('/api/devices').then(
           (v) => {
-            console.log(v.data);
             response.value = v.data;
           }
         );

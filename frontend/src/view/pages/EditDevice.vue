@@ -60,10 +60,11 @@
                                   name="projectName"
                                   initialValue=""
                                   label="프로젝트"
+                                  @click="() => openPopover()"
                                 >
                                   <sdPopover
                                     :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
-                                    v-model="visible"
+                                    :visible="popoverVisible"
                                     title="프로젝트 리스트"
                                     action="click"
                                   >
@@ -216,10 +217,17 @@
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   import dayjs from 'dayjs';
+  import { projectList } from '@/vuex/modules/projects/load-data';
 
   const AddProduct = defineComponent({
     name: "AddProduct",
     components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
+    data() {
+      const { dispatch } = useStore();
+      dispatch('fetchCategoryList');
+      dispatch('fetchDepartmentList');
+      dispatch('fetchProjectList');
+    },
     setup() {
       const submitValues = ref({});
       const formRef = ref();
@@ -227,13 +235,14 @@
       const { push, go } = useRouter();
       const projectTmp = ref();
       const searcgDeviceId = ref();
+      const popoverVisible = ref(false); 
 
       const categories = computed(() => state.caregoryList.data);
       const projects = computed(() => state.projectList.data);
       const departments = computed(() => state.departmentList.data);
 
-      const searchData = toRef(projects.value);
-      const filteredData = toRef(projects.value);
+      const searchData = toRef(projectList.data);
+      const filteredData = toRef(projectList.data);
       const getDeviceById = ref();
 
       const search = (e, searchDatas) => {
@@ -275,7 +284,11 @@
 
       const onClickSearchList = (v) => {
         formState.projectName = v;
-        projectTmp.value = v;
+        popoverVisible.value = false; 
+      }
+
+      const openPopover = () => {
+        popoverVisible.value = true; 
       }
 
       watch(() => getDeviceById.value, (newId, oldId) => {
@@ -332,6 +345,8 @@
         searcgDeviceId,
         departments,
         handleCancel,
+        popoverVisible,
+        openPopover,
       };
     },
   });

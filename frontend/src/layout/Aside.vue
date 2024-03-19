@@ -68,7 +68,7 @@
         <p class="sidebar-nav-title">Pages</p>
       </template>
 
-      <a-sub-menu key="admin">
+      <a-sub-menu key="admin" v-if="isAdmin">
         <template v-slot:title
           ><sdFeatherIcons type="key" /><span>관리자 메뉴</span></template
         >
@@ -118,13 +118,6 @@
           </a-menu-item>
         </a-sub-menu>
 
-        <a-menu-item @click="toggleCollapsed" key="Activity">
-          <router-link to="/activity">
-            <sdFeatherIcons type="book" />
-            <span> 신청 이력 </span>
-          </router-link>
-        </a-menu-item>
-
         <a-menu-item @click="toggleCollapsed" key="devicePosition">
           <router-link to="/maps">
             <sdFeatherIcons type="map-pin" />
@@ -138,10 +131,24 @@
           ><sdFeatherIcons type="user" /><span>마이 페이지</span></template
         >
         <a-menu-item @click="toggleCollapsed" key="team">
-          <router-link to="/user/myDevice"> 나의 장비 </router-link>
+          <router-link to="/user/myDevice"> 
+            <sdFeatherIcons type="airplay" />
+            <span>나의 장비 </span>
+          </router-link>
         </a-menu-item>
         <a-menu-item @click="toggleCollapsed" key="myList">
-          <router-link to="/user/myList"> 신청 내역 </router-link>
+          
+          <router-link to="/user/myList"> 
+            <sdFeatherIcons type="align-justify" />
+            <span> 신청 내역 </span>
+          </router-link>
+        </a-menu-item>
+
+        <a-menu-item @click="toggleCollapsed" key="Activity">
+          <router-link to="/activity">
+            <sdFeatherIcons type="book" />
+            <span> 알림 이력 </span>
+          </router-link>
         </a-menu-item>
       </a-sub-menu>
 
@@ -171,6 +178,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const { dispatch } = useStore();
     const darkMode = computed(() => store.state.themeLayout.data);
     const mode = ref("inline");
     const { events } = toRefs(props);
@@ -203,6 +211,11 @@ export default defineComponent({
       }
     );
 
+    const isAdmin = ref('');
+    dispatch('getUser').then(() => {
+      isAdmin.value = store.state.getUser.isAdmin;
+    });
+
     return {
       mode,
       ...toRefs(state),
@@ -214,6 +227,7 @@ export default defineComponent({
       modeChangeTopNav,
       modeChangeSideNav,
       versions,
+      isAdmin,
     };
   },
 });

@@ -22,4 +22,15 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  deleteNotificationBegin(state) {
+    state.loading = true;
+  },
+  deleteNotificationSuccess(state) {
+    state.loading = false;
+  },
+  deleteNotificationErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

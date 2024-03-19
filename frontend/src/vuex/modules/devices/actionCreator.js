@@ -1,20 +1,15 @@
 import mutations from './mutations';
 import { DataService } from '@/config/dataService/dataService';
-import { availableDeviceList } from './load-data';
-
-const originData = availableDeviceList.data;
-const response = availableDeviceList.data;
 
 const state = () => ({
-  data: response,
-  originData: originData,
+  data: null,
   loading: false,
   postDeviceApplicationLoading: false,
   error: null,
 });
 
 const actions = {
-  async deviceFilter({ commit }, { column, value }) {
+  async deviceFilter({ commit }, { column, value, response }) {
     try {
       commit('filterDeviceBegin');
       const data = response.filter((item) => {
@@ -26,21 +21,6 @@ const actions = {
       commit('filterDeviceSuccess', data);
     } catch (err) {
       commit('filterDeviceErr', err);
-    }
-  },
-
-  async deviceAdminFilter({ commit }, { column, value }) {
-    try {
-      commit('filterDeviceAdminBegin');
-      const data = response.filter((item) => {
-        if (value !== '') {
-          return item[column] === value;
-        }
-        return item;
-      });
-      commit('filterDeviceAdminSuccess', data);
-    } catch (err) {
-      commit('filterDeviceAdminErr', err);
     }
   },
 

@@ -1,16 +1,13 @@
 import mutations from './mutations';
-import { disposeDeviceListAdmin } from './load-data';
-
-const response = disposeDeviceListAdmin.data;
 
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
 const actions = {
-  async disposeDeviceFilter({ commit }, { column, value }) {
+  async disposeDeviceFilter({ commit }, { column, value, response }) {
     try {
       commit('filterDisposeDeviceBegin');
       const data = response.filter((item) => {
@@ -22,6 +19,18 @@ const actions = {
       commit('filterDisposeDeviceSuccess', data);
     } catch (err) {
       commit('filterDisposeDeviceErr', err);
+    }
+  },
+
+  async downloadDisposeDeviceList({ commit }) {
+    const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
+    try {
+      commit('downloadDisposeDeviceListBegin');
+      window.open(API_ENDPOINT+'/api/download-dispose-devicelist', '_blank');
+      commit('downloadDisposeDeviceListSuccess');
+      return;
+    } catch (err) {
+      commit('downloadDisposeDeviceListErr', err);
     }
   },
 };

@@ -5,18 +5,18 @@ INSERT INTO categories (name, img) values ('PC 본체', 'pc.png');
 
 INSERT INTO DEPARTMENTS (name, code) VALUES ('경영지원부', '0052');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('영업본부', '0049');
-INSERT INTO DEPARTMENTS (name, code) VALUES ('제품1팀(유지보수)', '0032');
+INSERT INTO DEPARTMENTS (name, code) VALUES ('제품1팀', '0032');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('제품1팀(그외)', '0021');
-INSERT INTO DEPARTMENTS (name, code) VALUES ('제품2팀(유지보수)', '0037');
+INSERT INTO DEPARTMENTS (name, code) VALUES ('제품2팀', '0037');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('제품2팀(그외)', '0108');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('제품3팀', '0109');
-INSERT INTO DEPARTMENTS (name, code) VALUES ('제품4팀(유지보수)', '0036');
+INSERT INTO DEPARTMENTS (name, code) VALUES ('제품4팀', '0036');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('제품4팀(그외)', '0024');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('기술영업/컨설팅', '0173');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('데이터플랫폼사업부', '0056');
 INSERT INTO DEPARTMENTS (name, code) VALUES ('SI사업부', '0054');
 
-insert into users (auth,department_id,username,id) values ('Admin',null,'test',1);
+insert into users (auth,department_id,username) values ('Admin',null,'test');
 
 INSERT INTO PROJECTS (name, code) VALUES ('본사','0001');
 INSERT INTO PROJECTS (name, code) VALUES ('신한은행 The Next-코어및디지털기반영역_전자금융','0011');
@@ -105,5 +105,3 @@ INSERT INTO APPROVAL_DEVICES (id, device_id, img, type) values (5, 'DIR-N-101', 
 
 INSERT INTO TAGS (name) values ('OS 설치 필요');
 INSERT INTO TAGS (name) values ('부팅 느림');
-
--- INSERT INTO DEVICE_TAG (tag_id, device_id) values (1, 'DIR-N-101');

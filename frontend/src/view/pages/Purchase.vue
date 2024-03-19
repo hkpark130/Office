@@ -90,10 +90,12 @@
                                   name="project"
                                   initialValue=""
                                   label="프로젝트"
+                                  @click="() => openPopover()"
                                 >
                                   <sdPopover
                                     :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
-                                    v-model="visible"
+                                    :visible="popoverVisible"
+                                    
                                     title="프로젝트 리스트"
                                     action="click"
                                   >
@@ -175,6 +177,7 @@
   import { toRef, ref, reactive, defineComponent, computed } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
+  import { projectList } from '@/vuex/modules/projects/load-data';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -188,13 +191,22 @@
       const projectTmp = ref();
 
       const { push, go } = useRouter();
+      const popoverVisible = ref(false); 
+
+      dispatch('fetchCategoryList');
+      dispatch('fetchDepartmentList');
+      dispatch('fetchProjectList');
+      dispatch('getUser');
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
-      const projects = computed(() => state.projectList.data);
-      const getUser = computed(() => state.getUser.data);
-
-      const searchData = toRef(projects.value);
-      const filteredData = toRef(projects.value);
+      const projects = ref(() => state.projectList.data);
+      // const getUser = computed(() => state.getUser.data);
+      const searchData = toRef(projectList.data);
+      const filteredData = toRef(projectList.data);
+      const username = ref('');
+      dispatch('getUser').then(() => {
+          username.value = state.getUser.data.name;
+      });
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
@@ -208,7 +220,7 @@
         price: 0,
         project: "본사",
         purpose: "개발",
-        userName: getUser.value.name,
+        userName: username,
         reason: "",
         deadline: "",
         type: "구매",
@@ -223,18 +235,29 @@
       const onClickSearchList = (v) => {
         formState.project = v;
         projectTmp.value = v;
+        popoverVisible.value = false; 
       }
 
-      const handleFinish = () => {
-        const reason = formState.reason;
-        formState.reason = "품목: "+formState.category+"\n";
-        formState.reason += "비용: "+formState.price+"\n";
-        formState.reason += "용도: "+formState.purpose+"\n";
-        formState.reason += "사유: "+reason;
+      const openPopover = () => {
+        popoverVisible.value = true; 
+      }
 
-        dispatch('submitDevicePurchasePost', formState);
-        alert('구매 신청이 완료되었습니다.');
-        push('/');
+      const handleFinish = async () => {
+        try {
+          await formRef.value.validate();
+          const reason = formState.reason;
+          formState.reason = "품목: "+formState.category+"\n";
+          formState.reason += "비용: "+formState.price+"\n";
+          formState.reason += "용도: "+formState.purpose+"\n";
+          formState.reason += "사유: "+reason;
+
+          dispatch('submitDevicePurchasePost', formState).then(() => {
+            alert('구매 신청이 완료되었습니다.');
+            push('/');
+          });
+        } catch (error) {
+          console.error(error);
+        }
       };
   
       const handleFinishFailed = (errors) => {
@@ -263,6 +286,8 @@
         onClickSearchList,
         projectTmp,
         handleCancel,
+        popoverVisible,
+        openPopover,
       };
     },
   });

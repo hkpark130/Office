@@ -6,6 +6,7 @@ import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.repository.DevicesRepository;
+import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,11 +120,11 @@ public class DevicesService {
         );
     }
 
-    public void editDescription(Map<String, Object> request) {
-        Devices device = devicesRepository.findById(request.get("id").toString())
+    public void editDescription(DeviceApplicationVo request) {
+        Devices device = devicesRepository.findById(request.getDeviceId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
-                        "해당 기기가 없습니다. deviceId=" + request.get("id")));
-        device.setDescription(request.get("description").toString());
+                        "해당 기기가 없습니다. deviceId=" + request.getDeviceId()));
+        device.setDescription(request.getDescription());
         devicesRepository.save(device);
     }
 }

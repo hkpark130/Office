@@ -10,4 +10,16 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  fetchDepartmentListBegin(state) {
+    state.loading = true;
+  },
+  fetchDepartmentListSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  fetchDepartmentListErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

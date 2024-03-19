@@ -31,7 +31,11 @@
               </a-col>
               <a-col :xxl="4" :xs="24">
                 <div class="table-toolbox-actions">
-                  <sdButton size="small" type="secondary" transparented> Export </sdButton>
+                  <sdButton size="small" type="secondary" @click="downloadCSV"> 
+                    <sdFeatherIcons type="file" size="12" />
+                    <span>Export</span>
+                  </sdButton>
+
                   <router-link :to="`/add-device`">
                     <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
                     장비등록
@@ -63,6 +67,7 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { deviceListAdmin } from './getDeviceListAdmin';
 
 const sortWithNullCheck = (aValue, bValue) => {
     // Null 값을 제일 뒤로 둘거임
@@ -218,7 +223,9 @@ const Orders = defineComponent({
   components: { TopToolBox, Main, TableWrapper },
 
   setup() {
+    const response = deviceListAdmin.data;
     const { state, dispatch } = useStore();
+    state.devicesAdmin.data = response;
     const deviceId = ref(null);
     const searchData = computed(() => state.headerSearchData);
     const orders = computed(() => state.devicesAdmin.data);
@@ -233,14 +240,14 @@ const Orders = defineComponent({
     });
 
     const handleChangeForFilter = (e) => {
-      dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value });
+      dispatch('deviceAdminFilter', { column: filterKey.value, value: e.target.value, response: response });
     };
 
     const adminReturnDevice = (approvalId) => {
       dispatch('adminReturnDevice', approvalId)
         .then(() => {
-          location.reload();
           alert('반납 처리되었습니다.');
+          location.reload();
         }
       );
     };
@@ -248,8 +255,8 @@ const Orders = defineComponent({
     const adminDisposeDevice = (deviceId) => {
       dispatch('adminDisposeDevice', deviceId)
         .then(() => {
-          location.reload();
           alert('폐기 처리되었습니다.');
+          location.reload();
         }
       );
     };
@@ -348,6 +355,10 @@ const Orders = defineComponent({
       filterKey.value = selectedItems;
       filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
     };
+
+    const downloadCSV = () => {
+      dispatch("downloadAvailableDeviceList");
+    };
     
     return {
       deviceId,
@@ -362,6 +373,7 @@ const Orders = defineComponent({
       columns,
       orders,
       stateValue,
+      downloadCSV,
     };
   },
 });

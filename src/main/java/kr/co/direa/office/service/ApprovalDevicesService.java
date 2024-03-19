@@ -3,14 +3,17 @@ package kr.co.direa.office.service;
 import kr.co.direa.office.domain.*;
 import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.DeviceDto;
+import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
 import kr.co.direa.office.repository.ApprovalDevicesRepository;
 import kr.co.direa.office.repository.DevicesRepository;
 import kr.co.direa.office.repository.NotificationsRepository;
 import kr.co.direa.office.repository.UsersRepository;
+import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +32,7 @@ public class ApprovalDevicesService {
     private final UsersRepository usersRepository;
     private final UsersService usersService;
     private final TagsService tagsService;
+    @Value("${constants.admin}") private String admin;
 
     @Autowired
     public ApprovalDevicesService(NotificationsRepository notificationsRepository,
@@ -53,15 +57,16 @@ public class ApprovalDevicesService {
                 .collect(Collectors.toList());
     }
 
-    public void save(ApprovalDeviceDto requestDto) {
-        approvalDevicesRepository.save(requestDto.toEntity());
+    public Long save(ApprovalDeviceDto requestDto) {
+        ApprovalDevices approvalDevices = approvalDevicesRepository.save(requestDto.toEntity());
+        return approvalDevices.getId();
     }
 
-    public void setApprovalInfoById(Map<String, Object> request, String approvalInfo) {
-        Boolean isUsable = (request.get("isUsable") != null)?Boolean.valueOf(request.get("isUsable").toString()):null;
-        Long id = Long.valueOf(request.get("approvalId").toString());
-        String approvalType = request.get("type").toString();
-        Users user = usersService.findByUsername(request.get("userName").toString()).orElse(null);
+    public void setApprovalInfoById(DeviceApplicationVo request, String approvalInfo) {
+        Boolean isUsable = (request.getIsUsable() != null)?request.getIsUsable():null;
+        Long id = request.getApprovalId();
+        String approvalType = request.getType();
+        Users user = usersService.findByUsername(request.getUserName()).orElse(null);
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
@@ -73,11 +78,12 @@ public class ApprovalDevicesService {
         }
 
         approvalDevices.setApprovalInfo(approvalInfo);
+
 //        TODO: 누가 승인했는지 Approver 설성해줘야 함
-//        Users admin = usersRepository.findByUsername(ADMIN)
-//                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-//                        "해당 유저가 없습니다. username=admin"));
- //     -----------------------------------------------------------------
+        Users adminObj = usersRepository.findByUsername(admin)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=admin"));
+        approvalDevices.setApproverId(adminObj);
 //        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        String username = user.getUsername()??;
 //        Users approver = usersService.findByUsername(username);
@@ -110,46 +116,94 @@ public class ApprovalDevicesService {
         }
     }
 
-    public ApprovalDeviceDto convertFromRequest(Map<String, Object> request) {
-        Devices device = devicesRepository.findById(request.get("deviceId").toString())
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
-                        "해당 기기가 없습니다. deviceId=" + request.get("deviceId")));
-        Users user = usersRepository.findByUsername(request.get("userName").toString())
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username=" + request.get("userName")));
-        String realUser = (request.get("realUser") != null)?request.get("realUser").toString():null;
+    public NotificationDto convertNotificationFromApproval(NotificationDto notificationDto,
+                   ApprovalDeviceDto approvalDeviceDto, Long approvalId, String approvalInfo) {
+        notificationDto.setUserName(approvalDeviceDto.getUserId().getUsername());
+        notificationDto.setType(approvalDeviceDto.getType());
+        notificationDto.setReceiver(notificationDto.getUserName());
+        notificationDto.setLink("/detail-approval-device/"+approvalId);
 
-        device.setIsUsable(Boolean.valueOf(request.get("isUsable").toString()));
-        device.setStatus((request.get("status")!=null)?request.get("status").toString():device.getStatus());
+        if (approvalInfo != null) {
+            switch (approvalInfo) {
+                case APPROVAL_COMPLETED:
+                    notificationDto.setSubject(
+                            approvalDeviceDto.getDeviceId() + "의 " +
+                                    notificationDto.getType() + " 신청이 승인되었습니다."
+                    );
+                    break;
+                case APPROVAL_REJECT:
+                    notificationDto.setSubject(
+                            approvalDeviceDto.getDeviceId() + "의 " +
+                                    notificationDto.getType() + " 신청이 반려되었습니다."
+                    );
+                    break;
+                default:
+                    notificationDto.setReceiver(admin);
+                    notificationDto.setSubject(
+                            approvalDeviceDto.getDeviceId() + "의 " +
+                                    notificationDto.getType() + " 신청에 대한 " +
+                                    notificationDto.getUserName() + " 님의 승인 요청이 있습니다."
+                    );
+                    notificationDto.setLink("/check-approval-device/"+approvalId);
+                    break;
+            }
+        } else {
+            notificationDto.setReceiver(admin);
+            notificationDto.setSubject(
+                    approvalDeviceDto.getDeviceId() + "의 " +
+                            notificationDto.getType() + " 신청에 대한 " +
+                            notificationDto.getUserName() + " 님의 승인 요청이 있습니다."
+            );
+            notificationDto.setLink("/check-approval-device/"+approvalId);
+        }
+        notificationDto.setDate(notificationDto.getFormattedCreatedDate(approvalDeviceDto.getCreatedDate()));
+        notificationDto.setIcon();
+
+        return notificationDto;
+    }
+
+    public ApprovalDeviceDto convertFromRequest(DeviceApplicationVo request) {
+        Devices device = devicesRepository.findById(request.getDeviceId())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + request.getDeviceId()));
+        Users user = usersRepository.findByUsername(request.getUserName())
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username=" + request.getUserName()));
+        String realUser = (request.getRealUser() != null)?request.getRealUser():null;
+
+        device.setIsUsable(request.getIsUsable());
+        device.setStatus((request.getStatus()!=null)?request.getStatus():device.getStatus());
         device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
+        approvalDeviceDto.setApprovalId((request.getApprovalId()!=null)?
+                request.getApprovalId():null);
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
-        approvalDeviceDto.setReason(request.get("reason").toString());
+        approvalDeviceDto.setReason(request.getReason());
         approvalDeviceDto.setDeviceId(device.getId());
-        approvalDeviceDto.setType(request.get("type").toString());
+        approvalDeviceDto.setType(request.getType());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
         approvalDeviceDto.setDeadline(
-                (request.get("deadline") != null)?
-                ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime():null
+                (request.getDeadline() != null)?
+                        LocalDateTime.parse(request.getDeadline().toString().substring(0, 19)):null
         );
 
         return approvalDeviceDto;
     }
 
-    public ApprovalDeviceDto convertFromRequestWithOutDeviceId(Map<String, Object> request) {
-        Users user = usersRepository.findByUsername(request.get("userName").toString())
+    public ApprovalDeviceDto convertFromRequestWithOutDeviceId(DeviceApplicationVo request) {
+        Users user = usersRepository.findByUsername(request.getUserName())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username=" + request.get("userName")));
+                        "해당 유저가 없습니다. username=" + request.getUserName()));
 
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
         approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
-        approvalDeviceDto.setReason(request.get("reason").toString());
-        approvalDeviceDto.setType(request.get("type").toString());
+        approvalDeviceDto.setReason(request.getReason());
+        approvalDeviceDto.setType(request.getType());
         approvalDeviceDto.setCreatedDate(LocalDateTime.now());
         approvalDeviceDto.setDeadline(
-                ZonedDateTime.parse(request.get("deadline").toString()).toLocalDateTime()
+                LocalDateTime.parse(request.getDeadline().toString().substring(0, 19))
         );
 
         return approvalDeviceDto;
@@ -254,20 +308,20 @@ public class ApprovalDevicesService {
     }
 
     private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
-        Users admin = usersRepository.findByUsername(ADMIN)
+        Users adminObj = usersRepository.findByUsername(admin)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=admin"));
 
         if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
-            approvalDevices.setApproverId(admin);
+            approvalDevices.setApproverId(adminObj);
             approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
             approvalDevicesRepository.save(approvalDevices);
         }
 
         if (!type.equals(approvalDevices.getType())) {
             ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
-            approvalDeviceDto.setUserId(admin);
-            approvalDeviceDto.setApproverId(admin);
+            approvalDeviceDto.setUserId(adminObj);
+            approvalDeviceDto.setApproverId(adminObj);
             approvalDeviceDto.setType(type);
             approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
             approvalDeviceDto.setDeviceId(device.getId());
@@ -289,13 +343,13 @@ public class ApprovalDevicesService {
         approvalDevicesRepository.deleteById(approvalId);
     }
 
-    public void editReasonFromRequest(Map<String, Object> request) {
-        Long id = Long.valueOf(request.get("approvalId").toString());
+    public void editReasonFromRequest(DeviceApplicationVo request) {
+        Long id = request.getApprovalId();
         ApprovalDevices approvalDevices = approvalDevicesRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
                         "해당 신청 없음 approval_id=" + id));
 
-        approvalDevices.setReason(request.get("reason").toString());
+        approvalDevices.setReason(request.getReason());
         approvalDevicesRepository.save(approvalDevices);
     }
 }

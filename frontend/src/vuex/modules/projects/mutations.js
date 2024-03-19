@@ -10,4 +10,16 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  fetchProjectListBegin(state) {
+    state.loading = true;
+  },
+  fetchProjectListSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  fetchProjectListErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

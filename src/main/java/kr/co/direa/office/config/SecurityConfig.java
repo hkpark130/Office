@@ -1,9 +1,12 @@
 package kr.co.direa.office.config;
 
 import kr.co.direa.office.service.UsersService;
+import kr.co.direa.office.util.DecryptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +27,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,60 +40,67 @@ public class SecurityConfig {
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
     private final UsersService usersService;
+    @Value("${constants.frontend}") private String frontend;
 
     public SecurityConfig(UsersService usersService) {
         this.usersService = usersService;
     }
 
-    private
-    CorsConfigurationSource corsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("*"));
-            config.setAllowCredentials(true);
-            return config;
-        };
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
+
+        config.setAllowedOriginPatterns(List.of(frontend));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Origin", "X-Requested-With", "Content-Type", "Accept", "Key", "Authorization"));
+        config.setExposedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.oauth2Client(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable);
+//        http.oauth2Client(Customizer.withDefaults());
         http.oauth2Login(it -> it.tokenEndpoint(Customizer.withDefaults())
-                .userInfoEndpoint(Customizer.withDefaults())
+                .userInfoEndpoint(userInfo -> userInfo.userAuthoritiesMapper(userAuthoritiesMapper()))
+                .successHandler(loginSuccessHandler())
         );
 
-        http.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
-        http.cors(AbstractHttpConfigurer::disable);
-        http.csrf(AbstractHttpConfigurer::disable);
-
         http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
+                        auth
+                                .requestMatchers(
                                         new AntPathRequestMatcher("/login/**")
                                         , new AntPathRequestMatcher("/api/health")
                                         , new AntPathRequestMatcher("/oauth2/**")
                                         , new AntPathRequestMatcher("/logout/**")
                                         , new AntPathRequestMatcher("/h2-console/**")
+                                        , new AntPathRequestMatcher("/api/encrypt/**")
                                 ).permitAll()
                                 .requestMatchers(
-                                        new AntPathRequestMatcher("/api/test")
-                                        , new AntPathRequestMatcher("/test/admin/**")
+                                        new AntPathRequestMatcher("/api/dispose-devicelist-admin")
+                                        ,  new AntPathRequestMatcher("/api/add-device")
+                                        ,  new AntPathRequestMatcher("/api/edit-device")
+                                        ,  new AntPathRequestMatcher("/api/add-category")
+                                        ,  new AntPathRequestMatcher("/api/devicelist-admin")
+                                        ,  new AntPathRequestMatcher("/api/approval-device-finish")
+                                        ,  new AntPathRequestMatcher("/api/approval-device-return")
                                 ).hasAuthority("Admin")
-//                                .anyRequest().authenticated())
-                                .anyRequest().permitAll()) // 개발용
-                .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()));
+                                .anyRequest().authenticated())
+//                                .anyRequest().permitAll()) // 개발용
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
-        http.logout(logout -> logout.logoutSuccessHandler(logoutSuccessHandler()));
-        http.oauth2Login(
-                oauth2 -> oauth2.
-                        successHandler(loginSuccessHandler()).
-                        userInfoEndpoint(userInfo -> userInfo
-                                .userAuthoritiesMapper(userAuthoritiesMapper()))
-
-        );
+//        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
+        http.logout(logout -> logout
+                .deleteCookies("JSESSIONID", "loggedIn")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .logoutSuccessHandler(logoutSuccessHandler()));
 
         return http.build();
     }

@@ -22,4 +22,16 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  fetchCategoryListBegin(state) {
+    state.loading = true;
+  },
+  fetchCategoryListSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  fetchCategoryListErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

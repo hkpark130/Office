@@ -1,16 +1,13 @@
 import mutations from './mutations';
-import { deviceListAdmin } from './load-data';
-
-const response = deviceListAdmin.data;
 
 const state = () => ({
-  data: response,
+  data: null,
   loading: false,
   error: null,
 });
 
 const actions = {
-  async deviceAdminFilter({ commit }, { column, value }) {
+  async deviceAdminFilter({ commit }, { column, value, response }) {
     try {
       commit('filterDeviceAdminBegin');
       const data = response.filter((item) => {
@@ -22,6 +19,18 @@ const actions = {
       commit('filterDeviceAdminSuccess', data);
     } catch (err) {
       commit('filterDeviceAdminErr', err);
+    }
+  },
+
+  async downloadAvailableDeviceList({ commit }) {
+    const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
+    try {
+      commit('downloadAvailableDeviceListBegin');
+      window.open(API_ENDPOINT+'/api/download-available-devicelist', '_blank');
+      commit('downloadAvailableDeviceListSuccess');
+      return;
+    } catch (err) {
+      commit('downloadAvailableDeviceListErr', err);
     }
   },
 };
