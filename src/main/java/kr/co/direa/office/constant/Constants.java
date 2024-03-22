@@ -15,5 +15,8 @@ public class Constants {
     public static final String DISPOSE_TYPE = "폐기";
     public static final String APPROVAL_RETURN = "반납";
     public static final String APPROVAL_RENTAL = "대여";
+    public static final String COMMENT_TYPE = "댓글";
+    public static final String EDIT_TYPE = "수정";
+    public static final String PURCHASE_TYPE = "구매";
 
 }

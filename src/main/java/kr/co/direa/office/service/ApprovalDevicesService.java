@@ -82,7 +82,7 @@ public class ApprovalDevicesService {
 //        TODO: 누가 승인했는지 Approver 설성해줘야 함
         Users adminObj = usersRepository.findByUsername(admin)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username=admin"));
+                        "해당 유저가 없습니다. username="+admin));
         approvalDevices.setApproverId(adminObj);
 //        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        String username = user.getUsername()??;
@@ -310,7 +310,7 @@ public class ApprovalDevicesService {
     private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
         Users adminObj = usersRepository.findByUsername(admin)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username=admin"));
+                        "해당 유저가 없습니다. username="+admin));
 
         if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
             approvalDevices.setApproverId(adminObj);

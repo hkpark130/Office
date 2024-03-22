@@ -57,27 +57,27 @@ public class NotificationDto implements Serializable {
 
     public NotificationDto setIcon() {
         switch (this.type) {
-            case "대여":
+            case APPROVAL_RENTAL:
                 this.icon = "inbox";
                 this.iconClass = "primary";
                 break;
-            case "반납":
+            case APPROVAL_RETURN:
                 this.icon = "corner-down-left";
                 this.iconClass = "primary";
                 break;
-            case "폐기":
+            case DISPOSE_TYPE:
                 this.icon = "trash";
                 this.iconClass = "secondary";
                 break;
-            case "구매":
+            case PURCHASE_TYPE:
                 this.icon = "dollar-sign";
                 this.iconClass = "primary";
                 break;
-            case "수정":
+            case EDIT_TYPE:
                 this.icon = "edit";
                 this.iconClass = "success";
                 break;
-            case "댓글":
+            case COMMENT_TYPE:
                 this.icon = "message-square";
                 this.iconClass = "primary";
                 break;
