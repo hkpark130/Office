@@ -21,6 +21,7 @@ constants:
   frontend: ENC(nxYeWQCik3HWPj48RMmCQqui4Icd9a6V2hGzJ3P1Z+Q3iCsfJ/Cm8iGxcytYRTYWg3/OMVItTRNEWgbPF6caeg==)
   admin: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
+  admin-pw: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   realm: ENC(kbWdaszp7HSheIPFaLRmc0NBJLbEmCrnVWVQmNM7QcX057IeT3I3wDU7ufjNWnCX)
 
 # keycloak
@@ -78,6 +79,7 @@ constants:
   frontend: ENC(Z1An8Md7xBH929+x412M2wLdnfQyYQWb7+Wv+cCcsNn5fFQOxw2tQnMLepuVzS5Mw4nC44ijm6rCjslaqb1nPQ==)
   admin: ENC(0mMXBHi59yaWXWRLtiIXGZif4zwsf+futDzetVwJFnX3hxhhZtQZ44QDkI2gku/U)
   admin-id: ENC(3mRJGuDfvxET2n5ICtiA4eLRcLwwXweOzaiykNc0aqOe80Q7BMcSkWpF62HEsL8sIVPjOmbTYz7QEm2+/rVjXK7PGZWydMvBIbw/3otn5Pw=)
+  admin-pw: ENC(PLQ+PdMv/lbWmyrFhmyd7ubt7bINwvyVjDGMGV+Xsy16CqnZyl+9/HSAhgbNS2j5)
   realm: ENC(rW4Ij4d66yAHbzdxzQnWAcPib/iNmYJloRByJHiG0Qqm0bNDbjNzp5LrSdzvL7QG)
 
 spring:
@@ -107,7 +109,7 @@ spring:
             scope: openid,offline_access,profile
             authorization-grant-type: authorization_code
   datasource:
-    url: ENC(d7rl62HP5wB4OokgkJ9KYFZhV/Ny8ceSs9ZoT94GxuMCwZcpSjpdJQJh5h9LXYb8LDgiPf3ZlhAkF+QasctgAAKYK/Th45/CbUwEN9MFgW9joKOkbnAQwkgi4F7cuLTQAj7Ai+UFupUxt41SBSs8BQ==)
+    url: ENC(m4NvP8vZdtRazN5Uq9QsBODtb09sOlfdXw9v+KbN/y/uLbIb2E6BrTJs1HEDOq6ZcU0Oj4AAIj3RkM1qGczUAxFhnjJLI9X3ofbIdZol6EEQTkD2qLbyz7/3KcEgGxgB0yuN5gLnfCUJqIQN1BIPPg==)
     driverClassName: org.mariadb.jdbc.Driver
     username: ENC(xfQIN2JCVUy9YElSP3OhPV8bkt7aP5u07nWszkIaGlOxeFNaBgIhEuclZua3YghAstbc172vvS3/gW/veb+IPQ==)
     password: ENC(rx4GEztWRP1GFSjFdeJOOftRy7IE5z+vI0qB77mgiz1Qma+CsIb9NdnkB+TtFRO5Naknbk4IlZBC5vObDcDFfg==)
@@ -116,5 +118,7 @@ spring:
       mode: never
   jpa:
     defer-datasource-initialization: true
+#    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDB103Dialect

@@ -40,6 +40,7 @@
               :dataSource="dataSource"
               :columns="columns"
               :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              style="white-space: pre-line;"
             />
           </TableWrapper>
         </a-col>
@@ -74,6 +75,7 @@ import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, reactive } from 'vue';
 import { useStore } from 'vuex';
+import { getMyDevice } from './getMyDevice';
 
 const sortWithNullCheck = (aValue, bValue) => {
   // Null 값을 제일 뒤로 둘거임
@@ -174,23 +176,26 @@ const Orders = defineComponent({
   name: 'Orders',
   components: { TopToolBox, Main, TableWrapper },
 
-  async setup() {
+  setup() {
     const { state, dispatch } = useStore();
     const deviceId = ref(null);
-    await dispatch('getUser');
-    const getUser = computed(() => state.getUser.data);
-    const searchData = computed(() => state.headerSearchData);
-
+    const username = ref('');
+    dispatch('getUser').then(() => {
+        username.value = state.getUser.data.name;
+        dispatch('getMyDevices', username.value);
+    });
+    state.myDevice.data = getMyDevice.data;
+    // const getUser = computed(() => state.getUser.data);
     const orders = computed(() => state.myDevice.data);
     const item = computed(() => state.myDevice.data);
+    const searchData = computed(() => state.headerSearchData);
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
-    await dispatch('getMyDevices', getUser.value.name);
-    const fetchData = async () => {
-      await dispatch('getUser').then(() => {
-        dispatch('getMyDevices', state.getUser.data.name);
+    const fetchData = () => {
+      dispatch('getUser').then(() => {
+        dispatch('getMyDevices', username.value);
         onSorting('categoryName');
       });
     };
@@ -198,7 +203,7 @@ const Orders = defineComponent({
     fetchData();
 
     const handleChangeForFilter = (e) => {
-      dispatch('myDeviceFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
+      dispatch('myDeviceFilter', { column: filterKey.value, value: e.target.value, name: username.value });
     };
 
     const editMyDevice = () => {

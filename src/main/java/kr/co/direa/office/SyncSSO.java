@@ -19,7 +19,8 @@ import com.opencsv.CSVReader;
 @Slf4j
 public class SyncSSO {
     public static void main(String[] args) { // CSV 파일로 동기화 (CSV -> Keycloak)
-        String token = Keycloak.getAdminAccessToken(System.getenv("KEYCLOAK_URL"), System.getenv("ADMIN"), System.getenv("REALM"));
+        String token = Keycloak.getAdminAccessToken(System.getenv("KEYCLOAK_URL"),
+                System.getenv("ADMIN"), System.getenv("REALM"), System.getenv("ADMIN_PW"));
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders requestHeader = new HttpHeaders();
@@ -36,6 +37,7 @@ public class SyncSSO {
             while ((lineInArray = reader.readNext()) != null) {
                 Map<String, Object> userMap = new HashMap<>();
                 String username = lineInArray[1];
+                String employeeNum = (!"".equals(lineInArray[5]))?lineInArray[5]:"direa";
                 userMap.put("enabled", true);
                 userMap.put("emailVerified", true);
                 userMap.put("email", lineInArray[0]+"@direa.co.kr");
@@ -45,10 +47,10 @@ public class SyncSSO {
                     put("department", new String[]{departmentName});
                 }});
 
-//                userMap.put("groups", new String[]{"user"});
+                userMap.put("groups", new String[]{"User"});
                 userMap.put("credentials", new Object[]{new HashMap<String, Object>() {{
                     put("type", "password");
-                    put("value", username);
+                    put("value", employeeNum);
                     put("temporary", false);
                 }}});
 

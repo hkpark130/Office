@@ -246,6 +246,7 @@
         spec: "",
         purchaseDate: "",
         isUsable: true,
+        username: "",
         layout: "vertical",
       });
 

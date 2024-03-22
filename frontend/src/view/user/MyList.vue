@@ -40,6 +40,7 @@
               :columns="columns"
               :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
               :rowClassName="(record) => record.level ? 'urgent-row' : ''"
+              style="white-space: pre-line;"
             />
           </TableWrapper>
         </a-col>
@@ -55,6 +56,7 @@ import { computed, reactive, ref, defineComponent } from 'vue';
 import { useStore } from 'vuex';
 import Tag from '@/components/tags/Tag';
 import { useRouter } from 'vue-router';
+import { getMyList } from './getMyList';
 
 const sortWithNullCheck = (aValue, bValue) => {
   // Null 값을 제일 뒤로 둘거임
@@ -165,10 +167,15 @@ const Orders = defineComponent({
     const deviceId = ref(1);
     const searchData = computed(() => state.headerSearchData);
     const { push } = useRouter();
+    state.myList.data = getMyList.data;
 
-    const getUser = computed(() => state.getUser.data);
+    // const getUser = computed(() => state.getUser.data);
+    const username = ref('');
+      dispatch('getUser').then(() => {
+          username.value = state.getUser.data.name;
+      });
     await dispatch('getUser');
-    await dispatch('getMyApproval', getUser.value.name);
+    await dispatch('getMyApproval', username.value);
 
     const orders = computed(() => state.myList.data);
     const item = computed(() => state.myList.data);
@@ -183,7 +190,7 @@ const Orders = defineComponent({
     const filterVal = ref([]);
 
     const fetchData = async () => {
-      await dispatch('getMyApproval', getUser.value.name);
+      await dispatch('getMyApproval', username.value);
       onSorting('categoryName');
     };
 
@@ -191,7 +198,7 @@ const Orders = defineComponent({
 
 
     const handleChangeForFilter = (e) => {
-      dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: getUser.value.name });
+      dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: username.value });
     };
 
     const checkApproval = (approvalId) => {

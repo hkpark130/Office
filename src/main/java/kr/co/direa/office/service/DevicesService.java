@@ -78,6 +78,7 @@ public class DevicesService {
         requestDto.setProjectId(projectsService.findByName(requestDto.getProjectName()));
         requestDto.setCategoryId(categoriesService.findByName(requestDto.getCategoryName()));
         requestDto.setManageDep(departmentsService.findByName(requestDto.getManageDepName()));
+        requestDto.setUserId(usersService.findByUsername(requestDto.getUsername()).orElse(null));
         devicesRepository.save(requestDto.toEntity());
     }
 

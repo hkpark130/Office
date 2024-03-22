@@ -11,23 +11,23 @@ import java.util.List;
 import static kr.co.direa.office.constant.Constants.*;
 
 public interface ApprovalDevicesRepository extends JpaRepository<ApprovalDevices, Long> {
-    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
-            "WHERE TYPE IN ('"+DISPOSE_TYPE+"', '"+APPROVAL_RENTAL+"') AND APPROVAL_INFO = '"+APPROVAL_COMPLETED+
-            "' AND DEVICE_ID = :deviceId", nativeQuery = true)
+    @Query(value = "SELECT * FROM approvals a JOIN approval_devices ad ON a.id = ad.id " +
+            "WHERE type IN ('"+DISPOSE_TYPE+"', '"+APPROVAL_RENTAL+"') AND approval_info = '"+APPROVAL_COMPLETED+
+            "' AND device_id = :deviceId", nativeQuery = true)
     List<ApprovalDevices> findHistoryByDeviceId(@Param("deviceId") String deviceId);
 
-    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
-            "WHERE TYPE = '"+APPROVAL_RENTAL+"' AND APPROVAL_INFO = '"+APPROVAL_COMPLETED+
-            "' AND DEVICE_ID = :deviceId", nativeQuery = true)
+    @Query(value = "SELECT * FROM approvals a JOIN approval_devices ad ON a.id = ad.id " +
+            "WHERE type = '"+APPROVAL_RENTAL+"' AND approval_info = '"+APPROVAL_COMPLETED+
+            "' AND device_id = :deviceId", nativeQuery = true)
     List<ApprovalDevices> findHistoryExceptDisposeByDeviceId(@Param("deviceId") String deviceId);
 
-    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
-            "WHERE USER_ID = :userId ORDER BY CASE WHEN a.APPROVAL_INFO = '" + APPROVAL_WAITING +
-            "' THEN 0 ELSE 1 END, CREATED_DATE DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM approvals a JOIN approval_devices ad ON a.id = ad.id " +
+            "WHERE user_id = :userId ORDER BY CASE WHEN a.approval_info = '" + APPROVAL_WAITING +
+            "' THEN 0 ELSE 1 END, created_date DESC", nativeQuery = true)
     List<ApprovalDevices> findByUserId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT * FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
-            "ORDER BY CASE WHEN a.APPROVAL_INFO = '" + APPROVAL_WAITING + "' THEN 0 ELSE 1 END, CREATED_DATE DESC"
+    @Query(value = "SELECT * FROM approvals a JOIN approval_devices ad ON a.id = ad.id " +
+            "ORDER BY CASE WHEN a.approval_info = '" + APPROVAL_WAITING + "' THEN 0 ELSE 1 END, created_date DESC"
             , nativeQuery = true)
     List<ApprovalDevices> findAsAdmin();
 

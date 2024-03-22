@@ -19,7 +19,7 @@ public interface DevicesRepository extends JpaRepository<Devices, String> {
             "FROM devices d " +
             "WHERE d.id IN (" +
             "    SELECT ad.device_id " +
-            "    FROM APPROVALS a JOIN APPROVAL_DEVICES ad ON a.id = ad.id " +
+            "    FROM approvals a JOIN approval_devices ad ON a.id = ad.id " +
             "    WHERE d.user_id = :userId AND (ad.type = '"+APPROVAL_RENTAL+
             "' AND a.approval_info = '"+APPROVAL_COMPLETED+"')" +
             ")", nativeQuery = true)
