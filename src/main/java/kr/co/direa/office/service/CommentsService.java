@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static kr.co.direa.office.constant.Constants.COMMENT_TYPE;
+
 @Service
 @RequiredArgsConstructor
 public class CommentsService {
@@ -75,7 +77,7 @@ public class CommentsService {
 
     public void convertNotificationFromComment(NotificationDto notificationDto, CommentDto commentDto) {
         notificationDto.setUserName(commentDto.getUserId().getUsername());
-        notificationDto.setType("댓글");
+        notificationDto.setType(COMMENT_TYPE);
         notificationDto.setReceiver((admin.equals(notificationDto.getUserName()))?commentDto.getApplicant():admin);
 
         notificationDto.setSubject(

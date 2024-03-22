@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 public class Keycloak {
-    public static String getAdminAccessToken(String keycloakUrl, String admin, String realm) {
+    public static String getAdminAccessToken(String keycloakUrl, String admin, String realm, String password) {
         try {
             String tokenUrl = keycloakUrl + "/realms/"+realm+"/protocol/openid-connect/token";
 
@@ -24,7 +24,7 @@ public class Keycloak {
             requestBody.add("grant_type", "password");
             requestBody.add("client_id", "admin-cli");
             requestBody.add("username", admin);
-            requestBody.add("password", "test");
+            requestBody.add("password", password);
 
             HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(requestBody, requestHeader);
             ResponseEntity<Map> tokenResponse = restTemplate.exchange(tokenUrl, HttpMethod.POST, tokenRequest, Map.class);

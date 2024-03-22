@@ -55,6 +55,7 @@
               :dataSource="dataSource"
               :columns="columns"
               :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              style="white-space: pre-line;"
             />
           </TableWrapper>
         </a-col>

@@ -31,14 +31,10 @@
               </a-col>
               <a-col :xxl="4" :xs="24">
                 <div class="table-toolbox-actions">
-                  <router-link :to="{ 
-                      name: 'device-application', 
-                      params: { deviceId: `${deviceId}` }, 
-                    }">
-                    <sdButton size="small" type="primary"> <sdFeatherIcons type="plus" size="12" /> 
+                  <sdButton size="small" type="primary" @click="deviceApplication(deviceId)">
+                    <sdFeatherIcons type="plus" size="12" /> 
                     사용신청
-                    </sdButton>
-                  </router-link>
+                  </sdButton>
                 </div>
               </a-col>
             </a-row>
@@ -54,6 +50,7 @@
               :dataSource="dataSource"
               :columns="columns"
               :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              style="white-space: pre-line;"
             />
           </TableWrapper>
         </a-col>
@@ -159,6 +156,7 @@ const AvailableDevices = defineComponent({
   setup() {
     const response = availableDeviceList.data;
     const { state, dispatch } = useStore();
+    const { push } = useRouter();
     state.devices.data = response;
     const deviceId = ref(null);
     const filterKey = ref('categoryName');
@@ -251,10 +249,18 @@ const AvailableDevices = defineComponent({
       },
       getCheckboxProps: (record) => {
         return {
-            disabled: record.approvalType === '반납'
+            disabled: (record.approvalInfo === '승인대기' && record.approvalType === '반납')
         };
       },
       type: "radio", //기본값이 체크박스
+    };
+
+    const deviceApplication = (deviceId) => {
+      if (deviceId === null) {
+        alert('장비를 선택해 주세요.');
+        return;
+      }
+      push("/device-application/"+deviceId);
     };
 
       const onSorting = (selectedItems) => {
@@ -276,6 +282,7 @@ const AvailableDevices = defineComponent({
         filterColumns,
         orders,
         stateValue,
+        deviceApplication,
       };
     },
   });

@@ -10,6 +10,7 @@
                   :columns="formatKeys"
                   :dataSource="formatData"
                   :pagination="false"
+                  style="white-space: pre-line;"
                 />
               </div>
               <a-col :xxl="12" :md="16" :sm="24" :xs="24">
@@ -97,7 +98,7 @@
 
       const optionalColumns = [
         "manageDepName","projectName","purpose","purchaseDate",
-        "status", "spec","price","model","company","sn","description"
+        "status", "spec","price","model","company","sn","description", "username"
       ];
 
       const columns = requiredColumns.concat(optionalColumns);
@@ -287,6 +288,11 @@
           dataIndex: 'description',
           key: 'description',
         },
+        {
+          title: 'username',
+          dataIndex: 'username',
+          key: 'username',
+        },
       ];
 
       const formatState = computed(() => [{
@@ -303,13 +309,14 @@
         "sn": "ND6179NBK",
         "isUsable": "true",
         "purchaseDate": "2024-02-01",
-        "description": "부팅 느림"
+        "description": "부팅 느림",
+        "username": "박현경",
       }]);
 
       const formatData = computed(() =>
         formatState.value.map((value) => {
           const { id, categoryName, purpose, manageDepName, spec, price, model, description, 
-            projectName, sn, status, company, isUsable, purchaseDate } = value;
+            projectName, sn, status, company, isUsable, purchaseDate, username } = value;
           return {
             key: id,
             id: <span>{id}</span>,
@@ -326,6 +333,7 @@
             sn: <span>{sn}</span>,
             isUsable: <span>{isUsable}</span>,
             purchaseDate: <span>{purchaseDate}</span>,
+            username: <span>{username}</span>,
           };
         })
       );

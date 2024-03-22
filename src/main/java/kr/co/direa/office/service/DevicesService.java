@@ -2,14 +2,18 @@ package kr.co.direa.office.service;
 
 import jakarta.transaction.Transactional;
 import kr.co.direa.office.domain.*;
+import kr.co.direa.office.dto.ApprovalDeviceDto;
 import kr.co.direa.office.dto.DeviceDto;
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
+import kr.co.direa.office.repository.ApprovalDevicesRepository;
 import kr.co.direa.office.repository.DevicesRepository;
+import kr.co.direa.office.repository.UsersRepository;
 import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -23,11 +27,14 @@ import static kr.co.direa.office.constant.Constants.*;
 @RequiredArgsConstructor
 @Service
 public class DevicesService {
+    private final ApprovalDevicesRepository approvalDevicesRepository;
     private final DevicesRepository devicesRepository;
     private final ProjectsService projectsService;
     private final CategoriesService categoriesService;
     private final DepartmentsService departmentsService;
+    private final UsersRepository usersRepository;
     private final UsersService usersService;
+    @Value("${constants.admin}") private String admin;
     private static final Logger logger = LoggerFactory.getLogger(DevicesService.class);
 
 
@@ -78,7 +85,23 @@ public class DevicesService {
         requestDto.setProjectId(projectsService.findByName(requestDto.getProjectName()));
         requestDto.setCategoryId(categoriesService.findByName(requestDto.getCategoryName()));
         requestDto.setManageDep(departmentsService.findByName(requestDto.getManageDepName()));
+        Users user = usersService.findByUsername(requestDto.getUsername()).orElse(null);
+        requestDto.setUserId(user);
+        requestDto.setIsUsable(user == null);
         devicesRepository.save(requestDto.toEntity());
+        if (user != null) {
+            Users adminObj = usersRepository.findByUsername(admin)
+                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                            "해당 유저가 없습니다. username="+admin));
+            ApprovalDeviceDto approvalDevices = new ApprovalDeviceDto();
+            approvalDevices.setDeviceId(requestDto.getId());
+            approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDevices.setApproverId(adminObj);
+            approvalDevices.setType(APPROVAL_RENTAL);
+            approvalDevices.setUserId(user);
+            approvalDevicesRepository.save(approvalDevices.toEntity());
+        }
+
     }
 
     public List<DeviceDto> findByUsername(String username) {

@@ -25,6 +25,7 @@ public class UserDataScheduler {
     private final UsersService usersService;
     private final DepartmentsService departmentsService;
     @Value("${constants.admin-id}") private String adminId;
+    @Value("${constants.admin-pw}") private String adminPw;
     @Value("${constants.admin}") private String admin;
     @Value("${constants.keycloak-url}") private String keycloakUrl;
     @Value("${constants.realm}") private String realm;
@@ -42,7 +43,7 @@ public class UserDataScheduler {
             String url = keycloakUrl + "/admin/realms/"+realm+"/users";
             RestTemplate restTemplate = new RestTemplate();
 
-            String token = Keycloak.getAdminAccessToken(keycloakUrl, admin, realm);
+            String token = Keycloak.getAdminAccessToken(keycloakUrl, admin, realm, adminPw);
 
             HttpHeaders requestHeader = new HttpHeaders();
             requestHeader.setContentType(MediaType.APPLICATION_JSON);

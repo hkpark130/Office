@@ -35,6 +35,7 @@ JASYPT_KEY="tkdydwk09!@"
 KEYCLOAK_URL="http://192.168.0.46:8080"
 REALM="sso"
 ADMIN="admin"
+ADMIN_PW="tkdydwk09!@"
 #DB_USER="sa"
 #DB_PW="1"
 #DB_URL="jdbc:mariadb://192.168.0.46:3306/TEST"
@@ -42,7 +43,7 @@ EOF
 
 export $(grep -v '^#' .env | xargs)
 
-sudo mvn clean package
+~~sudo mvn clean package -P prod~~
 java -jar -Dspring.profiles.active=prod target/office-0.0.1-SNAPSHOT.jar
 
 ```
