@@ -18,11 +18,15 @@ jasypt:
 constants:
   keycloak-url: ENC(6UeJ0QC/B9zHz+T/wXKKWgXJ5/FYBK7xF/dWVCpNweN14MZNdJ9fXbDYax1nBwyWg8X1huwRtyE5IhPrn9V7SQ==)
   client-secret: ENC(qSvRXUFAk4C9Xtt/B1jEA0G7+0hvvhg1mdmeTAKTrAAOMrv1kGy3XGTuASCtksADAtj9/EUh3Lo9fEIKZV+hOuZEYOLKTKWYWVXTynEStSg=)
-  frontend: ENC(nxYeWQCik3HWPj48RMmCQqui4Icd9a6V2hGzJ3P1Z+Q3iCsfJ/Cm8iGxcytYRTYWg3/OMVItTRNEWgbPF6caeg==)
+  frontend: ENC(zV+QFwrWUwcKSWs0U+GgAlYMV81JTr4lsDvJQ1LcaByPaly6eXEQ6PNYIl9Kj90LY7SSF2cR8JyttOaF3xJPjQ==)
   admin: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
   admin-pw: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   realm: ENC(kbWdaszp7HSheIPFaLRmc0NBJLbEmCrnVWVQmNM7QcX057IeT3I3wDU7ufjNWnCX)
+
+logging:
+  level:
+    root: debug
 
 # keycloak
 spring:

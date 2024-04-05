@@ -250,7 +250,9 @@ const Orders = defineComponent({
           alert('반납 처리되었습니다.');
           location.reload();
         }
-      );
+      ).catch((error) => {
+          throw new Error("에러 발생: " + error);
+        }); 
     };
 
     const adminDisposeDevice = (deviceId) => {
@@ -259,7 +261,9 @@ const Orders = defineComponent({
           alert('폐기 처리되었습니다.');
           location.reload();
         }
-      );
+      ).catch((error) => {
+          throw new Error("에러 발생: " + error);
+        }); 
     };
 
     const dataSource = computed(() =>

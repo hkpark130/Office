@@ -187,9 +187,13 @@
         return true;
       }
   
-      const handleFinish = () => {
+      const handleFinish = async () => {
         for (const v of requsetData.value) {
-          dispatch('submitAddDevicePost', v);
+          await dispatch('submitAddDevicePost', v).then(() => {
+            console.log("HHH");
+          }).catch((error) => {
+            throw new Error("에러 발생: " + error);
+          });
         }
         alert('등록되었습니다.');
         push('/');

@@ -63,7 +63,7 @@ public class ApprovalDevicesService {
     }
 
     public void setApprovalInfoById(DeviceApplicationVo request, String approvalInfo) {
-        Boolean isUsable = (request.getIsUsable() != null)?request.getIsUsable():null;
+        Boolean isUsable = request.getIsUsable();
         Long id = request.getApprovalId();
         String approvalType = request.getType();
         Users user = usersService.findByUsername(request.getUserName()).orElse(null);
@@ -171,7 +171,7 @@ public class ApprovalDevicesService {
                         "해당 유저가 없습니다. username=" + request.getUserName()));
         String realUser = (request.getRealUser() != null)?request.getRealUser():null;
 
-        device.setIsUsable(request.getIsUsable());
+        device.setIsUsable((request.getIsUsable()!=null)?request.getIsUsable():device.getIsUsable());
         device.setStatus((request.getStatus()!=null)?request.getStatus():device.getStatus());
         device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();

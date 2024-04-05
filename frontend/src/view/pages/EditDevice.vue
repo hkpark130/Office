@@ -315,9 +315,13 @@
           return;
         }
         
-        dispatch('submitEditDevicePut', formState);
-        alert('등록되었습니다.');
-        push('/');
+        dispatch('submitEditDevicePut', formState).then(() => {
+          alert('수정되었습니다.');
+          push('/');
+        }).catch((error) => {
+          throw new Error("에러 발생: " + error);
+        }); 
+        
       };
   
       const handleFinishFailed = (errors) => {

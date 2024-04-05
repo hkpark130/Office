@@ -1,6 +1,7 @@
 package kr.co.direa.office.service;
 
 import kr.co.direa.office.domain.Projects;
+import kr.co.direa.office.domain.Users;
 import kr.co.direa.office.dto.CategoryDto;
 import kr.co.direa.office.dto.ProjectDto;
 import kr.co.direa.office.repository.CategoriesRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,5 +29,9 @@ public class ProjectsService {
 
     public Projects findByName(String projectName) {
         return projectsRepository.findByName(projectName);
+    }
+
+    public Projects findByCode(String projectCode) {
+        return projectsRepository.findByCode(projectCode);
     }
 }

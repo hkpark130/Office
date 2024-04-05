@@ -249,7 +249,9 @@ const AddProduct = defineComponent({
           value.value = '';
           location.reload();
         }
-      );
+      ).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      });
     };
 
     return {

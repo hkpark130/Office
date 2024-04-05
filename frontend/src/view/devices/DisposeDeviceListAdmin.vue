@@ -209,7 +209,9 @@ const Orders = defineComponent({
           alert('복구 처리되었습니다.');
           location.reload();
         }
-      );
+      ).catch((error) => {
+          throw new Error("에러 발생: " + error);
+        }); 
     };
 
     const dataSource = computed(() =>

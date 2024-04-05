@@ -217,7 +217,9 @@ const Orders = defineComponent({
       dispatch('approvalDeviceCancel', approvalId).then(() => {
         alert('취소되었습니다.');
         location.reload();
-      });
+      }).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      }); 
     };
 
     const onCancel = () => {

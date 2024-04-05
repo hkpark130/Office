@@ -2,6 +2,9 @@ import { theme } from './src/config/theme/themeVariables';
 const path = require('path')
 
 module.exports = {
+  devServer: {
+    allowedHosts: "all",
+  },
   publicPath:
     process.env.NODE_ENV === 'production'
       ? process.env.VUE_APP_SUB_ROUTE

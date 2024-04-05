@@ -20,7 +20,8 @@ public interface DevicesRepository extends JpaRepository<Devices, String> {
             "WHERE d.id IN (" +
             "    SELECT ad.device_id " +
             "    FROM approvals a JOIN approval_devices ad ON a.id = ad.id " +
-            "    WHERE d.user_id = :userId AND (ad.type = '"+APPROVAL_RENTAL+
+            "    WHERE d.user_id = :userId AND d.status <> '"+DISPOSE_TYPE +
+            "' AND (ad.type = '"+APPROVAL_RENTAL+
             "' AND a.approval_info = '"+APPROVAL_COMPLETED+"')" +
             ")", nativeQuery = true)
     List<Devices> findRentedDevicesByUserId(@Param("userId") Long userId);

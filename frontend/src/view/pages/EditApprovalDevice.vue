@@ -174,6 +174,8 @@ const AddProduct = defineComponent({
       dispatch('EditApprovalPut', formState).then(() => {
         alert('\'수정\'되었습니다.');
         location.reload();
+      }).catch((error) => {
+        throw new Error("에러 발생: " + error);
       }); 
     };
 
