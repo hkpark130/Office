@@ -89,7 +89,8 @@ public class DevicesService {
         requestDto.setProjectId(project);
         requestDto.setCategoryId(categoriesService.findByName(requestDto.getCategoryName()));
         requestDto.setManageDep(departmentsService.findByName(requestDto.getManageDepName()));
-        String username = (requestDto.getUsername() == null)?null:requestDto.getUsername();
+        String username = ("".equals(requestDto.getUsername()) || requestDto.getUsername()==null)?
+                null:requestDto.getUsername();
         Users user = usersService.findByUsername(username).orElse(null);
         requestDto.setUserId(user);
         requestDto.setIsUsable(!DISPOSE_TYPE.equals(requestDto.getStatus()) && username == null);

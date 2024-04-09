@@ -173,7 +173,7 @@
             continue;
 
           inputData.value = {};
-          const val = lines[row].split(',');
+          const val = lines[row].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
           for (const col in headers) {
             if (requiredColumns.includes(headers[col]) && val[col] === '') {
               throw new Error(row + " 라인에 " + requiredColumns[col] + " 값이 없습니다.");

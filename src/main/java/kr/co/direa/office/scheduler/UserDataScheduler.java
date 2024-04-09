@@ -37,8 +37,7 @@ public class UserDataScheduler {
         return null;
     }
 
-//    @Scheduled(cron = "0 0 1 * * *") // 매일 새벽 1시
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 1 * * *") // 매일 새벽 1시
     public void fetchAndSaveUserData() {
         try {
             String url = keycloakUrl + "/admin/realms/"+realm+"/users";
