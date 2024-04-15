@@ -89,7 +89,8 @@ client.interceptors.response.use(
     const originalRequest = error.config;
     if (response) {
       if (response.status === 500) {
-        window.location.href = '/500';
+        console.error(response.data);
+        window.location.href = '/500?msg='+response.data;
       } else if (response.status === 403) {
         window.location.href = '/403';
       }       

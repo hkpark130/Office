@@ -18,7 +18,7 @@ jasypt:
 constants:
   keycloak-url: ENC(6UeJ0QC/B9zHz+T/wXKKWgXJ5/FYBK7xF/dWVCpNweN14MZNdJ9fXbDYax1nBwyWg8X1huwRtyE5IhPrn9V7SQ==)
   client-secret: ENC(qSvRXUFAk4C9Xtt/B1jEA0G7+0hvvhg1mdmeTAKTrAAOMrv1kGy3XGTuASCtksADAtj9/EUh3Lo9fEIKZV+hOuZEYOLKTKWYWVXTynEStSg=)
-  frontend: ENC(GLprWa0fvoq7R3Vh1T3r07GzybY/aK7apcziAP1gLBvqSp4tzWfQDOUv/HlrAWBiJ9S08T5oCW7kjsBscDZmTA==)
+  frontend: ENC(eAB32rDdmeJvJfF9pOv+ODhXepi4RQ+NasoMCTvTOyeqpxRFdADRRjaO8LPCRs7D60CAqMwvqEippJiY+BWkow==)
   admin: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
   admin-pw: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)

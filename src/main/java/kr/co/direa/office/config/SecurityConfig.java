@@ -132,7 +132,9 @@ public class SecurityConfig {
                     OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
 
                     List<String> group = userInfo.getClaim("groups");
-                    group.forEach(it -> mappedAuthorities.add(new SimpleGrantedAuthority(it.replace("/", ""))));
+                    if (group != null) {
+                        group.forEach(it -> mappedAuthorities.add(new SimpleGrantedAuthority(it.replace("/", ""))));
+                    }
                 }
             });
 
