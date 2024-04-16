@@ -110,7 +110,7 @@ public class DevicesService {
             approvalDeviceDto.setType(DISPOSE_TYPE.equals(requestDto.getStatus()) ?
                     DISPOSE_TYPE : APPROVAL_RENTAL);
             approvalDeviceDto.setUserId(user);
-            approvalDeviceDto.setCreatedDate(null);
+//            approvalDeviceDto.setCreatedDate(null);
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         } else if (user != null) { // 기존 장비에 대한 대여 or 폐기 이력 남기기
             device.update(user, requestDto.getStatus(), requestDto.getIsUsable());
@@ -120,10 +120,17 @@ public class DevicesService {
             approvalDeviceDto.setType(DISPOSE_TYPE.equals(requestDto.getStatus()) ?
                     DISPOSE_TYPE : APPROVAL_RENTAL);
             approvalDeviceDto.setUserId(user);
-            approvalDeviceDto.setCreatedDate(null);
+//            approvalDeviceDto.setCreatedDate(null);
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
-        } else { // 중복
-            return;
+        } else if (username == null)  { // 기존 장비에 대한 반납
+            Users preUser = device.getUserId();
+            device.update(null, requestDto.getStatus(), true);
+            approvalDeviceDto.setDeviceId(requestDto.getId());
+            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDeviceDto.setApproverId(adminObj);
+            approvalDeviceDto.setType(APPROVAL_RETURN);
+            approvalDeviceDto.setUserId(preUser);
+            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         }
     }
 

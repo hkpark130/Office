@@ -85,7 +85,7 @@ export default defineComponent({
       // console.log(getUser.value.preferredUsername); TODO: 유저별로 구독하게 해야함
       // const groupName = getUser.value.attributes.groups[0].substring(1);
       
-      stompClient.subscribe('/topic/'+getUser.name, message =>
+      stompClient.subscribe(API_ENDPOINT+'/topic/'+getUser.name, message =>
         {
           notificationList.value = JSON.parse(message.body);
         }
