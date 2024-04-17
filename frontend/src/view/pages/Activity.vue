@@ -76,7 +76,7 @@ const ActivityContent = defineComponent({
                         location.reload();
                     }
                 );
-        };      
+        };
         
         onMounted(() => {
             dispatch('getUser').then(() => {

@@ -3,6 +3,9 @@ const path = require('path')
 
 module.exports = {
   devServer: {
+    // client: {
+    //   webSocketURL: 'ws://192.168.3.77:8080/ws',
+    // },
     allowedHosts: "all",
   },
   publicPath:
