@@ -21,5 +21,16 @@ export default {
       state.loading = false;
       state.error = err;
     },
+
+    deleteCommentBegin(state) {
+      state.loading = true;
+    },
+    deleteCommentSuccess(state) {
+      state.loading = false;
+    },
+    deleteCommentErr(state, err) {
+      state.loading = false;
+      state.error = err;
+    },
   };
   

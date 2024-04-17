@@ -118,9 +118,13 @@ public class Devices extends BaseTimeEntity{
         this.purchaseDate = purchaseDate;
     }
 
-    public void update(Users user, String status, Boolean isUsable) {
+    public void update(Users user, String status, Boolean isUsable, Projects project, Departments manageDep,
+                       String description) {
         this.userId = user;
         this.status = status;
         this.isUsable = isUsable;
+        this.projectId = project;
+        this.manageDep = manageDep;
+        this.description = description;
     }
 }

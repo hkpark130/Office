@@ -228,7 +228,7 @@ public class ApprovalDevicesService {
 
         histories.forEach(history -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("username", history.getUserId().getUsername());
+            map.put("username", (history.getUserId() != null)?history.getUserId().getUsername():"알 수 없음");
             map.put("type", history.getType());
             map.put("modifiedDate", history.getModifiedDate());
             historyList.add(map);

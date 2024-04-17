@@ -38,7 +38,7 @@
             <a-table
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
               :rowClassName="(record) => record.level ? 'urgent-row' : ''"
               style="white-space: pre-line;"
             />
@@ -188,6 +188,7 @@ const Orders = defineComponent({
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
+    const pageSize = ref(7);
 
     const fetchData = async () => {
       await dispatch('getMyApproval', username.value);
@@ -327,6 +328,10 @@ const Orders = defineComponent({
       filterKey.value = selectedItems;
       filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
     };
+
+    const onChangePage = (page, size) => {
+      pageSize.value = size;
+    };
     
     return {
       onCancel,
@@ -345,6 +350,8 @@ const Orders = defineComponent({
       columns,
       orders,
       stateValue,
+      onChangePage,
+      pageSize,
     };
   },
 });

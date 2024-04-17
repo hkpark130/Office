@@ -47,7 +47,7 @@
             <a-table
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
               style="white-space: pre-line;"
             />
           </TableWrapper>
@@ -194,6 +194,7 @@ const Orders = defineComponent({
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
+    const pageSize = ref(7);
 
     onMounted(() => {
       onSorting('categoryName');
@@ -302,6 +303,10 @@ const Orders = defineComponent({
         dispatch("downloadDisposeDeviceList");
       };
       
+      const onChangePage = (page, size) => {
+        pageSize.value = size;
+      };
+
       return {
         deviceId,
         dataSource,
@@ -316,6 +321,8 @@ const Orders = defineComponent({
         orders,
         stateValue,
         downloadCSV,
+        onChangePage,
+        pageSize,
       };
     },
   });

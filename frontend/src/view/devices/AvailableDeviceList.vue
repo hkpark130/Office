@@ -49,7 +49,8 @@
               :rowSelection="rowSelection"
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              :pagination="{ pageSize: pageSize, showSizeChanger: true, total: orders ? orders.length : 20, 
+                onChange: onChangePage}"
               style="white-space: pre-line;"
             />
           </TableWrapper>
@@ -164,6 +165,7 @@ const AvailableDevices = defineComponent({
     const router = useRouter();
     const orders = computed(() => state.devices.data);
     const item = computed(() => state.devices.data);
+    const pageSize = ref(7);
     dispatch("fetchAvailableDeviceList").then(() => {
       orders.value = computed(() => state.devices.data);
       item.value = computed(() => state.devices.data);
@@ -268,6 +270,10 @@ const AvailableDevices = defineComponent({
         filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
       };
       
+      const onChangePage = (page, size) => {
+        pageSize.value = size;
+      };
+
       return {
         deviceId,
         rowSelection,
@@ -283,6 +289,8 @@ const AvailableDevices = defineComponent({
         orders,
         stateValue,
         deviceApplication,
+        onChangePage,
+        pageSize,
       };
     },
   });
