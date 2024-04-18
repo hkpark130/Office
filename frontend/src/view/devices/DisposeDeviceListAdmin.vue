@@ -47,7 +47,7 @@
             <a-table
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
+              :pagination="{ pageSize: pageSize, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
               style="white-space: pre-line;"
             />
           </TableWrapper>

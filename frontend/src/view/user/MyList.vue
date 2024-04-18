@@ -38,7 +38,7 @@
             <a-table
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
+              :pagination="{ pageSize: pageSize, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
               :rowClassName="(record) => record.level ? 'urgent-row' : ''"
               style="white-space: pre-line;"
             />
