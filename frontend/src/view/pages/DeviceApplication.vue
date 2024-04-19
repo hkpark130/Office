@@ -45,7 +45,7 @@
 
                                 <a-row :gutter="15">
                                   <a-col :span="12">
-                                    <a-form-item label="신청자" name="userName" required>
+                                    <a-form-item label="사용자" name="userName" required>
                                       <a-input v-model:value="formState.realUser" :disabled="disabled" @change="onChangeUser"/>
                                     </a-form-item>
                                   </a-col>
@@ -169,6 +169,7 @@
   import { computed, ref, reactive, defineComponent, watch } from "vue";
   import { useRouter } from 'vue-router';
   import { useStore } from 'vuex';
+  import { getUserD } from './getActivities';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -185,14 +186,16 @@
       const { push, go } = useRouter();
       const submitValues = ref({});
       const formRef = ref();
-
-      dispatch('getDeviceById', router.currentRoute.value.params.deviceId);
+      state.getUser.data = getUserD.data;
       
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
       const projects = computed(() => state.projectList.data);
       const getDeviceById = computed(() => state.deviceById.getDeviceData);
       const getUser = computed(() => state.getUser.data);
+      dispatch('getDeviceById', router.currentRoute.value.params.deviceId).then(() => {
+        getDeviceById.value = state.deviceById.getDeviceData;
+      });
 
       watch(getDeviceById, (newValue) => {
         if (newValue) {
@@ -201,6 +204,7 @@
           formState.status = newValue.status;
           formState.manageDep = newValue.manageDep && newValue.manageDep.name ? newValue.manageDep.name : "";
           formState.project = newValue.projectId && newValue.projectId.name ? newValue.projectId.name : "";
+          formState.description = newValue.description;
         }
       });
   
