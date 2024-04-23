@@ -107,7 +107,6 @@ const actions = {
     try {
       await commit('axiosUploadBegin');
       const query = await DataService.post('/image-upload', data, { 'Content-Type': 'multipart/form-data' });
-      console.log(query.data);
       commit('axiosUploadSuccess', `img/basics/${query.data}`);
     } catch (err) {
       await commit('axiosUploadErr', err);

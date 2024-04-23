@@ -7,7 +7,7 @@
             <a-row :gutter="15" class="justify-content-center">
               <a-col :lg="6" :xs="24">
                 <div class="table-search-box">
-                  <sdAutoComplete :dataSource="searchData" width="100%" patterns />
+                  <a-input placeholder="Search..." v-model:value="searchData" @keyup.enter="onSearching()"/>
                 </div>
               </a-col>
               <a-col :xxl="14" :lg="16" :xs="24">
@@ -171,7 +171,6 @@ const columns = [
 
 const filterColumns = columns.filter((column, index) => {
   return column.key !== 'description' && 
-  column.key !== 'id' && 
   column.key !== 'sn' && 
   column.key !== 'model' && 
   column.key !== 'purchaseDate' &&
@@ -187,7 +186,7 @@ const Orders = defineComponent({
     const { state, dispatch } = useStore();
     state.disposeDevicesAdmin.data = response;
     const deviceId = ref(null);
-    const searchData = computed(() => state.headerSearchData);
+    const searchData = ref('');
     const orders = computed(() => state.disposeDevicesAdmin.data);
 
     const item = computed(() => state.disposeDevicesAdmin.data);
@@ -296,7 +295,11 @@ const Orders = defineComponent({
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        if(selectedItems === 'id'){
+          filterVal.value = []; // 관리번호는 검색으로
+        } else {
+          filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        }
       };
 
       const downloadCSV = () => {
@@ -305,6 +308,10 @@ const Orders = defineComponent({
       
       const onChangePage = (page, size) => {
         pageSize.value = size;
+      };
+      
+      const onSearching = () => {
+        dispatch('disposeDeviceFilter', { column: filterKey.value, value: searchData.value, response: response });
       };
 
       return {
@@ -323,6 +330,7 @@ const Orders = defineComponent({
         downloadCSV,
         onChangePage,
         pageSize,
+        onSearching,
       };
     },
   });

@@ -45,11 +45,15 @@ public class CommentsService {
 
     }
 
-    public void delete(Long id){
-        Comments comments = commentsRepository.findById(id).orElseThrow(
-                ()-> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT,
-                        "해당 댓글 없음 id=" + id));
-        commentsRepository.delete(comments);
+    public void delete(Long id) {
+        try {
+            Comments comments = commentsRepository.findById(id).orElseThrow(
+                    ()-> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT,
+                            "해당 댓글 없음 id=" + id));
+            commentsRepository.delete(comments);
+        } catch (Exception e) {
+            throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     public List<CommentDto> findAllByApprovalId(Long approval_id) {

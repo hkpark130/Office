@@ -16,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kr.co.direa.office.constant.Constants.*;
@@ -157,6 +154,39 @@ public class DevicesService {
                 projectsService.findByName(requestDto.getProjectName()):null;
         Departments manageDep = (requestDto.getManageDepName() != null)?
                 departmentsService.findByName(requestDto.getManageDepName()):null;
+
+        if(requestDto.getUsername() != null && !requestDto.getUsername().isEmpty()) {
+            ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
+            Users adminObj = usersRepository.findByUsername(admin)
+                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                            "해당 유저가 없습니다. username="+admin));
+            Users user = usersService.findByUsername(requestDto.getUsername()).orElseThrow(() ->
+                    new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                            "해당 유저가 없습니다. username=" + requestDto.getUsername()));
+            Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
+                    .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
+                            Comparator.nullsFirst(Comparator.naturalOrder())));
+
+            if(latestApprovalDevice.isPresent() && latestApprovalDevice.get().getUserId() == user) {
+                if(!Optional.ofNullable(latestApprovalDevice.get().getDeviceId().getRealUser()).
+                        equals(Optional.ofNullable(requestDto.getRealUser()))) {
+                    device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
+                            requestDto.getRealUser():requestDto.getUsername());
+                }
+            } else {
+                device.setUserId(user);
+                device.setIsUsable(false);
+                device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
+                        requestDto.getRealUser():requestDto.getUsername());
+
+                approvalDeviceDto.setDeviceId(requestDto.getId());
+                approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+                approvalDeviceDto.setApproverId(adminObj);
+                approvalDeviceDto.setType(APPROVAL_RENTAL);
+                approvalDeviceDto.setUserId(user);
+                approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            }
+        }
 
         device.update(
                 category,

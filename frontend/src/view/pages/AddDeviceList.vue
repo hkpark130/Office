@@ -189,9 +189,8 @@
   
       const handleFinish = async () => {
         for (const v of requsetData.value) {
-          await dispatch('submitAddDevicePost', v).then((data) => {
-            console.log(data);
-          }).catch((error) => {
+          await dispatch('submitAddDevicePost', v)
+          .catch((error) => {
             throw new Error("에러 발생: " + error);
           });
         }

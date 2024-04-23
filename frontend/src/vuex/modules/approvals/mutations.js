@@ -12,6 +12,18 @@ export default {
     throw err;
   },
 
+  getApprovalBeginByDeviceId(state) {
+    state.loading = true;
+  },
+  getApprovalSuccessByDeviceId(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  getApprovalErrByDeviceId(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
   approvalDeviceFinishBegin(state) {
     state.loading = true;
   },

@@ -7,7 +7,7 @@
             <a-row :gutter="15" class="justify-content-center">
               <a-col :lg="6" :xs="24">
                 <div class="table-search-box">
-                  <sdAutoComplete :dataSource="searchData" width="100%" patterns />
+                  <a-input placeholder="Search..." v-model:value="searchData" @keyup.enter="onSearching()"/>
                 </div>
               </a-col>
               <a-col :xxl="14" :lg="16" :xs="24">
@@ -17,7 +17,7 @@
                     :defaultValue="filterKey"
                   >
                     <a-select-option v-for="column in filterColumns" :key="column.key">
-                      <span class="toolbox-menu-title" > {{ column.title }}</span>
+                      <span class="toolbox-menu-title"> {{ column.title }}</span>
                     </a-select-option>
                   </a-select>
 
@@ -69,6 +69,7 @@ import { Main, TableWrapper } from '../styled';
 import { computed, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { deviceListAdmin } from './getDeviceListAdmin';
+import { useRouter } from 'vue-router';
 
 const sortWithNullCheck = (aValue, bValue) => {
     // Null 값을 제일 뒤로 둘거임
@@ -212,7 +213,6 @@ const columns = [
 
 const filterColumns = columns.filter((column, index) => {
   return column.key !== 'memo' && 
-  column.key !== 'id' && 
   column.key !== 'sn' && 
   column.key !== 'model' && 
   column.key !== 'purchaseDate' &&
@@ -226,9 +226,9 @@ const Orders = defineComponent({
   setup() {
     const response = deviceListAdmin.data;
     const { state, dispatch } = useStore();
+    const { push } = useRouter();
     state.devicesAdmin.data = response;
     const deviceId = ref(null);
-    const searchData = computed(() => state.headerSearchData);
     const orders = computed(() => state.devicesAdmin.data);
     
     const item = computed(() => state.devicesAdmin.data);
@@ -236,6 +236,7 @@ const Orders = defineComponent({
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
     const pageSize = ref(7);
+    const searchData = ref('');
 
     onMounted(() => {
       onSorting('categoryName');
@@ -270,6 +271,7 @@ const Orders = defineComponent({
     const dataSource = computed(() =>
       orders.value.map((value) => {
         let returnIcon = null;
+        let editIcon = null;
         const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo, realUser,
           username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId, status } = value;
         const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
@@ -285,6 +287,10 @@ const Orders = defineComponent({
             <sdFeatherIcons type="rotate-ccw" size={16} title="반납" />
           </sdButton>;
         }
+        editIcon = 
+          <sdButton onClick={() => editDevice(id)} class="btn-icon" type="info" to="#" shape="circle">
+            <sdFeatherIcons type="edit" size={16} title="편집" />
+          </sdButton>;
               
         return {
           key: id,
@@ -346,6 +352,7 @@ const Orders = defineComponent({
           action: (
             <div class="table-actions">
               <>
+                {editIcon}
                 {returnIcon}
                 <sdButton class="btn-icon" onClick={() => adminDisposeDevice(id)} type="danger" to="#" shape="circle">
                   <sdFeatherIcons type="trash-2" size={16} title="폐기" />
@@ -359,7 +366,12 @@ const Orders = defineComponent({
 
     const onSorting = (selectedItems) => {
       filterKey.value = selectedItems;
-      filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      if(selectedItems === 'id'){
+        filterVal.value = []; // 관리번호는 검색으로
+      } else {
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      }
+      
     };
 
     const downloadCSV = () => {
@@ -368,6 +380,14 @@ const Orders = defineComponent({
     
     const onChangePage = (page, size) => {
       pageSize.value = size;
+    };
+
+    const editDevice = (deviceId) => {
+      push("/edit-device/"+deviceId);
+    };
+
+    const onSearching = () => {
+      dispatch('deviceAdminFilter', { column: filterKey.value, value: searchData.value, response: response });
     };
 
     return {
@@ -386,6 +406,7 @@ const Orders = defineComponent({
       downloadCSV,
       onChangePage,
       pageSize,
+      onSearching,
     };
   },
 });

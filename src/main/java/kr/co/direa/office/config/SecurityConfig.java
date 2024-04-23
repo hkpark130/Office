@@ -29,10 +29,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
@@ -132,9 +129,11 @@ public class SecurityConfig {
                     OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
 
                     List<String> group = userInfo.getClaim("groups");
-                    if (group != null) {
-                        group.forEach(it -> mappedAuthorities.add(new SimpleGrantedAuthority(it.replace("/", ""))));
-                    }
+                    Optional.ofNullable(group).ifPresent(
+                        groupList -> groupList.forEach(it -> mappedAuthorities.add(
+                            new SimpleGrantedAuthority(it.replace("/", ""))
+                        )
+                    ));
                 }
             });
 

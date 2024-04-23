@@ -18,6 +18,17 @@ const actions = {
         }
     },
 
+    async getApprovalByDeviceId({ commit }, deviceId) {
+      try {
+          commit('getApprovalBeginByDeviceId');
+          const query = await DataService.get(`/api/approval-device/device/${deviceId}`);
+          commit('getApprovalSuccessByDeviceId', query.data);
+          return query.data;
+      } catch (err) {
+          commit('getApprovalErrByDeviceId', err);
+      }
+    },
+
     async approvalDeviceFinishPost({ commit }, data) {
         try {
           commit('approvalDeviceFinishBegin');

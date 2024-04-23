@@ -12,15 +12,18 @@ const actions = {
     try {
       commit('filterMyListBegin');
       const query = await DataService.get(`/api/my-approval-list/${name}`);
-      console.log(query.data);
       const data = query.data.filter((item) => {
         if (value !== '') {
-          return item[column] === value;
+          if (item[column] === null){
+            return false;
+          }
+          return String(item[column]).includes(value);
         }
         return item;
       });
       commit('filterMyListSuccess', data);
     } catch (err) {
+      console.error(err);
       commit('filterMyListErr', err);
     }
   },

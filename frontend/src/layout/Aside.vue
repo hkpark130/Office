@@ -194,8 +194,8 @@ export default defineComponent({
     // const router = computed(() => useRoute());
     const state = reactive({
       selectedKeys: ["home"],
-      openKeys: ["devices"],
-      preOpenKeys: ["devices"],
+      openKeys: ["devices", "manageDevice"],
+      preOpenKeys: ["devices", "manageDevice"],
     });
 
     watchEffect(() => {

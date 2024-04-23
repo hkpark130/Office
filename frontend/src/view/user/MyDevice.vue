@@ -7,7 +7,7 @@
             <a-row :gutter="15" class="justify-content-center">
               <a-col :lg="6" :xs="24">
                 <div class="table-search-box">
-                  <sdAutoComplete :dataSource="searchData" width="100%" patterns />
+                  <a-input placeholder="Search..." v-model:value="searchData" @keyup.enter="onSearching()"/>
                 </div>
               </a-col>
               <a-col :xxl="14" :lg="16" :xs="24">
@@ -144,7 +144,7 @@ const columns = [
   },
   {
     title: '관리부서',
-    dataIndex: 'manageDep',
+    dataIndex: 'manageDepName',
     key: 'manageDepName',
     sorter: (a, b) => {
       const aValue = a.manageDepKey?a.manageDepKey:'';
@@ -167,9 +167,14 @@ const columns = [
 
 const filterColumns = columns.filter((column, index) => {
   return column.key !== 'description' && 
-  column.key !== 'id' && 
   column.key !== 'purchaseDate' &&
   index !== columns.length - 1;
+});
+
+filterColumns.push({
+  title: '관리번호',
+  dataIndex: 'id',
+  key: 'id',
 });
 
 const Orders = defineComponent({
@@ -188,7 +193,7 @@ const Orders = defineComponent({
     // const getUser = computed(() => state.getUser.data);
     const orders = computed(() => state.myDevice.data);
     const item = computed(() => state.myDevice.data);
-    const searchData = computed(() => state.headerSearchData);
+    const searchData = ref('');
 
     const stateValue = ref('');
     const filterKey = ref('categoryName');
@@ -241,7 +246,7 @@ const Orders = defineComponent({
     const dataSource = computed(() =>
       orders.value.map((value) => {
         const { categoryId, categoryName, purpose, projectName, manageDepName, username, id, description, 
-          realUser, spec, approvalType, approvalInfo } = value;
+          realUser, spec, approvalType, approvalInfo, projectId } = value;
         const truncatedDescription = description.length > 10 ? description.substring(0, 10) + '...' : description;
         let action = approvalType+"중";
 
@@ -281,13 +286,14 @@ const Orders = defineComponent({
               </figcaption>
             </div>
           ),
+          id: id,
           categoryNameKey: categoryName,
           user: <span class="customer-name">{(realUser)?realUser:username}</span>,
           userKey: username,
-          manageDep: <span class="customer-name">{manageDepName}</span>,
+          manageDepName: <span class="customer-name">{manageDepName}</span>,
           manageDepKey: manageDepName,
           project: <span class="customer-name">{projectName}</span>,
-          projectKey: projectName,
+          projectKey: (projectId != null)?projectId.name:'',
           purpose: (
             <div>
               <span class="ordered-amount spnDetails">{purpose}</span>
@@ -312,11 +318,19 @@ const Orders = defineComponent({
 
     const onSorting = (selectedItems) => {
       filterKey.value = selectedItems;
-      filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      if(selectedItems === 'id'){
+        filterVal.value = []; // 관리번호는 검색으로
+      } else {
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      }
     };
 
     const onChangePage = (page, size) => {
       pageSize.value = size;
+    };
+
+    const onSearching = () => {
+      dispatch('myDeviceFilter', { column: filterKey.value, value: searchData.value, name: username.value });
     };
     
     return {
@@ -339,6 +353,7 @@ const Orders = defineComponent({
       editMyDevice,
       onChangePage,
       pageSize,
+      onSearching,
     };
   },
 });

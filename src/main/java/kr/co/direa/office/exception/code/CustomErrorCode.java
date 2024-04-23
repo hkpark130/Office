@@ -9,7 +9,10 @@ public enum CustomErrorCode {
     NOT_FOUND_NOTIFICATION(404, "B005", "해당 알림이 없습니다."),
 
     METHOD_NOT_ALLOWED(500, "D009", "해당 API에서 지원하지 않는 Method 입니다."),
-    LOAD_BALANCER_ERROR(500, "D006", "LoadBalancer Error!");
+    LOAD_BALANCER_ERROR(500, "D006", "LoadBalancer Error!"),
+
+
+    INTERNAL_SERVER_ERROR(500, "D099", "서버 에러");
 
     private int status;
     private final String rsp_code;

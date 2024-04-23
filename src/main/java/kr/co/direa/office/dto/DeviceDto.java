@@ -20,6 +20,7 @@ public class DeviceDto implements Serializable {
     private String realUser;
     private Departments manageDep;
     private String manageDepName;
+    private String manageDepCode;
     private Categories categoryId;
     private Projects projectId;
     private String spec;
@@ -35,6 +36,7 @@ public class DeviceDto implements Serializable {
     private Date purchaseDate;
     private String categoryName;
     private String projectName;
+    private String projectCode;
     private String approvalInfo;
     private String approvalType;
     private Long approvalId;
@@ -48,7 +50,8 @@ public class DeviceDto implements Serializable {
         this.username = (this.userId != null) ? this.userId.getUsername() : null;
         this.realUser = entity.getRealUser();
         this.manageDep = entity.getManageDep();
-        this.manageDepName = (this.manageDep != null) ? this.manageDep.getName() +" "+ this.manageDep.getCode() : null;
+        this.manageDepName = (this.manageDep != null) ? this.manageDep.getName():null;
+        this.manageDepCode = (this.manageDep != null) ? this.manageDep.getCode():null;
         this.categoryId = entity.getCategoryId();
         this.categoryName = (this.categoryId != null) ? this.categoryId.getName() : null;
         this.projectId = entity.getProjectId();
@@ -62,7 +65,8 @@ public class DeviceDto implements Serializable {
         this.isUsable = entity.getIsUsable();
         this.purpose = entity.getPurpose();
         this.purchaseDate = entity.getPurchaseDate();
-        this.projectName = (this.projectId != null) ? this.projectId.getName() +" "+ this.projectId.getCode() : null;
+        this.projectName = (this.projectId != null) ? this.projectId.getName() : null;
+        this.projectCode = (this.projectId != null) ? this.projectId.getCode() : null;
         this.tags = entity.getDeviceTags().stream()
                 .map(deviceTag -> deviceTag.getTag().getName())
                 .toList();
