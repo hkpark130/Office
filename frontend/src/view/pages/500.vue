@@ -7,7 +7,7 @@
                     alt="500"
                 />
                 <sdHeading class="error-text" as="h3"> 500 </sdHeading>
-                <p>서버 에러</p>
+                <p>{{ msg }}</p>
                 <router-link to="/">
                     <sdButton size="default" type="primary" to="/">
                         Return Home
@@ -22,6 +22,8 @@
 import { Main } from '../styled';
 import { ErrorWrapper } from './style';
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
     name: '500',
     components: {
@@ -29,7 +31,11 @@ export default defineComponent({
         ErrorWrapper,
     },
     setup() {
-        return {};
+        const router = useRouter();
+        const msg = router.currentRoute.value.query.msg;
+        return {
+            msg,
+        };
     },
 });
 </script>

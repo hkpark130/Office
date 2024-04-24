@@ -7,7 +7,7 @@
             <a-row :gutter="15" class="justify-content-center">
               <a-col :lg="6" :xs="24">
                 <div class="table-search-box">
-                  <sdAutoComplete :dataSource="searchData" width="100%" patterns />
+                  <a-input placeholder="Search..." v-model:value="searchData" @keyup.enter="onSearching()"/>
                 </div>
               </a-col>
               <a-col :xxl="14" :lg="16" :xs="24">
@@ -47,7 +47,7 @@
             <a-table
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              :pagination="{ pageSize: pageSize, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
               style="white-space: pre-line;"
             />
           </TableWrapper>
@@ -171,7 +171,6 @@ const columns = [
 
 const filterColumns = columns.filter((column, index) => {
   return column.key !== 'description' && 
-  column.key !== 'id' && 
   column.key !== 'sn' && 
   column.key !== 'model' && 
   column.key !== 'purchaseDate' &&
@@ -187,13 +186,14 @@ const Orders = defineComponent({
     const { state, dispatch } = useStore();
     state.disposeDevicesAdmin.data = response;
     const deviceId = ref(null);
-    const searchData = computed(() => state.headerSearchData);
+    const searchData = ref('');
     const orders = computed(() => state.disposeDevicesAdmin.data);
 
     const item = computed(() => state.disposeDevicesAdmin.data);
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
+    const pageSize = ref(7);
 
     onMounted(() => {
       onSorting('categoryName');
@@ -209,7 +209,9 @@ const Orders = defineComponent({
           alert('복구 처리되었습니다.');
           location.reload();
         }
-      );
+      ).catch((error) => {
+          throw new Error("에러 발생: " + error);
+        }); 
     };
 
     const dataSource = computed(() =>
@@ -293,13 +295,25 @@ const Orders = defineComponent({
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        if(selectedItems === 'id'){
+          filterVal.value = []; // 관리번호는 검색으로
+        } else {
+          filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        }
       };
 
       const downloadCSV = () => {
         dispatch("downloadDisposeDeviceList");
       };
       
+      const onChangePage = (page, size) => {
+        pageSize.value = size;
+      };
+      
+      const onSearching = () => {
+        dispatch('disposeDeviceFilter', { column: filterKey.value, value: searchData.value, response: response });
+      };
+
       return {
         deviceId,
         dataSource,
@@ -314,6 +328,9 @@ const Orders = defineComponent({
         orders,
         stateValue,
         downloadCSV,
+        onChangePage,
+        pageSize,
+        onSearching,
       };
     },
   });

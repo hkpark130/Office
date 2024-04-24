@@ -7,7 +7,7 @@
             <a-row :gutter="15" class="justify-content-center">
               <a-col :lg="6" :xs="24">
                 <div class="table-search-box">
-                  <sdAutoComplete :dataSource="searchData" width="100%" patterns />
+                  <a-input placeholder="Search..." v-model:value="searchData" @keyup.enter="onSearching()"/>
                 </div>
               </a-col>
               <a-col :xxl="14" :lg="16" :xs="24">
@@ -38,7 +38,7 @@
             <a-table
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              :pagination="{ pageSize: pageSize, showSizeChanger: true, total: orders ? orders.length : 20, onChange: onChangePage }"
               :rowClassName="(record) => record.level ? 'urgent-row' : ''"
               style="white-space: pre-line;"
             />
@@ -52,7 +52,7 @@
 <script lang="jsx">
 import { TopToolBox } from './Style';
 import { Main, TableWrapper } from '../styled';
-import { computed, reactive, ref, defineComponent } from 'vue';
+import { computed, reactive, ref, defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import Tag from '@/components/tags/Tag';
 import { useRouter } from 'vue-router';
@@ -100,7 +100,7 @@ const columns = [
   {
     title: '신청번호',
     dataIndex: 'approvalId',
-    key: 'key',
+    key: 'approvalId',
     sorter: (a, b) => {
       const aValue = a.key?a.key:'';
       const bValue = b.key?b.key:'';
@@ -155,7 +155,15 @@ const columns = [
 ];
 
 const filterColumns = columns.filter((column, index) => {
-  return column.key !== 'status' && index !== columns.length - 1;
+  return column.key !== 'status' && 
+          column.key !== 'deadline' && 
+          index !== columns.length - 1;
+});
+
+filterColumns.push({
+  title: '관리번호',
+  dataIndex: 'deviceId',
+  key: 'deviceId',
 });
 
 const Orders = defineComponent({
@@ -165,7 +173,7 @@ const Orders = defineComponent({
   async setup() {
     const { state, dispatch } = useStore();
     const deviceId = ref(1);
-    const searchData = computed(() => state.headerSearchData);
+    const searchData = ref('');
     const { push } = useRouter();
     state.myList.data = getMyList.data;
 
@@ -174,8 +182,6 @@ const Orders = defineComponent({
       dispatch('getUser').then(() => {
           username.value = state.getUser.data.name;
       });
-    await dispatch('getUser');
-    await dispatch('getMyApproval', username.value);
 
     const orders = computed(() => state.myList.data);
     const item = computed(() => state.myList.data);
@@ -188,14 +194,11 @@ const Orders = defineComponent({
     const stateValue = ref('');
     const filterKey = ref('categoryName');
     const filterVal = ref([]);
+    const pageSize = ref(7);
 
-    const fetchData = async () => {
-      await dispatch('getMyApproval', username.value);
+    onMounted(() => {
       onSorting('categoryName');
-    };
-
-    fetchData();
-
+    });
 
     const handleChangeForFilter = (e) => {
       dispatch('myListFilter', { column: filterKey.value, value: e.target.value, name: username.value });
@@ -217,7 +220,9 @@ const Orders = defineComponent({
       dispatch('approvalDeviceCancel', approvalId).then(() => {
         alert('취소되었습니다.');
         location.reload();
-      });
+      }).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      }); 
     };
 
     const onCancel = () => {
@@ -292,6 +297,7 @@ const Orders = defineComponent({
         );
 
         return {
+          deviceId: deviceId,
           key: approvalId,
           approvalId: <span>{approvalId}</span>,
           status: <>{statusTag}</>,
@@ -323,7 +329,19 @@ const Orders = defineComponent({
 
     const onSorting = (selectedItems) => {
       filterKey.value = selectedItems;
-      filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      if(selectedItems === 'deviceId' || selectedItems === 'approvalId'){
+        filterVal.value = []; // 관리번호는 검색으로
+      } else {
+        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+      }
+    };
+
+    const onChangePage = (page, size) => {
+      pageSize.value = size;
+    };
+
+    const onSearching = () => {
+      dispatch('myListFilter', { column: filterKey.value, value: searchData.value, name: username.value });
     };
     
     return {
@@ -343,6 +361,9 @@ const Orders = defineComponent({
       columns,
       orders,
       stateValue,
+      onChangePage,
+      pageSize,
+      onSearching,
     };
   },
 });

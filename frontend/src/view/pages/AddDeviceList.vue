@@ -173,7 +173,7 @@
             continue;
 
           inputData.value = {};
-          const val = lines[row].split(',');
+          const val = lines[row].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
           for (const col in headers) {
             if (requiredColumns.includes(headers[col]) && val[col] === '') {
               throw new Error(row + " 라인에 " + requiredColumns[col] + " 값이 없습니다.");
@@ -187,9 +187,12 @@
         return true;
       }
   
-      const handleFinish = () => {
+      const handleFinish = async () => {
         for (const v of requsetData.value) {
-          dispatch('submitAddDevicePost', v);
+          await dispatch('submitAddDevicePost', v)
+          .catch((error) => {
+            throw new Error("에러 발생: " + error);
+          });
         }
         alert('등록되었습니다.');
         push('/');

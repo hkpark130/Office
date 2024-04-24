@@ -1,4 +1,4 @@
 ﻿id,categoryName,manageDepName,projectName,status,purpose,spec,price,model,company,sn,isUsable,purchaseDate,description,username
-DIR-N-1011,노트북,경영지원부,본사,정상,개발,테스트,1000000,LGT,LG,LGG,TRUE,2024-03-10,테스트,박현경
-DIR-N-1021,노트북,경영지원부,본사,정상,개발,테스트,1000000,LGT,LG,LGG,TRUE,2024-03-20,테스트,장세환
-DIR-N-1031,노트북,경영지원부,본사,정상,개발,테스트,1000000,LGT,LG,LGG,TRUE,2024-03-22,테스트,test
+DIR-N-1011,노트북,경영지원부,0011,정상,개발,테스트,1000000,LGT,LG,LGG,TRUE,2024-03-20,테스트,qwer
+DIR-N-101,노트북,경영지원부,본사,정상,개발,테스트,1000000,LGT,LG,LGG,TRUE,2024-03-20,테스트,test
+DIR-N-104,노트북,경영지원부,본사,정상,개발,테스트,1000000,LGT,LG,LGG,TRUE,2024-03-20,테스트,

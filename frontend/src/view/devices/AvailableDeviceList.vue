@@ -7,7 +7,7 @@
             <a-row :gutter="15" class="justify-content-center">
               <a-col :lg="6" :xs="24">
                 <div class="table-search-box">
-                  <sdAutoComplete :dataSource="searchData" width="100%" patterns />
+                  <a-input placeholder="Search..." v-model:value="searchData" @keyup.enter="onSearching()"/>
                 </div>
               </a-col>
               <a-col :xxl="14" :lg="16" :xs="24">
@@ -49,7 +49,8 @@
               :rowSelection="rowSelection"
               :dataSource="dataSource"
               :columns="columns"
-              :pagination="{ pageSize: 7, showSizeChanger: true, total: orders ? orders.length : 20 }"
+              :pagination="{ pageSize: pageSize, showSizeChanger: true, total: orders ? orders.length : 20, 
+                onChange: onChangePage}"
               style="white-space: pre-line;"
             />
           </TableWrapper>
@@ -146,7 +147,7 @@ const columns = [
 ];
 
 const filterColumns = columns.filter((column, index) => {
-  return column.key !== 'memo' && column.key !== 'id' && column.key !== 'tag' && index !== columns.length - 1;
+  return column.key !== 'memo' && column.key !== 'tag' && index !== columns.length - 1;
 });
 
 const AvailableDevices = defineComponent({
@@ -160,10 +161,11 @@ const AvailableDevices = defineComponent({
     state.devices.data = response;
     const deviceId = ref(null);
     const filterKey = ref('categoryName');
-    const searchData = computed(() => state.headerSearchData);
+    const searchData = ref('');
     const router = useRouter();
     const orders = computed(() => state.devices.data);
     const item = computed(() => state.devices.data);
+    const pageSize = ref(7);
     dispatch("fetchAvailableDeviceList").then(() => {
       orders.value = computed(() => state.devices.data);
       item.value = computed(() => state.devices.data);
@@ -265,9 +267,21 @@ const AvailableDevices = defineComponent({
 
       const onSorting = (selectedItems) => {
         filterKey.value = selectedItems;
-        filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        if(selectedItems === 'id'){
+          filterVal.value = []; // 관리번호는 검색으로
+        } else {
+          filterVal.value = [...new Set(item.value.map((item) => item[selectedItems]).filter(val => val !== null))]; // 중복 및 null 제거
+        }
       };
       
+      const onChangePage = (page, size) => {
+        pageSize.value = size;
+      };
+
+    const onSearching = () => {
+      dispatch('deviceFilter', { column: filterKey.value, value: searchData.value, response: response });
+    };
+
       return {
         deviceId,
         rowSelection,
@@ -283,6 +297,9 @@ const AvailableDevices = defineComponent({
         orders,
         stateValue,
         deviceApplication,
+        onChangePage,
+        pageSize,
+        onSearching,
       };
     },
   });

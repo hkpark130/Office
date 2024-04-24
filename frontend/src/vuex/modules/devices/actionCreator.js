@@ -14,7 +14,10 @@ const actions = {
       commit('filterDeviceBegin');
       const data = response.filter((item) => {
         if (value !== '') {
-          return item[column] === value;
+          if (item[column] === null){
+            return false;
+          }
+          return String(item[column]).includes(value);
         }
         return item;
       });

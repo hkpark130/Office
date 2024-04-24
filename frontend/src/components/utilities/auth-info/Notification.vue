@@ -60,6 +60,7 @@ import { defineComponent, reactive, ref } from "vue";
 import Stomp from 'webstomp-client';
 import Sockjs from 'sockjs-client';
 import { useStore } from 'vuex';
+import { getNotis } from './getNotis';
 
 export default defineComponent({
   name: "Notification",
@@ -67,16 +68,12 @@ export default defineComponent({
     AtbdTopDropdwon,
     PerfectScrollbar,
   },
-  data() {
-    const { dispatch } = useStore();
-    dispatch('getUser');
-  },
   setup() {
-    const { state, dispatch } = useStore();
+    const { dispatch } = useStore();
 
-    const notificationList = ref();
-    const getUser = reactive(state.getUser.data);
-
+    const notificationList = ref([]);
+    const getUser = reactive(getNotis.data);
+    
     const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT;
 
     const socket = new Sockjs(API_ENDPOINT+"/gs-guide-websocket");
@@ -84,15 +81,16 @@ export default defineComponent({
     stompClient.connect({}, () => {
       // console.log(getUser.value.preferredUsername); TODO: 유저별로 구독하게 해야함
       // const groupName = getUser.value.attributes.groups[0].substring(1);
-      
       stompClient.subscribe('/topic/'+getUser.name, message =>
         {
+          // 토픽이름 '/topic/' 으로 해야함
           notificationList.value = JSON.parse(message.body);
         }
       );
-
       // dispatch('getNotifications', getUser.value.name); TODO: 유저별로 알림을 가져와야함
       dispatch('getNotifications', getUser.name);
+    }, (error) => {
+        console.error("WebSocket 연결 에러:", error);
     });
 
     return {

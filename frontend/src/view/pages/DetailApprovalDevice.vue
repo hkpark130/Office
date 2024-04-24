@@ -134,6 +134,18 @@
                                             </a-tooltip>
                                         </template>
                                     </a-comment>
+                                    <a class="activity-more" to="#">
+                                        <sdDropdown :action="['click']">
+                                            <template #overlay>
+                                                <a 
+                                                    to="#"
+                                                    @click="() => deleteComment(item.id)">
+                                                    <span>Delete</span>
+                                                </a>
+                                            </template>
+                                            <sdFeatherIcons type="more-horizontal" />
+                                        </sdDropdown>
+                                    </a>
                                 </a-list-item>
                             </template>
                         </a-list>
@@ -206,6 +218,7 @@ const AddProduct = defineComponent({
     const getCommentById = computed(() => state.comments.data);
     getCommentById.value.map((comment) => {
       comments.push({
+        id: comment.id,
         author: comment.userId.username,
         comment: comment.comment,
         createdDate: dayjs(comment.createdDate),
@@ -236,7 +249,19 @@ const AddProduct = defineComponent({
       formRef.value.ruleformState.resetFields();
     };
 
+    const deleteComment = (id) => {
+      dispatch('deleteComment', id)
+        .then(() => {
+                location.reload();
+            }
+        );
+    };
+
     const handleSubmit = () => {
+      if (value.value === ''){
+        alert("댓글을 입력해주세요.");
+        return;
+      }
       const comment = {
         approvalId: formState.approvalId,
         userName: getUser.value.name,
@@ -249,7 +274,9 @@ const AddProduct = defineComponent({
           value.value = '';
           location.reload();
         }
-      );
+      ).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      });
     };
 
     return {
@@ -264,6 +291,7 @@ const AddProduct = defineComponent({
       value,
       getCommentById,
       handleSubmit,
+      deleteComment,
     };
   },
 });

@@ -185,19 +185,26 @@ const AddProduct = defineComponent({
       alert("승인완료 또는 반려된 신청입니다.");
       window.location.href = "/";
     }
-    
 
     const approvalFinish = () => {
       formState.isUsable = (formState.type === '반납')?true:false;
-      dispatch('approvalDeviceFinishPost', formState);
-      alert('\'승인\'되었습니다.');
-      push('/');
+      dispatch('approvalDeviceFinishPost', formState).then(() => {
+        alert('\'승인\'되었습니다.');
+        push('/');
+      }).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      });
+      
     };
 
     const approvalReturn = () => {
-      dispatch('approvalDeviceReturnPost', formState);
-      alert('\'반려\'되었습니다.');
-      push('/');
+      dispatch('approvalDeviceReturnPost', formState).then(() => {
+        alert('\'반려\'되었습니다.');
+        push('/');
+      }).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      });
+      
     };
 
     const disabled = ref(true);

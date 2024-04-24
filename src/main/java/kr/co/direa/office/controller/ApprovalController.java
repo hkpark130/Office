@@ -133,6 +133,15 @@ public class ApprovalController {
         );
     }
 
+    @GetMapping(value = "/approval-device/device/{deviceId}")
+    ResponseEntity<?> getApproval(@PathVariable String deviceId) {
+        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.findByDeviceId(deviceId);
+
+        return ResponseEntity.ok(
+                approvalDeviceDto
+        );
+    }
+
     @PostMapping(value = "/approval-device-finish")
     ResponseEntity<?> approvalDeviceFinish(
             @RequestBody DeviceApplicationVo request

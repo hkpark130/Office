@@ -28,6 +28,16 @@ const actions = {
     }
   },
 
+  async deleteComment({ commit }, CommentId) {
+    try {
+      commit('deleteCommentBegin');
+      await DataService.delete(`/api/comments/${CommentId}`);
+      commit('deleteCommentSuccess');
+    } catch (err) {
+      commit('deleteCommentErr', err);
+    }
+  },
+
 };
 
 export default { 

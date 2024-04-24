@@ -16,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kr.co.direa.office.constant.Constants.*;
@@ -82,26 +79,58 @@ public class DevicesService {
     }
 
     public void save(DeviceDto requestDto) {
-        requestDto.setProjectId(projectsService.findByName(requestDto.getProjectName()));
+        Projects project = projectsService.findByName(requestDto.getProjectName());
+        if (project == null) {
+            project = projectsService.findByCode(requestDto.getProjectName());
+        }
+        requestDto.setProjectId(project);
         requestDto.setCategoryId(categoriesService.findByName(requestDto.getCategoryName()));
         requestDto.setManageDep(departmentsService.findByName(requestDto.getManageDepName()));
-        Users user = usersService.findByUsername(requestDto.getUsername()).orElse(null);
+        String username = ("".equals(requestDto.getUsername()) || requestDto.getUsername()==null)?
+                null:requestDto.getUsername();
+        Users user = usersService.findByUsername(username).orElse(null);
         requestDto.setUserId(user);
-        requestDto.setIsUsable(user == null);
-        devicesRepository.save(requestDto.toEntity());
-        if (user != null) {
-            Users adminObj = usersRepository.findByUsername(admin)
-                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                            "해당 유저가 없습니다. username="+admin));
-            ApprovalDeviceDto approvalDevices = new ApprovalDeviceDto();
-            approvalDevices.setDeviceId(requestDto.getId());
-            approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
-            approvalDevices.setApproverId(adminObj);
-            approvalDevices.setType(APPROVAL_RENTAL);
-            approvalDevices.setUserId(user);
-            approvalDevicesRepository.save(approvalDevices.toEntity());
-        }
+        requestDto.setIsUsable(!DISPOSE_TYPE.equals(requestDto.getStatus()) && username == null);
+        Devices device = devicesRepository.findById(requestDto.getId()).orElse(null);
+        Users adminObj = usersRepository.findByUsername(admin)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                        "해당 유저가 없습니다. username="+admin));
+        ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
 
+        if (device == null && username == null) { // 신규 장비
+            devicesRepository.save(requestDto.toEntity());
+        } else if (device == null) { // 신규 장비에 대한 대여 or 폐기 이력 남기기
+            devicesRepository.save(requestDto.toEntity());
+            approvalDeviceDto.setDeviceId(requestDto.getId());
+            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDeviceDto.setApproverId(adminObj);
+            approvalDeviceDto.setType(DISPOSE_TYPE.equals(requestDto.getStatus()) ?
+                    DISPOSE_TYPE : APPROVAL_RENTAL);
+            approvalDeviceDto.setUserId(user);
+//            approvalDeviceDto.setCreatedDate(null);
+            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+        } else if (user != null) { // 기존 장비에 대한 대여 or 폐기 이력 남기기
+            device.update(user, requestDto.getStatus(), requestDto.getIsUsable(), requestDto.getProjectId(),
+                    requestDto.getManageDep(), requestDto.getDescription());
+            approvalDeviceDto.setDeviceId(requestDto.getId());
+            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDeviceDto.setApproverId(adminObj);
+            approvalDeviceDto.setType(DISPOSE_TYPE.equals(requestDto.getStatus()) ?
+                    DISPOSE_TYPE : APPROVAL_RENTAL);
+            approvalDeviceDto.setUserId(user);
+//            approvalDeviceDto.setCreatedDate(null);
+            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+        } else if (username == null)  { // 기존 장비에 대한 반납
+            Users preUser = device.getUserId();
+            device.update(null, requestDto.getStatus(), true, requestDto.getProjectId(),
+                    requestDto.getManageDep(), requestDto.getDescription());
+            approvalDeviceDto.setDeviceId(requestDto.getId());
+            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+            approvalDeviceDto.setApproverId(adminObj);
+            approvalDeviceDto.setType(APPROVAL_RETURN);
+            approvalDeviceDto.setUserId(preUser);
+            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+        }
     }
 
     public List<DeviceDto> findByUsername(String username) {
@@ -126,13 +155,45 @@ public class DevicesService {
         Departments manageDep = (requestDto.getManageDepName() != null)?
                 departmentsService.findByName(requestDto.getManageDepName()):null;
 
+        if(requestDto.getUsername() != null && !requestDto.getUsername().isEmpty()) {
+            ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
+            Users adminObj = usersRepository.findByUsername(admin)
+                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                            "해당 유저가 없습니다. username="+admin));
+            Users user = usersService.findByUsername(requestDto.getUsername()).orElseThrow(() ->
+                    new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                            "해당 유저가 없습니다. username=" + requestDto.getUsername()));
+            Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
+                    .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
+                            Comparator.nullsFirst(Comparator.naturalOrder())));
+
+            if(latestApprovalDevice.isPresent() && latestApprovalDevice.get().getUserId() == user) {
+                if(!Optional.ofNullable(latestApprovalDevice.get().getDeviceId().getRealUser()).
+                        equals(Optional.ofNullable(requestDto.getRealUser()))) {
+                    device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
+                            requestDto.getRealUser():requestDto.getUsername());
+                }
+            } else {
+                device.setUserId(user);
+                device.setIsUsable(false);
+                device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
+                        requestDto.getRealUser():requestDto.getUsername());
+
+                approvalDeviceDto.setDeviceId(requestDto.getId());
+                approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+                approvalDeviceDto.setApproverId(adminObj);
+                approvalDeviceDto.setType(APPROVAL_RENTAL);
+                approvalDeviceDto.setUserId(user);
+                approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            }
+        }
+
         device.update(
                 category,
                 project,
                 manageDep,
                 (requestDto.getPrice() == null)?0:requestDto.getPrice(),
                 requestDto.getStatus(),
-                requestDto.getIsUsable(),
                 requestDto.getPurpose(),
                 requestDto.getDescription(),
                 requestDto.getModel(),

@@ -75,7 +75,7 @@ export default [
   },
   {
     name: 'edit-device',
-    path: '/edit-device',
+    path: '/edit-device/:deviceId?',
     component: () => import(/* webpackChunkName: "EditDevice" */ '@/view/pages/EditDevice.vue'),
   },
   {

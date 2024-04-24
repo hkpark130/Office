@@ -99,6 +99,29 @@
                                   </a-select>
                                 </a-form-item>
 
+                                <a-row :gutter="15">
+                                  <a-col :span="12">
+                                    <a-form-item label="신청자" name="username">
+                                      <a-input v-model:value="formState.username"
+                                        placeholder="값 변경시 신청정보까지 변경됨"/>
+                                    </a-form-item>
+                                  </a-col>
+
+                                  <a-col :span="12">
+                                    <a-form-item label="사용자" name="realUser">
+                                      <a-input v-model:value="formState.realUser"
+                                        placeholder="빈 값일시 자동으로 신청자가 입력됨"/>
+                                    </a-form-item>
+                                  </a-col>
+                                </a-row>
+
+                                <a-row v-if="approvalInfo">
+                                  <a-col>
+                                    <p><b>승인 정보:</b> {{ approvalInfo }}</p>
+                                    <p><b>타입:</b> {{ approvalType }}</p>
+                                  </a-col>
+                                </a-row>
+
                                 <a-form-item
                                   name="purpose"
                                   label="용도"
@@ -235,15 +258,23 @@
       const { push, go } = useRouter();
       const projectTmp = ref();
       const searcgDeviceId = ref();
-      const popoverVisible = ref(false); 
+      const popoverVisible = ref(false);
+      const router = useRouter();
 
       const categories = computed(() => state.caregoryList.data);
-      const projects = computed(() => state.projectList.data);
       const departments = computed(() => state.departmentList.data);
 
-      const searchData = toRef(projectList.data);
-      const filteredData = toRef(projectList.data);
+      const combinedArray = toRef(projectList.data.map(item => {
+        return {
+          name: `${item.name} ${item.code}`,
+        };
+      }));
+      const searchData = toRef(combinedArray.value);
+      const filteredData = toRef(combinedArray.value);
       const getDeviceById = ref();
+      const getApproval = ref();
+      const approvalInfo = ref();
+      const approvalType = ref();
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
@@ -252,6 +283,27 @@
         filteredData.value = data;
       };
 
+      if (router.currentRoute.value.params.deviceId !== '') {
+        dispatch('checkDuplication', router.currentRoute.value.params.deviceId).then((res) => {
+          if (res) {
+            alert('장비를 찾을 수 없습니다.');
+            return;
+          } else {
+            formState.id = router.currentRoute.value.params.deviceId;
+            dispatch('getDeviceById', router.currentRoute.value.params.deviceId).then(() => {
+              getDeviceById.value = state.deviceById.getDeviceData;
+            });
+            dispatch('getApprovalByDeviceId', router.currentRoute.value.params.deviceId).then(() => {
+              getApproval.value = state.approvals.data;
+              formState.username = getApproval.value.userName;
+              formState.realUser = (getDeviceById.value.realUser !== null)?getDeviceById.value.realUser:getApproval.value.userName;
+              approvalInfo.value = getApproval.value.approvalInfo;
+              approvalType.value = getApproval.value.type;
+            });
+          }
+        });        
+      }
+
       const searchDevice = async () => {
         const response = await dispatch('checkDuplication', searcgDeviceId.value);
         if (response) {
@@ -259,13 +311,23 @@
           return;
         } else {
           formState.id = searcgDeviceId.value;
-          await dispatch('getDeviceById', formState.id);
-          getDeviceById.value = state.deviceById.getDeviceData;
+          await dispatch('getDeviceById', formState.id).then(() => {
+            getDeviceById.value = state.deviceById.getDeviceData;
+          });
+          await dispatch('getApprovalByDeviceId', formState.id).then(() => {
+            getApproval.value = state.approvals.data;
+            formState.username = getApproval.value.userName;
+            formState.realUser = (getDeviceById.value.realUser !== null)?getDeviceById.value.realUser:getApproval.value.userName;
+            approvalInfo.value = getApproval.value.approvalInfo;
+            approvalType.value = getApproval.value.type;
+          });
         }
       };
   
       const formState = reactive({
         id: "",
+        username: "",
+        realUser: "",
         categoryName: "노트북",
         price: 0,
         projectName: "본사",
@@ -295,8 +357,8 @@
         if (newId !== oldId) {
           formState.categoryName = getDeviceById.value.categoryName;
           formState.price = getDeviceById.value.price;
-          formState.projectName = getDeviceById.value.projectName;
-          formState.manageDepName = getDeviceById.value.manageDepName;
+          formState.projectName = (getDeviceById.value.projectId === null)?null:getDeviceById.value.projectId.name;
+          formState.manageDepName = (getDeviceById.value.manageDep === null)?null:getDeviceById.value.manageDep.name;
           formState.status = getDeviceById.value.status.toString();
           formState.purpose = getDeviceById.value.purpose;
           formState.description = getDeviceById.value.description;
@@ -315,9 +377,13 @@
           return;
         }
         
-        dispatch('submitEditDevicePut', formState);
-        alert('등록되었습니다.');
-        push('/');
+        dispatch('submitEditDevicePut', formState).then(() => {
+          alert('수정되었습니다.');
+          push('/');
+        }).catch((error) => {
+          throw new Error("에러 발생: " + error);
+        }); 
+        
       };
   
       const handleFinishFailed = (errors) => {
@@ -329,7 +395,6 @@
       };
 
       return {
-        projects,
         categories,
         submitValues,
         formState,
@@ -347,6 +412,8 @@
         handleCancel,
         popoverVisible,
         openPopover,
+        approvalInfo,
+        approvalType,
       };
     },
   });

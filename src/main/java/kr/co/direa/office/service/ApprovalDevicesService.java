@@ -63,7 +63,7 @@ public class ApprovalDevicesService {
     }
 
     public void setApprovalInfoById(DeviceApplicationVo request, String approvalInfo) {
-        Boolean isUsable = (request.getIsUsable() != null)?request.getIsUsable():null;
+        Boolean isUsable = request.getIsUsable();
         Long id = request.getApprovalId();
         String approvalType = request.getType();
         Users user = usersService.findByUsername(request.getUserName()).orElse(null);
@@ -171,7 +171,7 @@ public class ApprovalDevicesService {
                         "해당 유저가 없습니다. username=" + request.getUserName()));
         String realUser = (request.getRealUser() != null)?request.getRealUser():null;
 
-        device.setIsUsable(request.getIsUsable());
+        device.setIsUsable(Optional.ofNullable(request.getIsUsable()).orElse(device.getIsUsable()));
         device.setStatus((request.getStatus()!=null)?request.getStatus():device.getStatus());
         device.setRealUser((realUser != null)?realUser:user.getUsername());
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
@@ -228,7 +228,9 @@ public class ApprovalDevicesService {
 
         histories.forEach(history -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("username", history.getUserId().getUsername());
+            map.put("username",  Optional.ofNullable(history.getUserId())
+                    .map(Users::getUsername)
+                    .orElse("알 수 없음"));
             map.put("type", history.getType());
             map.put("modifiedDate", history.getModifiedDate());
             historyList.add(map);
@@ -351,5 +353,15 @@ public class ApprovalDevicesService {
 
         approvalDevices.setReason(request.getReason());
         approvalDevicesRepository.save(approvalDevices);
+    }
+
+    public ApprovalDeviceDto findByDeviceId(String deviceId) {
+        Devices device = devicesRepository.findById(deviceId).orElseThrow(() ->
+                new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
+                        "해당 기기가 없습니다. deviceId=" + deviceId));
+        Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
+                .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
+                        Comparator.nullsFirst(Comparator.naturalOrder())));
+        return latestApprovalDevice.map(ApprovalDeviceDto::new).orElse(null);
     }
 }

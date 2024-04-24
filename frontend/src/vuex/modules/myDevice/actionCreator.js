@@ -14,12 +14,16 @@ const actions = {
       const query = await DataService.get(`/api/mydevice/${name}`);
       const data = query.data.filter((item) => {
         if (value !== '') {
-          return item[column] === value;
+          if (item[column] === null){
+            return false;
+          }
+          return String(item[column]).includes(value);
         }
         return item;
       });
       commit('filterMyDeviceSuccess', data);
     } catch (err) {
+      console.error(err);
       commit('filterMyDeviceErr', err);
     }
   },

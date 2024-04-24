@@ -2,6 +2,12 @@ import { theme } from './src/config/theme/themeVariables';
 const path = require('path')
 
 module.exports = {
+  devServer: {
+    // client: {
+    //   webSocketURL: 'ws://192.168.3.77:8080/ws',
+    // },
+    allowedHosts: "all",
+  },
   publicPath:
     process.env.NODE_ENV === 'production'
       ? process.env.VUE_APP_SUB_ROUTE

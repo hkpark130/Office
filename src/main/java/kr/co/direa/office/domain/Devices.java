@@ -102,14 +102,13 @@ public class Devices extends BaseTimeEntity{
     }
 
     public void update(Categories category, Projects project, Departments manageDep, long price, String status,
-                       Boolean isUsable, String purpose, String description, String model, String company,
+                       String purpose, String description, String model, String company,
                        String sn, String spec, Date purchaseDate) {
         this.categoryId = category;
         this.projectId = project;
         this.manageDep = manageDep;
         this.price = price;
         this.status = status;
-        this.isUsable = isUsable;
         this.purpose = purpose;
         this.description = description;
         this.model = model;
@@ -117,5 +116,15 @@ public class Devices extends BaseTimeEntity{
         this.sn = sn;
         this.spec = spec;
         this.purchaseDate = purchaseDate;
+    }
+
+    public void update(Users user, String status, Boolean isUsable, Projects project, Departments manageDep,
+                       String description) {
+        this.userId = user;
+        this.status = status;
+        this.isUsable = isUsable;
+        this.projectId = project;
+        this.manageDep = manageDep;
+        this.description = description;
     }
 }
