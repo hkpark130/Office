@@ -229,8 +229,12 @@ public class ApprovalDevicesService {
         histories.forEach(history -> {
             Map<String, Object> map = new HashMap<>();
             map.put("username",  Optional.ofNullable(history.getUserId())
-                    .map(Users::getUsername)
-                    .orElse("알 수 없음"));
+                            .map(Users::getUsername)
+                            .orElse("알 수 없음"));
+            map.put("projectName",
+                    Optional.ofNullable(history.getProjectId())
+                            .map(Projects::getName)
+                            .orElse("알 수 없음"));
             map.put("type", history.getType());
             map.put("modifiedDate", history.getModifiedDate());
             historyList.add(map);

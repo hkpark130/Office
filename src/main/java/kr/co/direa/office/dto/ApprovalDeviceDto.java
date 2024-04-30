@@ -2,6 +2,7 @@ package kr.co.direa.office.dto;
 
 import kr.co.direa.office.domain.ApprovalDevices;
 import kr.co.direa.office.domain.Devices;
+import kr.co.direa.office.domain.Projects;
 import kr.co.direa.office.domain.Users;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,8 @@ public class ApprovalDeviceDto implements Serializable {
     private String type;
     private LocalDateTime createdDate;
     private LocalDateTime deadline;
+    private String projectName;
+    private Long projectId;
 
     public ApprovalDeviceDto() {
         this.createdDate = LocalDateTime.now();
@@ -53,6 +56,8 @@ public class ApprovalDeviceDto implements Serializable {
         this.type = entity.getType();
         this.createdDate = (entity.getCreatedDate() != null) ? entity.getCreatedDate() : null;
         this.deadline = (entity.getDeadline() != null) ? entity.getDeadline() : null;
+        this.projectName = (entity.getProjectId() != null) ? entity.getProjectId().getName() : null;
+        this.projectId = (entity.getProjectId() != null) ? entity.getProjectId().getId() : null;
     }
 
     public ApprovalDevices toEntity() {
@@ -65,6 +70,7 @@ public class ApprovalDeviceDto implements Serializable {
                 .type(type)
                 .img(img)
                 .deadline(deadline)
+                .projectId((projectId != null) ? Projects.builder().id(projectId).build() : null)
                 .build();
     }
 

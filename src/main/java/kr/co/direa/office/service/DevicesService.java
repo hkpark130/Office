@@ -78,6 +78,21 @@ public class DevicesService {
         return new DeviceDto(device);
     }
 
+    private void saveApprovalDeviceRecord(
+                ApprovalDeviceDto approvalDeviceDto,
+                  String deviceId, String info,
+                  Users adminObj, String type, Users user, Projects project) {
+        approvalDeviceDto.setDeviceId(deviceId);
+        approvalDeviceDto.setApprovalInfo(info);
+        approvalDeviceDto.setApproverId(adminObj);
+        approvalDeviceDto.setType(type);
+        approvalDeviceDto.setUserId(user);
+        if (project != null) {
+            approvalDeviceDto.setProjectName(project.getName());
+            approvalDeviceDto.setProjectId(project.getId());
+        }
+    }
+
     public void save(DeviceDto requestDto) {
         Projects project = projectsService.findByName(requestDto.getProjectName());
         if (project == null) {
@@ -101,34 +116,38 @@ public class DevicesService {
             devicesRepository.save(requestDto.toEntity());
         } else if (device == null) { // 신규 장비에 대한 대여 or 폐기 이력 남기기
             devicesRepository.save(requestDto.toEntity());
-            approvalDeviceDto.setDeviceId(requestDto.getId());
-            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
-            approvalDeviceDto.setApproverId(adminObj);
-            approvalDeviceDto.setType(DISPOSE_TYPE.equals(requestDto.getStatus()) ?
-                    DISPOSE_TYPE : APPROVAL_RENTAL);
-            approvalDeviceDto.setUserId(user);
+            String type = DISPOSE_TYPE.equals(requestDto.getStatus()) ?
+                    DISPOSE_TYPE : APPROVAL_RENTAL;
+            saveApprovalDeviceRecord(
+                        approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
+                        adminObj, type, user, project
+                    );
 //            approvalDeviceDto.setCreatedDate(null);
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         } else if (user != null) { // 기존 장비에 대한 대여 or 폐기 이력 남기기
             device.update(user, requestDto.getStatus(), requestDto.getIsUsable(), requestDto.getProjectId(),
                     requestDto.getManageDep(), requestDto.getDescription());
-            approvalDeviceDto.setDeviceId(requestDto.getId());
-            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
-            approvalDeviceDto.setApproverId(adminObj);
-            approvalDeviceDto.setType(DISPOSE_TYPE.equals(requestDto.getStatus()) ?
-                    DISPOSE_TYPE : APPROVAL_RENTAL);
-            approvalDeviceDto.setUserId(user);
+            String type = DISPOSE_TYPE.equals(requestDto.getStatus()) ?
+                    DISPOSE_TYPE : APPROVAL_RENTAL;
+            saveApprovalDeviceRecord(
+                    approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
+                    adminObj, type, user, project
+            );
 //            approvalDeviceDto.setCreatedDate(null);
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         } else if (username == null)  { // 기존 장비에 대한 반납
             Users preUser = device.getUserId();
+            if (device.getProjectId() != null) {
+                approvalDeviceDto.setProjectName(device.getProjectId().getName());
+                approvalDeviceDto.setProjectId(device.getProjectId().getId());
+            }
             device.update(null, requestDto.getStatus(), true, requestDto.getProjectId(),
                     requestDto.getManageDep(), requestDto.getDescription());
-            approvalDeviceDto.setDeviceId(requestDto.getId());
-            approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
-            approvalDeviceDto.setApproverId(adminObj);
-            approvalDeviceDto.setType(APPROVAL_RETURN);
-            approvalDeviceDto.setUserId(preUser);
+
+            saveApprovalDeviceRecord(
+                    approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
+                    adminObj, APPROVAL_RETURN, preUser, project
+            );
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         }
     }
