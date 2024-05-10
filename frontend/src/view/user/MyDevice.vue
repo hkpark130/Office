@@ -297,18 +297,22 @@ const Orders = defineComponent({
           purpose: (
             <div>
               <span class="ordered-amount spnDetails">{purpose}</span>
-              <span class="spnTooltip">
-                {spec}
-              </span>
+              {spec ?
+                <span class="spnTooltip">
+                  {spec}
+                </span>
+              : null}
             </div>
           ),
           purposeKey: purpose,
           description: (
             <div>
               <span class="ordered-date">{truncatedDescription}</span>
-              <span class="spnTooltip" >
-                  {description}
-              </span>
+              {description ?
+                <span class="spnTooltip" >
+                    {description}
+                </span>
+              : null}
             </div>
           ),
           action: action,

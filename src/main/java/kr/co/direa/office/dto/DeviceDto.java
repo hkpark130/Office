@@ -27,6 +27,7 @@ public class DeviceDto implements Serializable {
     private Long price;
     private String model;
     private String description;
+    private String adminDescription;
     private List<String> tags;
     private String company;
     private String sn;
@@ -59,6 +60,7 @@ public class DeviceDto implements Serializable {
         this.price = entity.getPrice();
         this.model = entity.getModel();
         this.description = entity.getDescription();
+        this.adminDescription = entity.getAdminDescription();
         this.company = entity.getCompany();
         this.sn = entity.getSn();
         this.status = entity.getStatus();
@@ -93,6 +95,7 @@ public class DeviceDto implements Serializable {
                 .price(price)
                 .model(model)
                 .description(description)
+                .adminDescription(adminDescription)
                 .company(company)
                 .sn(sn)
                 .status(status)

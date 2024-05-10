@@ -25,6 +25,7 @@ const actions = {
       return departmentList.data;
     } catch (err) {
       commit('fetchDepartmentListErr', err);
+      throw new Error(err);
     }
   },
 };

@@ -14,6 +14,7 @@ const actions = {
           commit('postDevicePurchaseSuccess', data);
         } catch (err) {
           commit('postDevicePurchaseErr', err);
+          throw new Error(err);
         }
     },
 };

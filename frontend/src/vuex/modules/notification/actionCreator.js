@@ -14,8 +14,8 @@ const actions = {
       const query = await DataService.get(`/get-notifications/${name}`);
       commit('getNotificationsSuccess', query.data);
     } catch (err) {
-      console.log(err);
       commit('getNotificationsErr', err);
+      throw new Error(err);
     }
   },
 };

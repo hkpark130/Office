@@ -34,6 +34,7 @@ const actions = {
       return;
     } catch (err) {
       commit('downloadAvailableDeviceListErr', err);
+      throw new Error(err);
     }
   },
 };

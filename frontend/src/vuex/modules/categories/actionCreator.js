@@ -31,6 +31,7 @@ const actions = {
       return catrgoryList.data;
     } catch (err) {
       commit('fetchCategoryListErr', err);
+      throw new Error(err);
     }
   },
 };

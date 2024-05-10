@@ -15,6 +15,7 @@ const actions = {
             commit('getDeviceSuccess', query.data);
         } catch (err) {
             commit('getDeviceErr', err);
+            throw new Error(err);
         }
     },
 };

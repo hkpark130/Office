@@ -167,8 +167,6 @@ import {
 } from "vue";
 import VueTypes from "vue-types";
 import { useStore } from "vuex";
-// import { useRoute } from "vue-router";
-import versions from "../demoData/changelog.json";
 
 export default defineComponent({
   name: "AsideItems",
@@ -226,7 +224,6 @@ export default defineComponent({
       modeChangeLight,
       modeChangeTopNav,
       modeChangeSideNav,
-      versions,
       isAdmin,
     };
   },

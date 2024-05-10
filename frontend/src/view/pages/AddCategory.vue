@@ -89,9 +89,7 @@
             alert('등록되었습니다.');
             push('/');
           }
-        ).catch((error) => {
-          throw new Error("에러 발생: " + error);
-        }); 
+        )
         
       };
   

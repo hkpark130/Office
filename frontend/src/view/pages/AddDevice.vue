@@ -64,7 +64,7 @@
                                     <template v-slot:content>
                                       <div>
                                         <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
-                                          {{ item.name }}
+                                          {{ item.printName }}
                                         </a>
                                         <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
                                       </div>
@@ -149,6 +149,16 @@
                                 </a-form-item>
 
                                 <a-form-item
+                                  name="adminDescription"
+                                  label="관리자용 비고"
+                                >
+                                  <a-textarea
+                                    v-model:value="formState.adminDescription"
+                                    :rows="5"
+                                  />
+                                </a-form-item>
+
+                                <a-form-item
                                   name="purchaseDate"
                                   label="구입일자"
                                   required
@@ -219,14 +229,20 @@
       const popoverVisible = ref(false);
 
       const categories = computed(() => state.caregoryList.data);
-      const projects = computed(() => state.projectList.data);
 
-      const searchData = toRef(projectList.data);
-      const filteredData = toRef(projectList.data);
+      const combinedArray = toRef(projectList.data.map(item => {
+        return {
+          name: `${item.name}`,
+          code: `${item.code}`,
+          printName: `${item.name} ${item.code}`,
+        };
+      }));
+      const searchData = toRef(combinedArray.value);
+      const filteredData = toRef(combinedArray.value);
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
-          return item.name.includes(e.target.value);
+          return item.printName.includes(e.target.value);
         });
         filteredData.value = data;
       };
@@ -240,6 +256,7 @@
         status: "정상",
         purpose: "개발",
         description: "",
+        adminDescription: "",
         model: "",
         company: "",
         sn: "",
@@ -324,7 +341,6 @@
   
       return {
         checkDup,
-        projects,
         categories,
         checkFinished,
         rules,

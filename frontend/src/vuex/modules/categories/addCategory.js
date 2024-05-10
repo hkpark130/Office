@@ -14,6 +14,7 @@ const actions = {
         commit('postAddCategorySuccess', data);
       } catch (err) {
         commit('postAddCategoryErr', err);
+        throw new Error(err);
       }
     },
 };

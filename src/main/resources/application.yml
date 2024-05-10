@@ -67,6 +67,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
     defer-datasource-initialization: true
   h2:
     console:
@@ -127,4 +130,7 @@ spring:
 #    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
     database-platform: org.hibernate.dialect.MariaDB103Dialect

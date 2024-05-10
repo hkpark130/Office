@@ -71,7 +71,7 @@
                                   <template v-slot:content>
                                     <div>
                                       <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
-                                        {{ item.name }}
+                                        {{ item.printName }}
                                       </a>
                                       <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
                                     </div>
@@ -189,6 +189,16 @@
                               </a-form-item>
 
                               <a-form-item
+                                name="adminDescription"
+                                label="관리자용 비고"
+                              >
+                                <a-textarea
+                                  v-model:value="formState.adminDescription"
+                                  :rows="5"
+                                />
+                              </a-form-item>
+
+                              <a-form-item
                                 name="purchaseDate"
                                 label="구입일자"
                                 required
@@ -266,7 +276,9 @@ const AddProduct = defineComponent({
 
     const combinedArray = toRef(projectList.data.map(item => {
       return {
-        name: `${item.name} ${item.code}`,
+        name: `${item.name}`,
+        code: `${item.code}`,
+        printName: `${item.name} ${item.code}`,
       };
     }));
     const searchData = toRef(combinedArray.value);
@@ -278,7 +290,7 @@ const AddProduct = defineComponent({
 
     const search = (e, searchDatas) => {
       const data = searchDatas.filter((item) => {
-        return item.name.includes(e.target.value);
+        return item.printName.includes(e.target.value);
       });
       filteredData.value = data;
     };
@@ -335,6 +347,7 @@ const AddProduct = defineComponent({
       status: "정상",
       purpose: "개발",
       description: "",
+      adminDescription: "",
       model: "",
       company: "",
       sn: "",
@@ -362,6 +375,7 @@ const AddProduct = defineComponent({
         formState.status = getDeviceById.value.status.toString();
         formState.purpose = getDeviceById.value.purpose;
         formState.description = getDeviceById.value.description;
+        formState.adminDescription = getDeviceById.value.adminDescription;
         formState.model = getDeviceById.value.model;
         formState.company = getDeviceById.value.company;
         formState.spec = getDeviceById.value.spec;

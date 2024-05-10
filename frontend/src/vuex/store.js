@@ -1,7 +1,6 @@
 import { createStore } from 'vuex';
 import themeLayout from './modules/themeLayout/actionCreator';
 import headerSearchData from './modules/headerSearch/actionCreator';
-import auth from './modules/authentication/axios/actionCreator';
 import devices from './modules/devices/actionCreator';
 import devicePurchase from './modules/devices/devicePurchase';
 import deviceById from './modules/devices/getDeviceById';
@@ -25,7 +24,6 @@ export default createStore({
   modules: {
     themeLayout,
     headerSearchData,
-    auth,
     devices,
     devicePurchase,
     devicesAdmin,

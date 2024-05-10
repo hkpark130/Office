@@ -83,6 +83,7 @@
                                   <a-textarea
                                     v-model:value="formState.spec"
                                     :rows="3"
+                                    placeholder="구매링크를 기재해주세요."
                                   />
                                 </a-form-item>
 
@@ -102,7 +103,7 @@
                                     <template v-slot:content>
                                       <div>
                                         <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
-                                          {{ item.name }}
+                                          {{ item.printName }}
                                         </a>
                                         <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
                                       </div>
@@ -120,7 +121,6 @@
                                   <a-textarea
                                     v-model:value="formState.reason"
                                     :rows="5"
-                                    placeholder="구매링크를 기재해주세요."
                                   />
                                 </a-form-item>
 
@@ -199,10 +199,16 @@
       dispatch('getUser');
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
-      const projects = ref(() => state.projectList.data);
-      // const getUser = computed(() => state.getUser.data);
-      const searchData = toRef(projectList.data);
-      const filteredData = toRef(projectList.data);
+
+      const combinedArray = toRef(projectList.data.map(item => {
+        return {
+          name: `${item.name}`,
+          code: `${item.code}`,
+          printName: `${item.name} ${item.code}`,
+        };
+      }));
+      const searchData = toRef(combinedArray.value);
+      const filteredData = toRef(combinedArray.value);
       const username = ref('');
       dispatch('getUser').then(() => {
           username.value = state.getUser.data.name;
@@ -210,7 +216,7 @@
 
       const search = (e, searchDatas) => {
         const data = searchDatas.filter((item) => {
-          return item.name.includes(e.target.value);
+          return item.printName.includes(e.target.value);
         });
         filteredData.value = data;
       };
@@ -276,7 +282,6 @@
         handleFinish,
         handleFinishFailed,
         formRef,
-        projects,
         categories,
         departments,
         disabledDate,

@@ -31,6 +31,7 @@ public class ApprovalDevicesService {
     private final DevicesRepository devicesRepository;
     private final UsersRepository usersRepository;
     private final UsersService usersService;
+    private final ProjectsService projectsService;
     private final TagsService tagsService;
     @Value("${constants.admin}") private String admin;
 
@@ -39,7 +40,7 @@ public class ApprovalDevicesService {
                                   ApprovalDevicesRepository approvalDevicesRepository,
                                   DevicesRepository devicesRepository,
                                   UsersRepository usersRepository,
-                                  UsersService usersService,
+                                  UsersService usersService, ProjectsService projectsService,
                                   TagsService tagsService
     ) {
         this.notificationsRepository = notificationsRepository;
@@ -47,6 +48,7 @@ public class ApprovalDevicesService {
         this.devicesRepository = devicesRepository;
         this.usersRepository = usersRepository;
         this.usersService = usersService;
+        this.projectsService = projectsService;
         this.tagsService = tagsService;
     }
 
@@ -170,6 +172,8 @@ public class ApprovalDevicesService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.getUserName()));
         String realUser = (request.getRealUser() != null)?request.getRealUser():null;
+        Projects project = (request.getProjectName() != null)?
+                projectsService.findByName(request.getProjectName()):null;
 
         device.setIsUsable(Optional.ofNullable(request.getIsUsable()).orElse(device.getIsUsable()));
         device.setStatus((request.getStatus()!=null)?request.getStatus():device.getStatus());

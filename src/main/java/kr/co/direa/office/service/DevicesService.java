@@ -49,7 +49,7 @@ public class DevicesService {
     public List<DeviceDto> findByIsUsableTrue() {
         // Device의 is_usable이 true인 기기와 반납예정 기기만 가져옴
 
-        List<Devices> devicesList = devicesRepository.findAll();
+        List<Devices> devicesList = devicesRepository.findAllJoinFetch();
         return devicesList.stream()
                 .filter(device -> {
                     Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
@@ -126,7 +126,7 @@ public class DevicesService {
             approvalDevicesRepository.save(approvalDeviceDto.toEntity());
         } else if (user != null) { // 기존 장비에 대한 대여 or 폐기 이력 남기기
             device.update(user, requestDto.getStatus(), requestDto.getIsUsable(), requestDto.getProjectId(),
-                    requestDto.getManageDep(), requestDto.getDescription());
+                    requestDto.getManageDep(), requestDto.getDescription(), requestDto.getAdminDescription());
             String type = DISPOSE_TYPE.equals(requestDto.getStatus()) ?
                     DISPOSE_TYPE : APPROVAL_RENTAL;
             saveApprovalDeviceRecord(
@@ -142,7 +142,7 @@ public class DevicesService {
                 approvalDeviceDto.setProjectId(device.getProjectId().getId());
             }
             device.update(null, requestDto.getStatus(), true, requestDto.getProjectId(),
-                    requestDto.getManageDep(), requestDto.getDescription());
+                    requestDto.getManageDep(), requestDto.getDescription(), requestDto.getAdminDescription());
 
             saveApprovalDeviceRecord(
                     approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
@@ -215,6 +215,7 @@ public class DevicesService {
                 requestDto.getStatus(),
                 requestDto.getPurpose(),
                 requestDto.getDescription(),
+                requestDto.getAdminDescription(),
                 requestDto.getModel(),
                 requestDto.getCompany(),
                 requestDto.getSn(),

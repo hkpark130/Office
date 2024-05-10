@@ -25,6 +25,7 @@ const actions = {
       return projectList.data;
     } catch (err) {
       commit('fetchProjectListErr', err);
+      throw new Error(err);
     }
   },
 };

@@ -35,8 +35,8 @@ const actions = {
       commit('getMyApprovalSuccess', query.data);
       return query.data;
     } catch (err) {
-      console.log(err);
       commit('getMyApprovalErr', err);
+      throw new Error(err);
     }
   },
 
@@ -47,6 +47,7 @@ const actions = {
       commit('approvalDeviceCancelSuccess');
     } catch (err) {
       commit('approvalDeviceCancelErr', err);
+      throw new Error(err);
     }
   },
 };
