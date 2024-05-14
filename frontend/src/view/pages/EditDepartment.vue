@@ -60,10 +60,6 @@
                               <a-form-item label="부서명" name="name" required>
                                 <a-input v-model:value="formState.name"/>
                               </a-form-item>
-
-                              <a-form-item label="코드" name="code" required>
-                                <a-input v-model:value="formState.code"/>
-                              </a-form-item>
                             </sdCards>
                           </div>
                         </a-col>
@@ -119,8 +115,7 @@ const AddProduct = defineComponent({
       return {
         id: `${item.id}`,
         name: `${item.name}`,
-        code: `${item.code}`,
-        printName: `${item.name} ${item.code}`,
+        printName: `${item.name}`,
       };
     }));
     const searchData = toRef(combinedArray.value);
@@ -136,20 +131,17 @@ const AddProduct = defineComponent({
     const onClickSearchList = (v) => {
       formState.new = "update";
       formState.id = v.id;
-      formState.code = v.code;
       formState.name = v.name;
     }
 
     const onChange = () => {
       formState.id = "";
       formState.name = "";
-      formState.code = "";
     };
 
     const formState = reactive({
       id: "",
       name: "",
-      code: "",
       new: "new",
       layout: "vertical",
     });

@@ -37,7 +37,6 @@ public class DepartmentsService {
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_DEPARTMENT,
                         "해당 부서가 없습니다. id = " + requestDto.getId())
         );
-        department.setCode(requestDto.getCode());
         department.setName(requestDto.getName());
         departmentsRepository.save(department);
     }
@@ -45,7 +44,6 @@ public class DepartmentsService {
     public void save(DepartmentDto requestDto) {
         Departments department = new Departments();
         department.setName(requestDto.getName());
-        department.setCode(requestDto.getCode());
         departmentsRepository.save(department);
     }
 

@@ -52,7 +52,6 @@ public class DeviceDto implements Serializable {
         this.realUser = entity.getRealUser();
         this.manageDep = entity.getManageDep();
         this.manageDepName = (this.manageDep != null) ? this.manageDep.getName():null;
-        this.manageDepCode = (this.manageDep != null) ? this.manageDep.getCode():null;
         this.categoryId = entity.getCategoryId();
         this.categoryName = (this.categoryId != null) ? this.categoryId.getName() : null;
         this.projectId = entity.getProjectId();
