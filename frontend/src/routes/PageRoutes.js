@@ -79,6 +79,16 @@ export default [
     component: () => import(/* webpackChunkName: "EditDevice" */ '@/view/pages/EditDevice.vue'),
   },
   {
+    name: 'edit-project',
+    path: '/edit-project',
+    component: () => import(/* webpackChunkName: "EditProject" */ '@/view/pages/EditProject.vue'),
+  },
+  {
+    name: 'edit-department',
+    path: '/edit-department',
+    component: () => import(/* webpackChunkName: "EditDepartment" */ '@/view/pages/EditDepartment.vue'),
+  },
+  {
     name: 'add-device',
     path: '/add-device',
     component: () => import(/* webpackChunkName: "AddDevice" */ '@/view/pages/AddDevice.vue'),

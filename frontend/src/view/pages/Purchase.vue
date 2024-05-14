@@ -88,7 +88,7 @@
                                 </a-form-item>
 
                                 <a-form-item
-                                  name="project"
+                                  name="projectName"
                                   initialValue=""
                                   label="프로젝트"
                                   @click="() => openPopover()"
@@ -111,7 +111,7 @@
                                     <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)" @keydown.enter.prevent/>
                                   </sdPopover>
                                   
-                                  <span>선택된 프로젝트: <b>{{ formState.project }}</b></span>
+                                  <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
                                 </a-form-item>
   
                                 <a-form-item
@@ -224,7 +224,7 @@
       const formState = reactive({
         category: "노트북",
         price: 0,
-        project: "본사",
+        projectName: "본사",
         purpose: "개발",
         userName: username,
         reason: "",
@@ -239,7 +239,7 @@
       }
 
       const onClickSearchList = (v) => {
-        formState.project = v;
+        formState.projectName = v;
         projectTmp.value = v;
         popoverVisible.value = false; 
       }

@@ -28,6 +28,40 @@ const actions = {
       throw new Error(err);
     }
   },
+
+  async submitEditDepartmentPut({ commit }, data) {
+    try {
+      commit('putEditDepartmentBegin');
+      await DataService.put('/api/edit-department', data);
+      commit('putEditDepartmentSuccess', data);
+    } catch (err) {
+      commit('putEditDepartmentErr', err);
+      throw new Error(err);
+    }
+  },
+
+  async submitAddDepartmentPost({ commit }, data) {
+    try {
+      commit('postAddDepartmentBegin');
+      await DataService.post('/api/add-department', data);
+      commit('postAddDepartmentSuccess', data);
+    } catch (err) {
+      commit('postAddDepartmentErr', err);
+      throw new Error(err);
+    }
+  },
+
+  async deleteDepartment({ commit }, departmentId) {
+    try {
+      commit('deleteDepartmentBegin');
+      await DataService.delete(`/api/department/${departmentId}`);
+      commit('deleteDepartmentSuccess');
+    } catch (err) {
+      commit('deleteDepartmentErr', err);
+      throw new Error(err);
+    }
+  },
+
 };
 
 export default {

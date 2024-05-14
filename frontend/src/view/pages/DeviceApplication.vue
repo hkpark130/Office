@@ -61,12 +61,12 @@
                                 </a-row>
 
                                 <a-form-item
-                                  name="manageDep"
+                                  name="departmentName"
                                   initialValue=""
                                   label="관리부서"
                                 >
                                   <a-select
-                                    v-model:value="formState.manageDep"
+                                    v-model:value="formState.departmentName"
                                     style="width: 100%"
                                   >
                                     <a-select-option
@@ -198,6 +198,7 @@
       const formRef = ref();
       const projectTmp = ref();
       state.getUser.data = getUserD.data;
+      const popoverVisible = ref(false);
 
       const combinedArray = toRef(projectList.data.map(item => {
         return {
@@ -298,6 +299,15 @@
       const handleCancel = () => {
         go(-1);
       };
+
+      const onClickSearchList = (v) => {
+        formState.projectName = v;
+        popoverVisible.value = false; 
+      }
+
+      const openPopover = () => {
+        popoverVisible.value = true; 
+      }
   
       return {
         submitValues,
@@ -318,6 +328,9 @@
         searchData,
         filteredData,
         search,
+        popoverVisible,
+        onClickSearchList,
+        openPopover,
       };
     },
   });

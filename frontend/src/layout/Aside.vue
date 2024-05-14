@@ -100,6 +100,20 @@
           </router-link>
         </a-menu-item>
 
+        <a-menu-item @click="toggleCollapsed" key="editProject">
+          <router-link to="/edit-project">
+            <sdFeatherIcons type="edit-3" />
+            <span> 프로젝트 편집 </span>
+          </router-link>
+        </a-menu-item>
+
+        <a-menu-item @click="toggleCollapsed" key="editDepartment">
+          <router-link to="/edit-department">
+            <sdFeatherIcons type="edit-3" />
+            <span> 부서 편집 </span>
+          </router-link>
+        </a-menu-item>
+
         <a-sub-menu key="manageDevice">
           <template v-slot:title
             ><sdFeatherIcons type="server" /><span>장비 관리 대장</span></template
