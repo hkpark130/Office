@@ -1,8 +1,6 @@
 package kr.co.direa.office.dto;
 
-import kr.co.direa.office.domain.ApprovalDevices;
-import kr.co.direa.office.domain.Devices;
-import kr.co.direa.office.domain.Users;
+import kr.co.direa.office.domain.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +28,12 @@ public class ApprovalDeviceDto implements Serializable {
     private String type;
     private LocalDateTime createdDate;
     private LocalDateTime deadline;
+    private String projectName;
+    private Long projectId;
+    private Long tmpProjectId;
+    private String tmpProjectName;
+    private Long tmpDepartmentId;
+    private String tmpDepartmentName;
 
     public ApprovalDeviceDto() {
         this.createdDate = LocalDateTime.now();
@@ -53,6 +57,12 @@ public class ApprovalDeviceDto implements Serializable {
         this.type = entity.getType();
         this.createdDate = (entity.getCreatedDate() != null) ? entity.getCreatedDate() : null;
         this.deadline = (entity.getDeadline() != null) ? entity.getDeadline() : null;
+        this.projectName = (entity.getProjectId() != null) ? entity.getProjectId().getName() : null;
+        this.projectId = (entity.getProjectId() != null) ? entity.getProjectId().getId() : null;
+        this.tmpProjectId = (entity.getTmpProject() != null) ? entity.getTmpProject().getId() : null;
+        this.tmpProjectName = (entity.getTmpProject() != null) ? entity.getTmpProject().getName() : null;
+        this.tmpDepartmentId = (entity.getTmpDepartment() != null) ? entity.getTmpDepartment().getId() : null;
+        this.tmpDepartmentName = (entity.getTmpDepartment() != null) ? entity.getTmpDepartment().getName() : null;
     }
 
     public ApprovalDevices toEntity() {
@@ -65,6 +75,9 @@ public class ApprovalDeviceDto implements Serializable {
                 .type(type)
                 .img(img)
                 .deadline(deadline)
+                .projectId((projectId != null) ? Projects.builder().id(projectId).build() : null)
+                .tmpProject((tmpProjectId != null) ? Projects.builder().id(tmpProjectId).build() : null)
+                .tmpDepartment((tmpDepartmentId != null) ? Departments.builder().id(tmpDepartmentId).build() : null)
                 .build();
     }
 

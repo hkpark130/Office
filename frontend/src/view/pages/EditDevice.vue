@@ -1,298 +1,309 @@
 <template>
-    <sdPageHeader title="장비 편집"></sdPageHeader>
-    <Main>
-      <a-row :gutter="15">
-        <a-col :xs="24">
-          <sdCards headless>
-            <a-row :gutter="25" justify="center">
-              <a-col :xxl="12" :md="16" :sm="24" :xs="24">
-                <a-row class="ant-row-middle" justify="center">
-                  <a-col :md="18" :xs="23" >
-                    <a-input placeholder="편집할 장비의 `관리번호` 를 입력해주세요." v-model:value="searcgDeviceId" />
-                  </a-col>
-                  <a-col :md="1" :xs="1" :class="rtl ? 'text-left' : 'text-right'">
-                    <a to="#" @click="searchDevice">
-                      <span class="certain-category-icon">
-                        <sdFeatherIcons type="search" size="25"/>
-                      </span>
-                    </a>
-                  </a-col>
-                </a-row>
+  <sdPageHeader title="장비 편집"></sdPageHeader>
+  <Main>
+    <a-row :gutter="15">
+      <a-col :xs="24">
+        <sdCards headless>
+          <a-row :gutter="25" justify="center">
+            <a-col :xxl="12" :md="16" :sm="24" :xs="24">
+              <a-row class="ant-row-middle" justify="center">
+                <a-col :md="18" :xs="23" >
+                  <a-input placeholder="편집할 장비의 `관리번호` 를 입력해주세요." v-model:value="searcgDeviceId" />
+                </a-col>
+                <a-col :md="1" :xs="1" :class="rtl ? 'text-left' : 'text-right'">
+                  <a to="#" @click="searchDevice">
+                    <span class="certain-category-icon">
+                      <sdFeatherIcons type="search" size="25"/>
+                    </span>
+                  </a>
+                </a-col>
+              </a-row>
 
-                <AddProductForm>
-                  <a-form
-                    :ref="formRef"
-                    style="width: 100%"
-                    :model="formState"
-                    :layout="formState.layout"
-                  >
-                    <BasicFormWrapper>
-                      <div class="add-product-block">
-                        <a-row :gutter="15">
-                          <a-col :xs="24">
-                            <div class="add-product-content">
-                              <sdCards title="About Device">
-                                <a-form-item
-                                  name="categoryName"
-                                  :initialValue="formState.categoryName"
-                                  label="품목"
-                                  required
+              <AddProductForm>
+                <a-form
+                  :ref="formRef"
+                  style="width: 100%"
+                  :model="formState"
+                  :layout="formState.layout"
+                >
+                  <BasicFormWrapper>
+                    <div class="add-product-block">
+                      <a-row :gutter="15">
+                        <a-col :xs="24">
+                          <div class="add-product-content">
+                            <sdCards title="About Device">
+                              <a-form-item
+                                name="categoryName"
+                                :initialValue="formState.categoryName"
+                                label="품목"
+                                required
+                              >
+                                <a-select
+                                  v-model:value="formState.categoryName"
+                                  style="width: 100%"
                                 >
-                                  <a-select
-                                    v-model:value="formState.categoryName"
-                                    style="width: 100%"
-                                  >
-                                    <a-select-option
-                                      v-for="category in categories"
-                                      :key="category.id"
-                                      :value="category.name"
-                                    >{{ category.name }}</a-select-option>
-                                  </a-select>
-                                </a-form-item>
+                                  <a-select-option
+                                    v-for="category in categories"
+                                    :key="category.id"
+                                    :value="category.name"
+                                  >{{ category.name }}</a-select-option>
+                                </a-select>
+                              </a-form-item>
 
-                                <a-form-item label="관리번호" required>
-                                  <div class="input-prepend-wrap">
-                                    <a-input name="id" v-model:value="formState.id" disabled/>
-                                  </div>
-                                </a-form-item>
+                              <a-form-item label="관리번호" required>
+                                <div class="input-prepend-wrap">
+                                  <a-input name="id" v-model:value="formState.id" disabled/>
+                                </div>
+                              </a-form-item>
 
-                                <a-form-item
-                                  name="projectName"
-                                  initialValue=""
-                                  label="프로젝트"
-                                  @click="() => openPopover()"
+                              <a-form-item
+                                name="projectName"
+                                initialValue=""
+                                label="프로젝트"
+                                @click="() => openPopover()"
+                              >
+                                <sdPopover
+                                  :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
+                                  :visible="popoverVisible"
+                                  title="프로젝트 리스트"
+                                  action="click"
                                 >
-                                  <sdPopover
-                                    :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
-                                    :visible="popoverVisible"
-                                    title="프로젝트 리스트"
-                                    action="click"
-                                  >
-                                    <template v-slot:content>
-                                      <div>
-                                        <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
-                                          {{ item.name }}
-                                        </a>
-                                        <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
-                                      </div>
-                                    </template>
-                                    <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)"  @keydown.enter.prevent/>
-                                  </sdPopover>
-                                  
-                                  <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
-                                </a-form-item>
+                                  <template v-slot:content>
+                                    <div>
+                                      <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
+                                        {{ item.printName }}
+                                      </a>
+                                      <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
+                                    </div>
+                                  </template>
+                                  <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)"  @keydown.enter.prevent/>
+                                </sdPopover>
+                                
+                                <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
+                              </a-form-item>
 
-                                <a-form-item
-                                  name="manageDepName"
-                                  initialValue=""
-                                  label="관리부서"
+                              <a-form-item
+                                name="manageDepName"
+                                initialValue=""
+                                label="관리부서"
+                              >
+                                <a-select
+                                  v-model:value="formState.manageDepName"
+                                  style="width: 100%"
                                 >
-                                  <a-select
-                                    v-model:value="formState.manageDepName"
-                                    style="width: 100%"
-                                  >
-                                    <a-select-option
-                                      v-for="department in departments"
-                                      :key="department.id"
-                                      :value="department.name"
-                                    >{{ department.name }}</a-select-option>
-                                  </a-select>
-                                </a-form-item>
+                                  <a-select-option
+                                    v-for="department in departments"
+                                    :key="department.id"
+                                    :value="department.name"
+                                  >{{ department.name }}</a-select-option>
+                                </a-select>
+                              </a-form-item>
 
-                                <a-row :gutter="15">
-                                  <a-col :span="12">
-                                    <a-form-item label="신청자" name="username">
-                                      <a-input v-model:value="formState.username"
-                                        placeholder="값 변경시 신청정보까지 변경됨"/>
-                                    </a-form-item>
-                                  </a-col>
+                              <a-row :gutter="15">
+                                <a-col :span="12">
+                                  <a-form-item label="신청자" name="username">
+                                    <a-input v-model:value="formState.username"
+                                      placeholder="값 변경시 신청정보까지 변경됨"/>
+                                  </a-form-item>
+                                </a-col>
 
-                                  <a-col :span="12">
-                                    <a-form-item label="사용자" name="realUser">
-                                      <a-input v-model:value="formState.realUser"
-                                        placeholder="빈 값일시 자동으로 신청자가 입력됨"/>
-                                    </a-form-item>
-                                  </a-col>
-                                </a-row>
+                                <a-col :span="12">
+                                  <a-form-item label="사용자" name="realUser">
+                                    <a-input v-model:value="formState.realUser"
+                                      placeholder="빈 값일시 자동으로 신청자가 입력됨"/>
+                                  </a-form-item>
+                                </a-col>
+                              </a-row>
 
-                                <a-row v-if="approvalInfo">
-                                  <a-col>
-                                    <p><b>승인 정보:</b> {{ approvalInfo }}</p>
-                                    <p><b>타입:</b> {{ approvalType }}</p>
-                                  </a-col>
-                                </a-row>
+                              <a-row v-if="approvalInfo">
+                                <a-col>
+                                  <p><b>승인 정보:</b> {{ approvalInfo }}</p>
+                                  <p><b>타입:</b> {{ approvalType }}</p>
+                                </a-col>
+                              </a-row>
 
-                                <a-form-item
+                              <a-form-item
+                                name="purpose"
+                                label="용도"
+                                required
+                              >
+                                <a-select
                                   name="purpose"
-                                  label="용도"
-                                  required
+                                  v-model:value="formState.purpose"
+                                  style="width: 100%"
                                 >
-                                  <a-select
-                                    name="purpose"
-                                    v-model:value="formState.purpose"
-                                    style="width: 100%"
+                                  <a-select-option value="개발"
+                                    >개발</a-select-option
                                   >
-                                    <a-select-option value="개발"
-                                      >개발</a-select-option
-                                    >
-                                    <a-select-option value="사무"
-                                      >사무</a-select-option
-                                    >
-                                  </a-select>
-                                </a-form-item>
+                                  <a-select-option value="사무"
+                                    >사무</a-select-option
+                                  >
+                                </a-select>
+                              </a-form-item>
 
-                                <a-form-item
-                                  name="spec"
-                                  label="사양"
-                                >
-                                  <a-textarea
-                                    v-model:value="formState.spec"
-                                    :rows="5"
-                                  />
-                                </a-form-item>
-  
-                                <a-form-item name="price" label="금액">
-                                  <div class="input-prepend-wrap">
-                                    <span class="input-prepend">
-                                      <sdFeatherIcons
-                                        type="dollar-sign"
-                                        size="14"
-                                      />
-                                    </span>
-                                    <a-input-number
-                                      v-model:value="formState.price"
-                                      style="width: 100%"
+                              <a-form-item
+                                name="spec"
+                                label="사양"
+                              >
+                                <a-textarea
+                                  v-model:value="formState.spec"
+                                  :rows="5"
+                                />
+                              </a-form-item>
+
+                              <a-form-item name="price" label="금액">
+                                <div class="input-prepend-wrap">
+                                  <span class="input-prepend">
+                                    <sdFeatherIcons
+                                      type="dollar-sign"
+                                      size="14"
                                     />
-                                  </div>
-                                </a-form-item>
-
-                                <a-form-item label="모델명">
-                                  <a-input name="model" v-model:value="formState.model"/>
-                                </a-form-item>
-
-                                <a-form-item label="제조사">
-                                  <a-input name="company" v-model:value="formState.company"/>
-                                </a-form-item>
-
-                                <a-form-item label="S/N">
-                                  <a-input name="sn" v-model:value="formState.sn"/>
-                                </a-form-item>
-  
-                                <a-form-item
-                                  name="description"
-                                  label="비고"
-                                >
-                                  <a-textarea
-                                    v-model:value="formState.description"
-                                    :rows="5"
+                                  </span>
+                                  <a-input-number
+                                    v-model:value="formState.price"
+                                    style="width: 100%"
                                   />
-                                </a-form-item>
+                                </div>
+                              </a-form-item>
 
-                                <a-form-item
-                                  name="purchaseDate"
-                                  label="구입일자"
-                                  required
-                                >
-                                  <DatePickerWrap>
-                                    <DatePickerWrapper>
-                                      <a-date-picker 
-                                        v-model:value="formState.purchaseDate"
-                                      />
-                                    </DatePickerWrapper>
-                                  </DatePickerWrap>
-                                </a-form-item>
-                              </sdCards>
-                            </div>
-                          </a-col>
-                        </a-row>
-                      </div>
-                      <div class="add-form-action">
-                        <a-form-item>
-                          <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
-                            Cancel
-                          </sdButton>
-                          <sdButton
-                            size="large"
-                            htmlType="submit"
-                            type="primary"
-                            @click="handleFinish"
-                            raised
-                          >
-                            Save
-                          </sdButton>
-                        </a-form-item>
-                      </div>
-                    </BasicFormWrapper>
-                  </a-form>
-                </AddProductForm>
-              </a-col>
-            </a-row>
-          </sdCards>
-        </a-col>
-      </a-row>
-    </Main>
-  </template>
-  <script lang="jsx">
-  import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
-  import { AddProductForm } from "./style";
-  import { DatePickerWrap } from './ui-elements-styled';
-  import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
-  import { useStore } from 'vuex';
-  import { useRouter } from 'vue-router';
-  import dayjs from 'dayjs';
-  import { projectList } from '@/vuex/modules/projects/load-data';
+                              <a-form-item label="모델명">
+                                <a-input name="model" v-model:value="formState.model"/>
+                              </a-form-item>
 
-  const AddProduct = defineComponent({
-    name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
-    data() {
-      const { dispatch } = useStore();
-      dispatch('fetchCategoryList');
-      dispatch('fetchDepartmentList');
-      dispatch('fetchProjectList');
-    },
-    setup() {
-      const submitValues = ref({});
-      const formRef = ref();
-      const { state, dispatch } = useStore();
-      const { push, go } = useRouter();
-      const projectTmp = ref();
-      const searcgDeviceId = ref();
-      const popoverVisible = ref(false);
-      const router = useRouter();
+                              <a-form-item label="제조사">
+                                <a-input name="company" v-model:value="formState.company"/>
+                              </a-form-item>
 
-      const categories = computed(() => state.caregoryList.data);
-      const departments = computed(() => state.departmentList.data);
+                              <a-form-item label="S/N">
+                                <a-input name="sn" v-model:value="formState.sn"/>
+                              </a-form-item>
 
-      const combinedArray = toRef(projectList.data.map(item => {
-        return {
-          name: `${item.name} ${item.code}`,
-        };
-      }));
-      const searchData = toRef(combinedArray.value);
-      const filteredData = toRef(combinedArray.value);
-      const getDeviceById = ref();
-      const getApproval = ref();
-      const approvalInfo = ref();
-      const approvalType = ref();
+                              <a-form-item
+                                name="description"
+                                label="비고"
+                              >
+                                <a-textarea
+                                  v-model:value="formState.description"
+                                  :rows="5"
+                                />
+                              </a-form-item>
 
-      const search = (e, searchDatas) => {
-        const data = searchDatas.filter((item) => {
-          return item.name.includes(e.target.value);
-        });
-        filteredData.value = data;
+                              <a-form-item
+                                name="adminDescription"
+                                label="관리자용 비고"
+                              >
+                                <a-textarea
+                                  v-model:value="formState.adminDescription"
+                                  :rows="5"
+                                />
+                              </a-form-item>
+
+                              <a-form-item
+                                name="purchaseDate"
+                                label="구입일자"
+                                required
+                              >
+                                <DatePickerWrap>
+                                  <DatePickerWrapper>
+                                    <a-date-picker 
+                                      v-model:value="formState.purchaseDate"
+                                    />
+                                  </DatePickerWrapper>
+                                </DatePickerWrap>
+                              </a-form-item>
+                            </sdCards>
+                          </div>
+                        </a-col>
+                      </a-row>
+                    </div>
+                    <div class="add-form-action">
+                      <a-form-item>
+                        <sdButton class="btn-cancel" size="large" @click.prevent="handleCancel">
+                          Cancel
+                        </sdButton>
+                        <sdButton
+                          size="large"
+                          htmlType="submit"
+                          type="primary"
+                          @click="handleFinish"
+                          raised
+                        >
+                          Save
+                        </sdButton>
+                      </a-form-item>
+                    </div>
+                  </BasicFormWrapper>
+                </a-form>
+              </AddProductForm>
+            </a-col>
+          </a-row>
+        </sdCards>
+      </a-col>
+    </a-row>
+  </Main>
+</template>
+<script lang="jsx">
+import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
+import { AddProductForm } from "./style";
+import { DatePickerWrap } from './ui-elements-styled';
+import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import dayjs from 'dayjs';
+import { projectList } from '@/vuex/modules/projects/load-data';
+
+const AddProduct = defineComponent({
+  name: "AddProduct",
+  components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
+  data() {
+    const { dispatch } = useStore();
+    dispatch('fetchCategoryList');
+    dispatch('fetchDepartmentList');
+    dispatch('fetchProjectList');
+  },
+  setup() {
+    const submitValues = ref({});
+    const formRef = ref();
+    const { state, dispatch } = useStore();
+    const { push, go } = useRouter();
+    const projectTmp = ref();
+    const searcgDeviceId = ref();
+    const popoverVisible = ref(false);
+    const router = useRouter();
+
+    const categories = computed(() => state.caregoryList.data);
+    const departments = computed(() => state.departmentList.data);
+
+    const combinedArray = toRef(projectList.data.map(item => {
+      return {
+        name: `${item.name}`,
+        code: `${item.code}`,
+        printName: `${item.name} ${item.code}`,
       };
+    }));
+    const searchData = toRef(combinedArray.value);
+    const filteredData = toRef(combinedArray.value);
+    const getDeviceById = ref();
+    const getApproval = ref();
+    const approvalInfo = ref();
+    const approvalType = ref();
 
-      if (router.currentRoute.value.params.deviceId !== '') {
-        dispatch('checkDuplication', router.currentRoute.value.params.deviceId).then((res) => {
-          if (res) {
-            alert('장비를 찾을 수 없습니다.');
-            return;
-          } else {
-            formState.id = router.currentRoute.value.params.deviceId;
-            dispatch('getDeviceById', router.currentRoute.value.params.deviceId).then(() => {
-              getDeviceById.value = state.deviceById.getDeviceData;
-            });
+    const search = (e, searchDatas) => {
+      const data = searchDatas.filter((item) => {
+        return item.printName.includes(e.target.value);
+      });
+      filteredData.value = data;
+    };
+
+    if (router.currentRoute.value.params.deviceId !== '') {
+      dispatch('checkDuplication', router.currentRoute.value.params.deviceId).then((res) => {
+        if (res) {
+          alert('장비를 찾을 수 없습니다.');
+          return;
+        } else {
+          formState.id = router.currentRoute.value.params.deviceId;
+          dispatch('getDeviceById', router.currentRoute.value.params.deviceId).then(() => {
+            getDeviceById.value = state.deviceById.getDeviceData;
             dispatch('getApprovalByDeviceId', router.currentRoute.value.params.deviceId).then(() => {
               getApproval.value = state.approvals.data;
               formState.username = getApproval.value.userName;
@@ -300,124 +311,126 @@
               approvalInfo.value = getApproval.value.approvalInfo;
               approvalType.value = getApproval.value.type;
             });
-          }
-        });        
-      }
-
-      const searchDevice = async () => {
-        const response = await dispatch('checkDuplication', searcgDeviceId.value);
-        if (response) {
-          alert('장비를 찾을 수 없습니다.');
-          return;
-        } else {
-          formState.id = searcgDeviceId.value;
-          await dispatch('getDeviceById', formState.id).then(() => {
-            getDeviceById.value = state.deviceById.getDeviceData;
-          });
-          await dispatch('getApprovalByDeviceId', formState.id).then(() => {
-            getApproval.value = state.approvals.data;
-            formState.username = getApproval.value.userName;
-            formState.realUser = (getDeviceById.value.realUser !== null)?getDeviceById.value.realUser:getApproval.value.userName;
-            approvalInfo.value = getApproval.value.approvalInfo;
-            approvalType.value = getApproval.value.type;
           });
         }
-      };
-  
-      const formState = reactive({
-        id: "",
-        username: "",
-        realUser: "",
-        categoryName: "노트북",
-        price: 0,
-        projectName: "본사",
-        manageDepName: "경영지원부",
-        status: "정상",
-        purpose: "개발",
-        description: "",
-        model: "",
-        company: "",
-        sn: "",
-        spec: "",
-        auto: "manual",
-        purchaseDate: "",
-        layout: "vertical",
-      });
+      });        
+    }
 
-      const onClickSearchList = (v) => {
-        formState.projectName = v;
-        popoverVisible.value = false; 
+    const searchDevice = async () => {
+      const response = await dispatch('checkDuplication', searcgDeviceId.value);
+      if (response) {
+        alert('장비를 찾을 수 없습니다.');
+        return;
+      } else {
+        formState.id = searcgDeviceId.value;
+        await dispatch('getDeviceById', formState.id).then(() => {
+          getDeviceById.value = state.deviceById.getDeviceData;
+        });
+        await dispatch('getApprovalByDeviceId', formState.id).then(() => {
+          getApproval.value = state.approvals.data;
+          formState.username = getApproval.value.userName;
+          formState.realUser = (getDeviceById.value.realUser !== null)?getDeviceById.value.realUser:getApproval.value.userName;
+          approvalInfo.value = getApproval.value.approvalInfo;
+          approvalType.value = getApproval.value.type;
+        });
       }
+    };
 
-      const openPopover = () => {
-        popoverVisible.value = true; 
+    const formState = reactive({
+      id: "",
+      username: "",
+      realUser: "",
+      categoryName: "노트북",
+      price: 0,
+      projectName: "본사",
+      manageDepName: "경영지원부",
+      status: "정상",
+      purpose: "개발",
+      description: "",
+      adminDescription: "",
+      model: "",
+      company: "",
+      sn: "",
+      spec: "",
+      auto: "manual",
+      purchaseDate: "",
+      layout: "vertical",
+    });
+
+    const onClickSearchList = (v) => {
+      formState.projectName = v;
+      popoverVisible.value = false; 
+    }
+
+    const openPopover = () => {
+      popoverVisible.value = true; 
+    }
+
+    watch(() => getDeviceById.value, (newId, oldId) => {
+      if (newId !== oldId) {
+        formState.categoryName = getDeviceById.value.categoryName;
+        formState.price = getDeviceById.value.price;
+        formState.projectName = (getDeviceById.value.projectId === null)?null:getDeviceById.value.projectId.name;
+        formState.manageDepName = (getDeviceById.value.manageDep === null)?null:getDeviceById.value.manageDep.name;
+        formState.status = getDeviceById.value.status.toString();
+        formState.purpose = getDeviceById.value.purpose;
+        formState.description = getDeviceById.value.description;
+        formState.adminDescription = getDeviceById.value.adminDescription;
+        formState.model = getDeviceById.value.model;
+        formState.company = getDeviceById.value.company;
+        formState.spec = getDeviceById.value.spec;
+        formState.sn = getDeviceById.value.sn;
+        formState.purchaseDate = (getDeviceById.value.purchaseDate === null) ? 
+          null : dayjs(getDeviceById.value.purchaseDate);
       }
+    });
 
-      watch(() => getDeviceById.value, (newId, oldId) => {
-        if (newId !== oldId) {
-          formState.categoryName = getDeviceById.value.categoryName;
-          formState.price = getDeviceById.value.price;
-          formState.projectName = (getDeviceById.value.projectId === null)?null:getDeviceById.value.projectId.name;
-          formState.manageDepName = (getDeviceById.value.manageDep === null)?null:getDeviceById.value.manageDep.name;
-          formState.status = getDeviceById.value.status.toString();
-          formState.purpose = getDeviceById.value.purpose;
-          formState.description = getDeviceById.value.description;
-          formState.model = getDeviceById.value.model;
-          formState.company = getDeviceById.value.company;
-          formState.spec = getDeviceById.value.spec;
-          formState.sn = getDeviceById.value.sn;
-          formState.purchaseDate = (getDeviceById.value.purchaseDate === null) ? 
-            null : dayjs(getDeviceById.value.purchaseDate);
-        }
-      });
-  
-      const handleFinish = () => {
-        if (!formState.id) {
-          alert('관리번호를 입력해 주세요.');
-          return;
-        }
-        
-        dispatch('submitEditDevicePut', formState).then(() => {
-          alert('수정되었습니다.');
-          push('/');
-        }).catch((error) => {
-          throw new Error("에러 발생: " + error);
-        }); 
-        
-      };
-  
-      const handleFinishFailed = (errors) => {
-        console.log(errors);
-      };
-  
-      const handleCancel = () => {
-        go(-1);
-      };
+    const handleFinish = () => {
+      if (!formState.id) {
+        alert('관리번호를 입력해 주세요.');
+        return;
+      }
+      
+      dispatch('submitEditDevicePut', formState).then(() => {
+        alert('수정되었습니다.');
+        push('/');
+      }).catch((error) => {
+        throw new Error("에러 발생: " + error);
+      }); 
+      
+    };
 
-      return {
-        categories,
-        submitValues,
-        formState,
-        handleFinish,
-        handleFinishFailed,
-        formRef,
-        searchData,
-        filteredData,
-        search,
-        onClickSearchList,
-        projectTmp,
-        searchDevice,
-        searcgDeviceId,
-        departments,
-        handleCancel,
-        popoverVisible,
-        openPopover,
-        approvalInfo,
-        approvalType,
-      };
-    },
-  });
-  
-  export default AddProduct;
-  </script>
-  
+    const handleFinishFailed = (errors) => {
+      console.log(errors);
+    };
+
+    const handleCancel = () => {
+      go(-1);
+    };
+
+    return {
+      categories,
+      submitValues,
+      formState,
+      handleFinish,
+      handleFinishFailed,
+      formRef,
+      searchData,
+      filteredData,
+      search,
+      onClickSearchList,
+      projectTmp,
+      searchDevice,
+      searcgDeviceId,
+      departments,
+      handleCancel,
+      popoverVisible,
+      openPopover,
+      approvalInfo,
+      approvalType,
+    };
+  },
+});
+
+export default AddProduct;
+</script>

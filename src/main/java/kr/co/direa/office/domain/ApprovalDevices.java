@@ -27,13 +27,32 @@ public class ApprovalDevices extends Approvals {
     @Column(name = "type")
     private String type;
 
+    @ManyToOne
+    @JoinColumn(name ="project_id", referencedColumnName = "id")
+    @Nullable
+    private Projects projectId; // history 기록용
+
+    @ManyToOne
+    @JoinColumn(name ="tmp_project", referencedColumnName = "id")
+    @Nullable
+    private Projects tmpProject;
+
+    @ManyToOne
+    @JoinColumn(name ="tmp_department", referencedColumnName = "id")
+    @Nullable
+    private Departments tmpDepartment;
+
     @Builder
     public ApprovalDevices(Users userId, String approvalInfo, String reason, Users approverId,
-                           Devices deviceId, String img, String type, LocalDateTime deadline) {
+                           Devices deviceId, String img, String type, LocalDateTime deadline,
+                            Projects projectId, Projects tmpProject, Departments tmpDepartment) {
         super(userId, approvalInfo, reason, approverId, deadline);
         this.deviceId = deviceId;
         this.img = img;
         this.type = type;
+        this.projectId = projectId;
+        this.tmpProject = tmpProject;
+        this.tmpDepartment = tmpDepartment;
     }
 
     public ApprovalDevices() {

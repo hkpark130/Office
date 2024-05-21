@@ -217,7 +217,7 @@ const Orders = defineComponent({
     const dataSource = computed(() =>
       orders.value.map((value) => {
         const { categoryName, manageDep, project, purpose, model, user, id, company, sn, 
-            purchaseDate, description, history } = value;
+            purchaseDate, description, history, spec } = value;
         const formattedPurchaseDate = (purchaseDate === null)?null:new Date(purchaseDate).toLocaleDateString('ko-KR',
               {
                 year: 'numeric',
@@ -230,12 +230,13 @@ const Orders = defineComponent({
               <div>
                 <span class="order-id spnDetails">{id}</span>
                 {history.length !== 0 ? (
-                  <span class="spnTooltip">
+                  <span class="spnTooltip" style="max-width: 600px; width:600px;">
                     <table class="historyTable">
                       <thead>
                         <tr>
                           <th>사용자</th>
                           <th>타입</th>
+                          <th>프로젝트</th>
                           <th>날짜</th>
                         </tr>
                       </thead>
@@ -244,6 +245,7 @@ const Orders = defineComponent({
                           <tr>
                             <td style="background-color:white;">{item.username}</td>
                             <td style="background-color:white;">{item.type}</td>
+                            <td style="background-color:white;">{item.projectName}</td>
                             <td style="background-color:white;">{item.modifiedDate}</td>
                           </tr>
                         ))}
@@ -260,10 +262,11 @@ const Orders = defineComponent({
           purpose: (
             <div>
               <span class="ordered-amount spnDetails">{purpose}</span>
-              <span class="spnTooltip">
-                  <strong>CPU: </strong>12C<br/>
-                  <strong>RAM: </strong>32G<br/>
-              </span>
+              {spec ? (
+                <span class="spnTooltip">
+                    {spec}
+                </span>
+              ) : null}
             </div>
           ),
           purposeKey: purpose,

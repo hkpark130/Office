@@ -51,6 +51,9 @@ public class Devices extends BaseTimeEntity{
     @Column(name = "description", length = 1000)
     private String description;
 
+    @Column(name = "admin_description", length = 1000)
+    private String adminDescription;
+
     @OneToMany(mappedBy = "device")
     private List<DeviceTag> deviceTags;
 
@@ -82,7 +85,7 @@ public class Devices extends BaseTimeEntity{
     public Devices(String id, Users userId, Departments manageDep, Categories categoryId, String spec,
                    Long price, String model, String description, String company,
                    Projects projectId, String sn, String status, Boolean isUsable, String purpose, Date purchaseDate,
-                   List<ApprovalDevices> approvalDevices) {
+                   List<ApprovalDevices> approvalDevices, String adminDescription) {
         this.id = id;
         this.userId = userId;
         this.manageDep = manageDep;
@@ -92,6 +95,7 @@ public class Devices extends BaseTimeEntity{
         this.price = price;
         this.model = model;
         this.description = description;
+        this.adminDescription = adminDescription;
         this.company = company;
         this.sn = sn;
         this.status = status;
@@ -102,7 +106,7 @@ public class Devices extends BaseTimeEntity{
     }
 
     public void update(Categories category, Projects project, Departments manageDep, long price, String status,
-                       String purpose, String description, String model, String company,
+                       String purpose, String description, String adminDescription, String model, String company,
                        String sn, String spec, Date purchaseDate) {
         this.categoryId = category;
         this.projectId = project;
@@ -111,6 +115,7 @@ public class Devices extends BaseTimeEntity{
         this.status = status;
         this.purpose = purpose;
         this.description = description;
+        this.adminDescription = adminDescription;
         this.model = model;
         this.company = company;
         this.sn = sn;
@@ -119,12 +124,13 @@ public class Devices extends BaseTimeEntity{
     }
 
     public void update(Users user, String status, Boolean isUsable, Projects project, Departments manageDep,
-                       String description) {
+                       String description, String adminDescription) {
         this.userId = user;
         this.status = status;
         this.isUsable = isUsable;
         this.projectId = project;
         this.manageDep = manageDep;
         this.description = description;
+        this.adminDescription = adminDescription;
     }
 }

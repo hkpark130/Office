@@ -22,4 +22,40 @@ export default {
     state.loading = false;
     state.error = err;
   },
+
+  putEditDepartmentBegin(state) {
+    state.loading = true;
+  },
+  putEditDepartmentSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  putEditDepartmentErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  postAddDepartmentBegin(state) {
+    state.loading = true;
+  },
+  postAddDepartmentSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  postAddDepartmentErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
+
+  deleteDepartmentBegin(state) {
+    state.loading = true;
+  },
+  deleteDepartmentSuccess(state, data) {
+    state.loading = false;
+    state.data = data;
+  },
+  deleteDepartmentErr(state, err) {
+    state.loading = false;
+    state.error = err;
+  },
 };

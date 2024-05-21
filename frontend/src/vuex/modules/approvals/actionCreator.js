@@ -15,6 +15,7 @@ const actions = {
             commit('getApprovalSuccess', query.data);
         } catch (err) {
             commit('getApprovalErr', err);
+            throw new Error(err);
         }
     },
 
@@ -26,6 +27,7 @@ const actions = {
           return query.data;
       } catch (err) {
           commit('getApprovalErrByDeviceId', err);
+          throw new Error(err);
       }
     },
 
@@ -36,6 +38,7 @@ const actions = {
           commit('approvalDeviceFinishSuccess', data);
         } catch (err) {
           commit('approvalDeviceFinishErr', err);
+          throw new Error(err);
         }
     },
 
@@ -46,6 +49,7 @@ const actions = {
           commit('editApprovalPutSuccess');
         } catch (err) {
           commit('editApprovalPutErr', err);
+          throw new Error(err);
         }
     },
 
@@ -56,6 +60,7 @@ const actions = {
           commit('approvalDeviceReturnSuccess', data);
         } catch (err) {
           commit('approvalDeviceReturnErr', err);
+          throw new Error(err);
         }
     },
 

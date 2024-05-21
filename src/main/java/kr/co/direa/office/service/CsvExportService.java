@@ -26,7 +26,8 @@ public class CsvExportService {
         try (CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
             csvPrinter.printRecord(
                     "id","categoryName","manageDepName","projectName","status","purpose",
-                    "spec","price","model","company","sn","isUsable","purchaseDate","description"
+                    "spec","price","model","company","sn","isUsable","purchaseDate","description",
+                    "adminDescription"
             );
             for (Devices device : devicesList) {
                 DeviceDto deviceDto = new DeviceDto(device);
@@ -34,7 +35,8 @@ public class CsvExportService {
                         deviceDto.getId(), deviceDto.getCategoryName(), deviceDto.getManageDepName(),
                         deviceDto.getProjectName(), deviceDto.getStatus(), deviceDto.getPurpose(), deviceDto.getSpec(),
                         deviceDto.getPrice(), deviceDto.getModel(), deviceDto.getCompany(), deviceDto.getSn(),
-                        deviceDto.getIsUsable(), deviceDto.getPurchaseDate(), deviceDto.getDescription()
+                        deviceDto.getIsUsable(), deviceDto.getPurchaseDate(), deviceDto.getDescription(),
+                        deviceDto.getAdminDescription()
                 );
             }
         } catch (IOException e) {

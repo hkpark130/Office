@@ -89,11 +89,14 @@ client.interceptors.response.use(
     const originalRequest = error.config;
     if (response) {
       if (response.status === 500) {
-        console.error(response.data);
         window.location.href = '/500?msg='+response.data;
       } else if (response.status === 403) {
         window.location.href = '/403';
-      }       
+      } else if (response.status === 404) {
+        window.location.href = '/404';
+      } else if (/^(4|5)/.test(response.status)) {
+        throw new Error(error.toJSON().message);
+      }
       else {
         return originalRequest;
       }

@@ -35,6 +35,7 @@ const actions = {
       commit('editMyDeviceSuccess');
     } catch (err) {
       commit('editMyDeviceErr', err);
+      throw new Error(err);
     }
   },
 
@@ -45,8 +46,8 @@ const actions = {
       commit('getMyDevicesSuccess', query.data);
       return query.data;
     } catch (err) {
-      console.log(err);
       commit('getMyDevicesErr', err);
+      throw new Error(err);
     }
   },
 };

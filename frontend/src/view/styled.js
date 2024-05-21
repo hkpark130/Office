@@ -1765,7 +1765,6 @@ const TableWrapper = Styled.div`
     .historyTable{
         align-items: center;
         border: 1px solid black;
-        
     }
     .historyTable td,tr {
         background-color:white;

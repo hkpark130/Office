@@ -15,6 +15,7 @@ const actions = {
       commit('commentPostSuccess');
     } catch (err) {
       commit('commentPostErr', err);
+      throw new Error(err);
     }
   },
 
@@ -25,6 +26,7 @@ const actions = {
       commit('getCommentSuccess', query.data);
     } catch (err) {
       commit('getCommentErr', err);
+      throw new Error(err);
     }
   },
 
@@ -35,6 +37,7 @@ const actions = {
       commit('deleteCommentSuccess');
     } catch (err) {
       commit('deleteCommentErr', err);
+      throw new Error(err);
     }
   },
 

@@ -78,7 +78,6 @@
                                 <a-form-item
                                   name="description"
                                   label="비고"
-                                  required
                                 >
                                   <a-textarea
                                     v-model:value="formState.description"

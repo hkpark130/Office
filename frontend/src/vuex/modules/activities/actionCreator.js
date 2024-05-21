@@ -15,6 +15,7 @@ const actions = {
       commit('fetchActivitiesSuccess', getActivities.data);
     } catch (err) {
       commit('fetchActivitiesErr', err);
+      throw new Error(err);
     }
   },
 
@@ -25,6 +26,7 @@ const actions = {
       commit('deleteNotificationSuccess');
     } catch (err) {
       commit('deleteNotificationErr', err);
+      throw new Error(err);
     }
   },
 

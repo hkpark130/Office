@@ -273,7 +273,7 @@ const Orders = defineComponent({
         let returnIcon = null;
         let editIcon = null;
         const { categoryName, manageDepName, projectName, purpose, model, history, approvalInfo, realUser,
-          username, id, company, sn, purchaseDate, spec, description, approvalType, approvalId, status } = value;
+          username, id, company, sn, purchaseDate, spec, description, adminDescription, approvalType, approvalId, status } = value;
         const formattedPurchaseDate = (purchaseDate === null) ? null : new Date(purchaseDate).toLocaleDateString('ko-KR',
               {
                 year: 'numeric',
@@ -298,12 +298,13 @@ const Orders = defineComponent({
             <div>
               <span class="order-id spnDetails">{id}</span>
               {history.length !== 0 ? (
-                <span class="spnTooltip">
+                <span class="spnTooltip" style="max-width: 600px; width:600px;">
                   <table class="historyTable">
                     <thead>
                       <tr>
                         <th>사용자</th>
                         <th>타입</th>
+                        <th>프로젝트</th>
                         <th>날짜</th>
                       </tr>
                     </thead>
@@ -312,6 +313,7 @@ const Orders = defineComponent({
                         <tr>
                           <td style="background-color:white;">{item.username}</td>
                           <td style="background-color:white;">{item.type}</td>
+                          <td style="background-color:white;">{item.projectName}</td>
                           <td style="background-color:white;">{item.modifiedDate}</td>
                         </tr>
                       ))}
@@ -324,7 +326,16 @@ const Orders = defineComponent({
           categoryNameKey: categoryName,
           categoryName: <span class="customer-name">{categoryName}</span>,
           userKey: username,
-          user: <span class="customer-name">{(realUser)?realUser:username}</span>,
+          user: (
+            <div>
+              <span class="customer-name spnDetails">{(realUser)?realUser:username}</span>
+              {description ?
+                <span class="spnTooltip">
+                  {description}
+                </span>
+              : null}
+            </div>
+          ),
           status: status,
           purpose: (
             <div>
@@ -332,7 +343,7 @@ const Orders = defineComponent({
               <span class="spnTooltip">
                 <strong>스펙: </strong>{spec}<br />
                 <hr/>
-                {description}
+                {adminDescription}
               </span>
             </div>
           ),

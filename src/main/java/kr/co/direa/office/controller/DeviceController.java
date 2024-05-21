@@ -117,7 +117,7 @@ public class DeviceController {
         devicesService.editDescription(request);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -135,7 +135,7 @@ public class DeviceController {
         devicesService.save(requestDto);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -144,7 +144,7 @@ public class DeviceController {
         devicesService.update(requestDto);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 

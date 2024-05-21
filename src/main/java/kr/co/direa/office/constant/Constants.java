@@ -18,5 +18,6 @@ public class Constants {
     public static final String COMMENT_TYPE = "댓글";
     public static final String EDIT_TYPE = "수정";
     public static final String PURCHASE_TYPE = "구매";
+    public static final String SUCCESS = "success";
 
 }

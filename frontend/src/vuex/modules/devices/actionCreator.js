@@ -34,6 +34,7 @@ const actions = {
       commit('postDeviceApplicationSuccess', data);
     } catch (err) {
       commit('postDeviceApplicationErr', err);
+      throw new Error(err);
     }
   },
 
@@ -44,6 +45,7 @@ const actions = {
       commit('postDeviceReturnSuccess', data);
     } catch (err) {
       commit('postDeviceReturnErr', err);
+      throw new Error(err);
     }
   },
 
@@ -54,6 +56,7 @@ const actions = {
       commit('postDeviceDisposeSuccess', data);
     } catch (err) {
       commit('postDeviceDisposeErr', err);
+      throw new Error(err);
     }
   },
 
@@ -66,6 +69,7 @@ const actions = {
       commit('adminReturnDeviceSuccess', approvalId);
     } catch (err) {
       commit('adminReturnDeviceErr', err);
+      throw new Error(err);
     }
   },
 
@@ -76,6 +80,7 @@ const actions = {
       commit('adminDisposeDeviceSuccess', deviceId);
     } catch (err) {
       commit('adminDisposeDeviceErr', err);
+      throw new Error(err);
     }
   },
 
@@ -86,6 +91,7 @@ const actions = {
       commit('adminRecoveryDeviceSuccess', deviceId);
     } catch (err) {
       commit('adminRecoveryDeviceErr', err);
+      throw new Error(err);
     }
   },
 
@@ -97,6 +103,7 @@ const actions = {
       return availableDeviceList.data;
     } catch (err) {
       commit('fetchAvailableDeviceListErr', err);
+      throw new Error(err);
     }
   },
 
