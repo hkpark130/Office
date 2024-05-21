@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static kr.co.direa.office.constant.Constants.SUCCESS;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comments")
@@ -40,7 +42,7 @@ public class CommentController {
                 notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -57,7 +59,7 @@ public class CommentController {
         commentsService.delete(commentId);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 

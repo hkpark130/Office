@@ -136,13 +136,9 @@ const AddProduct = defineComponent({
             location.reload();
           });
         }
-      } catch (error) {
-        console.error(error);
+      } catch (error) { // validate 실패시 처리 내용
+        alert('입력 값을 확인해 주세요.');
       }
-    };
-
-    const handleFinishFailed = (errors) => {
-      console.log(errors);
     };
 
     const handleCancel = () => {
@@ -150,23 +146,27 @@ const AddProduct = defineComponent({
     };
 
     const handleDelete = () => {
-      if (formState.new === 'update' && formState.code !== null) {
-        dispatch('deleteProject', formState.id)
-          .then(() => {
-              alert('삭제되었습니다.');
-              location.reload();
-            }
-          );
-      } else {
+      if (formState.code === null) {
         alert("삭제할 프로젝트를 검색해주세요.");
+        return;
       }
-      
+
+      if (formState.new !== 'update') {
+        alert("삭제할 프로젝트를 검색해주세요.");
+        return;
+      }
+
+      dispatch('deleteProject', formState.id)
+        .then(() => {
+            alert('삭제되었습니다.');
+            location.reload();
+          }
+        );
     };
 
     return {
       formState,
       handleFinish,
-      handleFinishFailed,
       formRef,
       searchProject,
       searchProjectCode,

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static kr.co.direa.office.constant.Constants.SUCCESS;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -40,7 +42,7 @@ public class ProjectController {
         projectsService.update(requestDto);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -49,7 +51,7 @@ public class ProjectController {
         projectsService.save(requestDto);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -58,7 +60,7 @@ public class ProjectController {
         projectsService.delete(projectId);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static kr.co.direa.office.constant.Constants.SUCCESS;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -34,7 +36,7 @@ public class CategoryController {
         categoriesService.save(requestDto);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
