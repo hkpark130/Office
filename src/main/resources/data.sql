@@ -3,18 +3,18 @@ INSERT INTO categories (name, img) values ('서버', 'server.png');
 INSERT INTO categories (name, img) values ('모니터', 'monitor.png');
 INSERT INTO categories (name, img) values ('PC본체', 'pc.png');
 
-INSERT INTO departments (name, code) VALUES ('경영지원부', '0052');
-INSERT INTO departments (name, code) VALUES ('영업본부', '0049');
-INSERT INTO departments (name, code) VALUES ('제품1팀', '0032');
-INSERT INTO departments (name, code) VALUES ('제품1팀(그외)', '0021');
-INSERT INTO departments (name, code) VALUES ('제품2팀', '0037');
-INSERT INTO departments (name, code) VALUES ('제품2팀(그외)', '0108');
-INSERT INTO departments (name, code) VALUES ('제품3팀', '0109');
-INSERT INTO departments (name, code) VALUES ('제품4팀', '0036');
-INSERT INTO departments (name, code) VALUES ('제품4팀(그외)', '0024');
-INSERT INTO departments (name, code) VALUES ('기술영업/컨설팅', '0173');
-INSERT INTO departments (name, code) VALUES ('데이터플랫폼사업부', '0056');
-INSERT INTO departments (name, code) VALUES ('SI사업부', '0054');
+INSERT INTO departments (name) VALUES ('경영지원부');
+INSERT INTO departments (name) VALUES ('영업본부');
+INSERT INTO departments (name) VALUES ('제품1팀');
+INSERT INTO departments (name) VALUES ('제품1팀(그외)');
+INSERT INTO departments (name) VALUES ('제품2팀');
+INSERT INTO departments (name) VALUES ('제품2팀(그외)');
+INSERT INTO departments (name) VALUES ('제품3팀');
+INSERT INTO departments (name) VALUES ('제품4팀');
+INSERT INTO departments (name) VALUES ('제품4팀(그외)');
+INSERT INTO departments (name) VALUES ('기술영업/컨설팅');
+INSERT INTO departments (name) VALUES ('데이터플랫폼사업부');
+INSERT INTO departments (name) VALUES ('SI사업부');
 
 -- insert into users (auth,department_id,username) values ('Admin',null,'test');
 

@@ -3,10 +3,12 @@ package kr.co.direa.office.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "projects")
 @Table(name = "projects")
 @Getter
+@Setter
 public class Projects {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

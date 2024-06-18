@@ -64,7 +64,6 @@
                                 <a-form-item
                                   name="description"
                                   label="비고"
-                                  required
                                 >
                                   <a-textarea
                                     v-model:value="formState.description"
@@ -215,7 +214,6 @@
       
       const getDeviceById = computed(() => state.deviceById.getDeviceData);
       const getUser = computed(() => state.getUser.data);
-  
       const formState = reactive({
         deviceId: router.currentRoute.value.params.deviceId,
         category: getDeviceById.value.categoryName,
@@ -225,6 +223,7 @@
         purpose: getDeviceById.value.purpose,
         manageDep: "",
         project: "",
+        projectName: getDeviceById.value.projectName,
         deadline: "",
         userName: getUser.value.name,
         realUser: getDeviceById.value.realUser,

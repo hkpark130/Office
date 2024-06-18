@@ -14,6 +14,7 @@ const actions = {
       commit('putEditDeviceSuccess', data);
     } catch (err) {
       commit('putEditDeviceErr', err);
+      throw new Error(err);
     }
   },
 };

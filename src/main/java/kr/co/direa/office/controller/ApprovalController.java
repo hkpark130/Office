@@ -43,7 +43,7 @@ public class ApprovalController {
                 notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -64,7 +64,7 @@ public class ApprovalController {
                 notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -84,7 +84,7 @@ public class ApprovalController {
                 notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -104,7 +104,7 @@ public class ApprovalController {
                 notificationsService.findByUsername(admin));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -159,7 +159,7 @@ public class ApprovalController {
                 notificationsService.findByUsername(notificationDto.getReceiver()));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -180,7 +180,7 @@ public class ApprovalController {
                 notificationsService.findByUsername(notificationDto.getReceiver()));
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -191,7 +191,7 @@ public class ApprovalController {
         approvalDevicesService.editReasonFromRequest(request);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -202,7 +202,7 @@ public class ApprovalController {
         approvalDevicesService.setReturnByIdAsAdmin(approvalId);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -213,7 +213,7 @@ public class ApprovalController {
         approvalDevicesService.setDisposeByIdAsAdmin(deviceId);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -224,7 +224,7 @@ public class ApprovalController {
         approvalDevicesService.setRecoveryByIdAsAdmin(deviceId);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 
@@ -235,7 +235,7 @@ public class ApprovalController {
         approvalDevicesService.deleteById(approvalId);
 
         return ResponseEntity.ok(
-                "success"
+                SUCCESS
         );
     }
 

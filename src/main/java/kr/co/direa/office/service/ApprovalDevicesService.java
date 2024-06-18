@@ -31,6 +31,8 @@ public class ApprovalDevicesService {
     private final DevicesRepository devicesRepository;
     private final UsersRepository usersRepository;
     private final UsersService usersService;
+    private final ProjectsService projectsService;
+    private final DepartmentsService departmentsService;
     private final TagsService tagsService;
     @Value("${constants.admin}") private String admin;
 
@@ -39,7 +41,8 @@ public class ApprovalDevicesService {
                                   ApprovalDevicesRepository approvalDevicesRepository,
                                   DevicesRepository devicesRepository,
                                   UsersRepository usersRepository,
-                                  UsersService usersService,
+                                  UsersService usersService, ProjectsService projectsService,
+                                  DepartmentsService departmentsService,
                                   TagsService tagsService
     ) {
         this.notificationsRepository = notificationsRepository;
@@ -47,6 +50,8 @@ public class ApprovalDevicesService {
         this.devicesRepository = devicesRepository;
         this.usersRepository = usersRepository;
         this.usersService = usersService;
+        this.projectsService = projectsService;
+        this.departmentsService = departmentsService;
         this.tagsService = tagsService;
     }
 
@@ -73,7 +78,9 @@ public class ApprovalDevicesService {
         Devices device = approvalDevices.getDeviceId();
 
         if (device != null && isUsable != null && APPROVAL_COMPLETED.equals(approvalInfo)) {
-            updateDeviceStatus(device, approvalType, isUsable, user);
+            updateDeviceStatus(device, approvalType, isUsable, user,
+                        approvalDevices.getTmpProject(), approvalDevices.getTmpDepartment()
+                    );
             devicesRepository.save(device);
         }
 
@@ -92,7 +99,9 @@ public class ApprovalDevicesService {
         approvalDevicesRepository.save(approvalDevices);
     }
 
-    private void updateDeviceStatus(Devices device, String approvalType, Boolean isUsable, Users user) {
+    private void updateDeviceStatus(Devices device, String approvalType, Boolean isUsable, Users user,
+                                    Projects tmpProject, Departments tmpDepartment
+    ) {
         // 승인완료 시점
         switch (approvalType) {
             case APPROVAL_RETURN:
@@ -103,6 +112,8 @@ public class ApprovalDevicesService {
             case APPROVAL_RENTAL:
                 device.setIsUsable(false);
                 device.setUserId(user);
+                device.setProjectId(tmpProject);
+                device.setManageDep(tmpDepartment);
                 tagsService.deleteTagsByDeviceId(device.getId());
                 break;
             case DISPOSE_TYPE:
@@ -170,6 +181,10 @@ public class ApprovalDevicesService {
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.getUserName()));
         String realUser = (request.getRealUser() != null)?request.getRealUser():null;
+        Projects project = (request.getProjectName() != null)?
+                projectsService.findByName(request.getProjectName()):null;
+        Departments department = (request.getDepartmentName() != null)?
+                departmentsService.findByName(request.getDepartmentName()):null;
 
         device.setIsUsable(Optional.ofNullable(request.getIsUsable()).orElse(device.getIsUsable()));
         device.setStatus((request.getStatus()!=null)?request.getStatus():device.getStatus());
@@ -187,6 +202,8 @@ public class ApprovalDevicesService {
                 (request.getDeadline() != null)?
                         LocalDateTime.parse(request.getDeadline().toString().substring(0, 19)):null
         );
+        approvalDeviceDto.setTmpProjectId((project != null)?project.getId():null);
+        approvalDeviceDto.setTmpDepartmentId((department != null)?department.getId():null);
 
         return approvalDeviceDto;
     }
@@ -195,6 +212,10 @@ public class ApprovalDevicesService {
         Users user = usersRepository.findByUsername(request.getUserName())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
                         "해당 유저가 없습니다. username=" + request.getUserName()));
+        Projects project = (request.getProjectName() != null)?
+                projectsService.findByName(request.getProjectName()):null;
+        Departments department = (request.getDepartmentName() != null)?
+                departmentsService.findByName(request.getDepartmentName()):null;
 
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
         approvalDeviceDto.setUserId(user);
@@ -205,6 +226,8 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setDeadline(
                 LocalDateTime.parse(request.getDeadline().toString().substring(0, 19))
         );
+        approvalDeviceDto.setTmpProjectId((project != null)?project.getId():null);
+        approvalDeviceDto.setTmpDepartmentId((department != null)?department.getId():null);
 
         return approvalDeviceDto;
     }
@@ -229,8 +252,12 @@ public class ApprovalDevicesService {
         histories.forEach(history -> {
             Map<String, Object> map = new HashMap<>();
             map.put("username",  Optional.ofNullable(history.getUserId())
-                    .map(Users::getUsername)
-                    .orElse("알 수 없음"));
+                            .map(Users::getUsername)
+                            .orElse("알 수 없음"));
+            map.put("projectName",
+                    Optional.ofNullable(history.getProjectId())
+                            .map(Projects::getName)
+                            .orElse("알 수 없음"));
             map.put("type", history.getType());
             map.put("modifiedDate", history.getModifiedDate());
             historyList.add(map);

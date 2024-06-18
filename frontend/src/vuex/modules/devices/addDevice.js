@@ -15,6 +15,7 @@ const actions = {
         commit('postAddDeviceSuccess', data);
       } catch (err) {
         commit('postAddDeviceErr', err);
+        throw new Error(err);
       }
     },
     async checkDuplication({ commit }, deviceId) {
@@ -26,6 +27,7 @@ const actions = {
       } catch (err) {
         console.log(err);
         commit('checkDuplicationErr', err);
+        throw new Error(err);
       }
     },
 };

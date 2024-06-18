@@ -32,4 +32,7 @@ public interface DevicesRepository extends JpaRepository<Devices, String> {
     List<Devices> findByStatus(@Param("status") String status);
 
     List<Devices> findByStatusNot(String status);
+
+    @Query(value = "SELECT d FROM devices d LEFT JOIN FETCH d.approvalDevices")
+    List<Devices> findAllJoinFetch();
 }

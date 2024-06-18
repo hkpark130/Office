@@ -18,7 +18,8 @@ jasypt:
 constants:
   keycloak-url: ENC(6UeJ0QC/B9zHz+T/wXKKWgXJ5/FYBK7xF/dWVCpNweN14MZNdJ9fXbDYax1nBwyWg8X1huwRtyE5IhPrn9V7SQ==)
   client-secret: ENC(qSvRXUFAk4C9Xtt/B1jEA0G7+0hvvhg1mdmeTAKTrAAOMrv1kGy3XGTuASCtksADAtj9/EUh3Lo9fEIKZV+hOuZEYOLKTKWYWVXTynEStSg=)
-  frontend: ENC(nSc9Szy0v11B08V5HWEZXSvjgsVpFtr2r4ZVvoDFvF0xVrsjRFJcK0zCfYzxzla6Erz+VePthW79MC00oZ/+Aw==)
+#  frontend: ENC(nSc9Szy0v11B08V5HWEZXSvjgsVpFtr2r4ZVvoDFvF0xVrsjRFJcK0zCfYzxzla6Erz+VePthW79MC00oZ/+Aw==)
+  frontend: http://backoffice.maas:8080
   admin: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
   admin-pw: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
@@ -66,6 +67,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
     defer-datasource-initialization: true
   h2:
     console:
@@ -80,7 +84,8 @@ jasypt:
 constants:
   keycloak-url: ENC(0dZk38oB1Gm3e7Xl3eb4zTevbp2RREhkLUvkdgRz/heOSh4GtqkJ5rvjcE1umUIkxoquMtiE+GX/cmhZzIL4Ig==)
   client-secret: ENC(mwGuQuXgOPVZ+upjEIGrt9fJMwuc7omECSvUOtaZr1ylbEqN/x+Jp5eh4tx9qQb9YEhQiOz464nJVmh2jJAvkaLdMnq6uwwmX8NfN+IVAxI=)
-  frontend: ENC(Z1An8Md7xBH929+x412M2wLdnfQyYQWb7+Wv+cCcsNn5fFQOxw2tQnMLepuVzS5Mw4nC44ijm6rCjslaqb1nPQ==)
+  #  frontend: ENC(Z1An8Md7xBH929+x412M2wLdnfQyYQWb7+Wv+cCcsNn5fFQOxw2tQnMLepuVzS5Mw4nC44ijm6rCjslaqb1nPQ==)
+  frontend: ENC(RcH+KV2NQS7IRpmSUINmtSTI0UcJwigAhmkHqGSf/i8GzExMiUfUd1w7YJ2Tj8ZZ1oG4+G+atBAqRwHY9XzC2SwQkoBTcDdy1nbnYjgphSg=)
   admin: ENC(0mMXBHi59yaWXWRLtiIXGZif4zwsf+futDzetVwJFnX3hxhhZtQZ44QDkI2gku/U)
   admin-id: ENC(3mRJGuDfvxET2n5ICtiA4eLRcLwwXweOzaiykNc0aqOe80Q7BMcSkWpF62HEsL8sIVPjOmbTYz7QEm2+/rVjXK7PGZWydMvBIbw/3otn5Pw=)
   admin-pw: ENC(PLQ+PdMv/lbWmyrFhmyd7ubt7bINwvyVjDGMGV+Xsy16CqnZyl+9/HSAhgbNS2j5)
@@ -125,4 +130,7 @@ spring:
 #    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
     database-platform: org.hibernate.dialect.MariaDB103Dialect

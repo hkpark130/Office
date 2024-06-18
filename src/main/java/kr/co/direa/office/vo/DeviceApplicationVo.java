@@ -24,6 +24,8 @@ public class DeviceApplicationVo {
     private String devicePurpose;
     private String description;
     private String categoryName;
+    private String projectName;
+    private String departmentName;
     private String img;
     private String type;
     private String status;

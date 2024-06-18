@@ -5,15 +5,17 @@
         <a-col :xs="24">
           <sdCards headless>
             <a-row :gutter="25" justify="center">
-              <div><h3>예시 양식</h3>
-                <a-table
-                  :columns="formatKeys"
-                  :dataSource="formatData"
-                  :pagination="false"
-                  style="white-space: pre-line;"
-                />
-              </div>
-              <a-col :xxl="12" :md="16" :sm="24" :xs="24">
+              <a-col :xxl="22" :md="16" :sm="24" :xs="24">
+                <div>
+                  <h3>예시 양식</h3>
+                  <a-table
+                    :columns="formatKeys"
+                    :dataSource="formatData"
+                    :pagination="false"
+                    style="overflow-y: auto;"
+
+                  />
+                </div>
                 <AddProductForm>
                   <a-form
                     :ref="formRef"
@@ -98,7 +100,7 @@
 
       const optionalColumns = [
         "manageDepName","projectName","purpose","purchaseDate",
-        "status", "spec","price","model","company","sn","description", "username"
+        "status", "spec","price","model","company","sn","description", "adminDescription", "username"
       ];
 
       const columns = requiredColumns.concat(optionalColumns);
@@ -292,6 +294,11 @@
           key: 'description',
         },
         {
+          title: 'adminDescription',
+          dataIndex: 'adminDescription',
+          key: 'adminDescription',
+        },
+        {
           title: 'username',
           dataIndex: 'username',
           key: 'username',
@@ -313,12 +320,13 @@
         "isUsable": "true",
         "purchaseDate": "2024-02-01",
         "description": "부팅 느림",
+        "adminDescription": "부팅 느림",
         "username": "박현경",
       }]);
 
       const formatData = computed(() =>
         formatState.value.map((value) => {
-          const { id, categoryName, purpose, manageDepName, spec, price, model, description, 
+          const { id, categoryName, purpose, manageDepName, spec, price, model, description, adminDescription,
             projectName, sn, status, company, isUsable, purchaseDate, username } = value;
           return {
             key: id,
@@ -331,6 +339,7 @@
             price: <span>{price}</span>,
             model: <span>{model}</span>,
             description: <span>{description}</span>,
+            adminDescription: <span>{adminDescription}</span>,
             projectName: <span>{projectName}</span>,
             company: <span>{company}</span>,
             sn: <span>{sn}</span>,

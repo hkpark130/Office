@@ -61,13 +61,13 @@
                                 </a-row>
 
                                 <a-form-item
-                                  name="manageDep"
+                                  name="departmentName"
                                   initialValue=""
                                   label="관리부서"
                                 >
                                   <a-select
-                                    v-model:value="formState.manageDep"
-                                    style="width: 100%" disabled
+                                    v-model:value="formState.departmentName"
+                                    style="width: 100%"
                                   >
                                     <a-select-option
                                       v-for="department in departments"
@@ -78,30 +78,39 @@
                                 </a-form-item>
 
                                 <a-form-item
-                                  name="project"
-                                  initialValue=""
-                                  label="프로젝트"
+                                name="projectName"
+                                initialValue=""
+                                label="프로젝트"
+                                @click="() => openPopover()"
+                              >
+                                <sdPopover
+                                  :placement="!rtl ? 'bottomLeft' : 'bottomRight'"
+                                  :visible="popoverVisible"
+                                  title="프로젝트 리스트"
+                                  action="click"
                                 >
-                                  <a-select
-                                    v-model:value="formState.project"
-                                    style="width: 100%" disabled
-                                  >
-                                    <a-select-option
-                                      v-for="project in projects"
-                                      :key="project.id"
-                                      :value="project.name"
-                                    >{{ project.name }}</a-select-option>
-                                  </a-select>
-                                </a-form-item>
+                                  <template v-slot:content>
+                                    <div>
+                                      <a @click="() => onClickSearchList(item.name)" v-for="item in filteredData" :key="item.name" to="#">
+                                        {{ item.printName }}
+                                      </a>
+                                      <a v-if="filteredData.length === 0" to="#"> Data Not Found..... </a>
+                                    </div>
+                                  </template>
+                                  <a-input v-model:value="projectTmp" placeholder="Search..." @input="(e) => search(e, searchData)"  @keydown.enter.prevent/>
+                                </sdPopover>
+                                
+                                <span>선택된 프로젝트: <b>{{ formState.projectName }}</b></span>
+                              </a-form-item>
 
                                 <a-form-item
                                   name="description"
                                   label="비고"
-                                  required
                                 >
                                   <a-textarea
                                     v-model:value="formState.description"
                                     :rows="5"
+                                    disabled
                                   />
                                 </a-form-item>
 
@@ -166,10 +175,11 @@
   import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
   import { DatePickerWrap } from './ui-elements-styled';
   import { AddProductForm } from "./style";
-  import { computed, ref, reactive, defineComponent, watch } from "vue";
+  import { computed, ref, reactive, defineComponent, watch, toRef } from "vue";
   import { useRouter } from 'vue-router';
   import { useStore } from 'vuex';
   import { getUserD } from './getActivities';
+  import { projectList } from '@/vuex/modules/projects/load-data';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
@@ -186,7 +196,26 @@
       const { push, go } = useRouter();
       const submitValues = ref({});
       const formRef = ref();
+      const projectTmp = ref();
       state.getUser.data = getUserD.data;
+      const popoverVisible = ref(false);
+
+      const combinedArray = toRef(projectList.data.map(item => {
+        return {
+          name: `${item.name}`,
+          code: `${item.code}`,
+          printName: `${item.name} ${item.code}`,
+        };
+      }));
+      const searchData = toRef(combinedArray.value);
+      const filteredData = toRef(combinedArray.value);
+
+      const search = (e, searchDatas) => {
+        const data = searchDatas.filter((item) => {
+          return item.printName.includes(e.target.value);
+        });
+        filteredData.value = data;
+      };
       
       const categories = computed(() => state.caregoryList.data);
       const departments = computed(() => state.departmentList.data);
@@ -205,6 +234,8 @@
           formState.manageDep = newValue.manageDep && newValue.manageDep.name ? newValue.manageDep.name : "";
           formState.project = newValue.projectId && newValue.projectId.name ? newValue.projectId.name : "";
           formState.description = newValue.description;
+          formState.projectName = formState.project;
+          formState.departmentName = formState.manageDep;
         }
       });
   
@@ -216,6 +247,8 @@
         status: getDeviceById.value.status,
         manageDep: "",
         project: "",
+        projectName: "본사",
+        departmentName: "경영지원부",
         userName: getUser.value.name,
         realUser: getUser.value.name,
         reason: "",
@@ -266,6 +299,15 @@
       const handleCancel = () => {
         go(-1);
       };
+
+      const onClickSearchList = (v) => {
+        formState.projectName = v;
+        popoverVisible.value = false; 
+      }
+
+      const openPopover = () => {
+        popoverVisible.value = true; 
+      }
   
       return {
         submitValues,
@@ -282,6 +324,13 @@
         disabledDate,
         handleCancel,
         onChangeUser,
+        projectTmp,
+        searchData,
+        filteredData,
+        search,
+        popoverVisible,
+        onClickSearchList,
+        openPopover,
       };
     },
   });

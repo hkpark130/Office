@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static kr.co.direa.office.constant.Constants.SUCCESS;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -32,7 +34,9 @@ public class FileUploadController {
             // 파일 저장
             Files.copy(file.getInputStream(), filePath);
             // 파일 업로드 성공 메시지 반환
-            return ResponseEntity.ok("File uploaded successfully");
+            return ResponseEntity.ok(
+                    SUCCESS
+            );
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload the file");
         }
@@ -42,7 +46,9 @@ public class FileUploadController {
     ResponseEntity<?> uploadMock(
             @RequestPart("file") MultipartFile file
     ) {
-        return ResponseEntity.ok("Success.");
+        return ResponseEntity.ok(
+                SUCCESS
+        );
     }
 
 }
