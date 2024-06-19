@@ -1755,12 +1755,13 @@ const TableWrapper = Styled.div`
         white-space: normal
     }
     td:hover .spnTooltip{
-        display:inline-block; position:absolute; color:#111;
+        display:inline-block; color:#111;
         border:1px solid #DCA; background:#fffAF0;
         overflow-y: auto;
         width:250px;
         max-height: 250px;
         word-wrap:break-word;
+        position: fixed;
     }
     .historyTable{
         align-items: center;
