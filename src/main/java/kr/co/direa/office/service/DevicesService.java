@@ -203,6 +203,11 @@ public class DevicesService {
                 approvalDeviceDto.setApproverId(adminObj);
                 approvalDeviceDto.setType(APPROVAL_RENTAL);
                 approvalDeviceDto.setUserId(user);
+                approvalDeviceDto.setProjectId(
+                        Optional.ofNullable(project)
+                                .map(Projects::getId)
+                                .orElse(null)
+                );
                 approvalDevicesRepository.save(approvalDeviceDto.toEntity());
             }
         }
