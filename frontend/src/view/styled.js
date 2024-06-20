@@ -1747,7 +1747,7 @@ const TableWrapper = Styled.div`
     }
 
     .spnTooltip {
-        z-index:10;display:none; padding:14px 20px;
+        display:none; padding:14px 20px;
         margin-top:-30px; margin-left:28px;
         width:250px; line-height:16px;
         max-width: 250px;
@@ -1755,6 +1755,7 @@ const TableWrapper = Styled.div`
         white-space: normal
     }
     td:hover .spnTooltip{
+        z-index:9999;
         display:inline-block; color:#111;
         border:1px solid #DCA; background:#fffAF0;
         overflow-y: auto;

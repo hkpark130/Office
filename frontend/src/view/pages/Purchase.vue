@@ -117,9 +117,11 @@
                                 <a-form-item
                                   name="reason"
                                   label="사유"
+                                  required
                                 >
                                   <a-textarea
                                     v-model:value="formState.reason"
+                                    placeholder="상세용도 및 신청사유, 프로젝트투입 장비사용기간 등을 상세히 작성해주세요."
                                     :rows="5"
                                   />
                                 </a-form-item>
