@@ -22,5 +22,15 @@ public class Constants {
     public static final String LDAP_BASE_DN = "dc=direa,dc=co,dc=kr";
     public static final String LDAP_USER_BASE_DN = "cn=Users," + LDAP_BASE_DN;
     public static final String LDAP_GROUP_BASE_DN = "ou=Groups," + LDAP_BASE_DN;
+    public static final String LDAP_CN_ATTR = "cn";
+    public static final String LDAP_SN_ATTR = "sn";
+    public static final String LDAP_UID_ATTR = "uid";
+    public static final String LDAP_GID_NUMBER_ATTR = "gidNumber";
+    public static final String LDAP_UID_NUMBER_ATTR = "uidNumber";
+    public static final String LDAP_EMAIL_ATTR = "mail";
+    public static final String LDAP_PASSWORD_ATTR = "userPassword";
+    public static final String LDAP_HOMEDIR_ATTR = "homeDirectory";
+    public static final String LDAP_OU_ATTR = "ou";
+    public static final String DIREA_DOMAIN = "direa.co.kr";
 
 }

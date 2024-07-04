@@ -135,7 +135,6 @@
         uidNumber: 0,
         mail: "",
         userPassword: "",
-        homeDirectory: "",
         layout: "vertical",
       });
 
@@ -144,7 +143,6 @@
           cnCheckFinished.value = false;
           formState.mail = formState.cn + "@direa.co.kr";
           formState.sn = formState.cn;
-          formState.homeDirectory = "/home/" + formState.cn;
         }
       });
   

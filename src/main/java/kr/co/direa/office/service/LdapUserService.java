@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static kr.co.direa.office.constant.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -91,15 +93,15 @@ public class LdapUserService {
         ocattr.add("posixAccount");
         attrs.put(ocattr);
 
-        attrs.put("cn", user.getCn());
-        attrs.put("sn", user.getSn());
-        attrs.put("uid", user.getUid());
-        attrs.put("gidNumber", String.valueOf(user.getGidNumber()));
-        attrs.put("uidNumber", String.valueOf(user.getUidNumber()));
-        attrs.put("mail", user.getMail());
-        attrs.put("userPassword", user.getUserPassword());
-        attrs.put("homeDirectory", user.getHomeDirectory());
-        attrs.put("ou", user.getOu());
+        attrs.put(LDAP_CN_ATTR, user.getCn());
+        attrs.put(LDAP_SN_ATTR, user.getSn());
+        attrs.put(LDAP_UID_ATTR, user.getUid());
+        attrs.put(LDAP_GID_NUMBER_ATTR, String.valueOf(user.getGidNumber()));
+        attrs.put(LDAP_UID_NUMBER_ATTR, String.valueOf(user.getUidNumber()));
+        attrs.put(LDAP_EMAIL_ATTR, user.getMail());
+        attrs.put(LDAP_PASSWORD_ATTR, user.getUserPassword());
+        attrs.put(LDAP_HOMEDIR_ATTR, "/home/" + user.getCn());
+        attrs.put(LDAP_OU_ATTR, user.getOu());
 
         return attrs;
     }
@@ -133,7 +135,7 @@ public class LdapUserService {
         RestTemplate restTemplate = new RestTemplate();
         String tmpPassword = generateRandomPassword();
         try {
-            String url = keycloakUrl + "/admin/realms/"+realm+"/users?email="+cn+"@direa.co.kr";
+            String url = keycloakUrl + "/admin/realms/"+realm+"/users?email="+cn+"@"+DIREA_DOMAIN;
 
             String token = Keycloak.getAdminAccessToken(keycloakUrl, admin, realm, adminPw);
 
@@ -156,13 +158,12 @@ public class LdapUserService {
             log.info(url);
             restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
 
-            String to = cn + "@direa.co.kr";
+            String to = cn + "@"+DIREA_DOMAIN;
             String subject = "임시 패스워드 발행";
             String text = "Your new temporary password is: " + tmpPassword;
             emailService.sendSimpleMessage(to, subject, text);
         } catch (Exception e) {
-            log.error("Exception : " + e);
-            e.printStackTrace();
+            throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         return tmpPassword;
