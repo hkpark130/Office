@@ -2,6 +2,23 @@
 spring:
   profiles:
     active: local
+  ldap:
+    urls: "ldap://192.168.2.59:389"
+    base: "dc=direa,dc=co,dc=kr"
+    username: "cn=admin,dc=direa,dc=co,dc=kr"
+  mail:
+    host: "smtps.hiworks.com"
+    port: 465
+    username: "infra@direa.co.kr"
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+          ssl:
+            enable: true
+            trust: "smtps.hiworks.com"
 
 server:
   port: 80
@@ -32,6 +49,10 @@ constants:
 
 # keycloak
 spring:
+  mail:
+    password: ENC(WtQfQBoQV/vZxGBeLl92fDcKZIuHo9uBwvMPBmdIn3bphPar4DZGjer/C3mfLupf)
+  ldap:
+    password: ENC(WAncVZKBnkwISmBzO6QwmJgmmkkcAoherm9HWwttHmwlx/uRbHmvSw8adPcG9e0X)
   config:
     activate:
       on-profile: local
@@ -93,6 +114,10 @@ constants:
   realm: ENC(rW4Ij4d66yAHbzdxzQnWAcPib/iNmYJloRByJHiG0Qqm0bNDbjNzp5LrSdzvL7QG)
 
 spring:
+  mail:
+    password: ENC(C8EfnqJMehXy5H+XL/SoDuBxWQUXgBvS/Sq0FyGh9brVkFt1xdGIZH+aGw4zESgs)
+  ldap:
+    password: ENC(1jwk9pXRQGcdTUnm/HMfinGjMUJEfSrmKDvLEVvPOBY9pqQSD9ebmLp+vmKTYR5I)
   config:
     activate:
       on-profile: prod

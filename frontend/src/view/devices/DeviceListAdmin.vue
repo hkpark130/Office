@@ -238,8 +238,28 @@ const Orders = defineComponent({
     const pageSize = ref(7);
     const searchData = ref('');
 
+    const onHover = () => {
+      const flag = ref(true);
+      const tooltips = document.getElementsByClassName('spnTooltip');
+      for(let i=0; i < tooltips.length; i++) {
+        const tooltip = tooltips[i];
+        const td = tooltip.parentElement.parentElement;
+        td.addEventListener('mouseover', (i) => {
+          if (flag.value) {
+            flag.value = false;
+            tooltip.style.left = (i.screenX) + "px";
+          }
+        });
+
+        td.addEventListener('mouseleave', () => {
+          flag.value = true;
+        });
+      }
+    };
+
     onMounted(() => {
       onSorting('categoryName');
+      onHover();
     });
 
     const handleChangeForFilter = (e) => {
@@ -291,36 +311,38 @@ const Orders = defineComponent({
           <sdButton onClick={() => editDevice(id)} class="btn-icon" type="info" to="#" shape="circle">
             <sdFeatherIcons type="edit" size={16} title="편집" />
           </sdButton>;
+
+        const historyTable = history.length !== 0 ? (
+          <span class="spnTooltip" style="max-width: 600px; width:600px;">
+            <table class="historyTable">
+              <thead>
+                <tr>
+                  <th>사용자</th>
+                  <th>타입</th>
+                  <th>프로젝트</th>
+                  <th>날짜</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((item) => (
+                  <tr>
+                    <td style="background-color:white;">{item.username}</td>
+                    <td style="background-color:white;">{item.type}</td>
+                    <td style="background-color:white;">{item.projectName}</td>
+                    <td style="background-color:white;">{item.modifiedDate}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </span>
+        ) : null;
               
         return {
           key: id,
           id: (
             <div>
               <span class="order-id spnDetails">{id}</span>
-              {history.length !== 0 ? (
-                <span class="spnTooltip" style="max-width: 600px; width:600px;">
-                  <table class="historyTable">
-                    <thead>
-                      <tr>
-                        <th>사용자</th>
-                        <th>타입</th>
-                        <th>프로젝트</th>
-                        <th>날짜</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {history.map((item) => (
-                        <tr>
-                          <td style="background-color:white;">{item.username}</td>
-                          <td style="background-color:white;">{item.type}</td>
-                          <td style="background-color:white;">{item.projectName}</td>
-                          <td style="background-color:white;">{item.modifiedDate}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </span>
-              ) : null}
+              {historyTable}
             </div>
           ),
           categoryNameKey: categoryName,

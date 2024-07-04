@@ -195,8 +195,28 @@ const Orders = defineComponent({
     const filterVal = ref([]);
     const pageSize = ref(7);
 
+    const onHover = () => {
+      const flag = ref(true);
+      const tooltips = document.getElementsByClassName('spnTooltip');
+      for(let i=0; i < tooltips.length; i++) {
+        const tooltip = tooltips[i];
+        const td = tooltip.parentElement.parentElement;
+        td.addEventListener('mouseover', (i) => {
+          if (flag.value) {
+            flag.value = false;
+            tooltip.style.left = (i.screenX) + "px";
+          }
+        });
+
+        td.addEventListener('mouseleave', () => {
+          flag.value = true;
+        });
+      }
+    };
+
     onMounted(() => {
       onSorting('categoryName');
+      onHover();
     });
 
     const handleChangeForFilter = (e) => {

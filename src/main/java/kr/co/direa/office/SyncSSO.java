@@ -16,6 +16,8 @@ import java.util.Map;
 
 import com.opencsv.CSVReader;
 
+import static kr.co.direa.office.constant.Constants.DIREA_DOMAIN;
+
 @Slf4j
 public class SyncSSO {
     public static void main(String[] args) { // CSV 파일로 동기화 (CSV -> Keycloak)
@@ -40,7 +42,7 @@ public class SyncSSO {
                 String employeeNum = (!"".equals(lineInArray[5]))?lineInArray[5]:"direa";
                 userMap.put("enabled", true);
                 userMap.put("emailVerified", true);
-                userMap.put("email", lineInArray[0]+"@direa.co.kr");
+                userMap.put("email", lineInArray[0]+"@"+DIREA_DOMAIN);
                 userMap.put("username", username);
                 String departmentName = (!"".equals(lineInArray[3])) ? (!"".equals(lineInArray[4])? lineInArray[4] : lineInArray[3]) : null;
                 userMap.put("attributes", new HashMap<String, Object>() {{
