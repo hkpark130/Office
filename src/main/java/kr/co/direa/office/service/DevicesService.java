@@ -192,6 +192,21 @@ public class DevicesService {
                     device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
                             requestDto.getRealUser():requestDto.getUsername());
                 }
+
+                if(!Optional.ofNullable(latestApprovalDevice.get().getProjectId()).
+                        equals(Optional.ofNullable(project))) {
+                    approvalDeviceDto.setDeviceId(requestDto.getId());
+                    approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
+                    approvalDeviceDto.setApproverId(adminObj);
+                    approvalDeviceDto.setType(APPROVAL_RENTAL);
+                    approvalDeviceDto.setUserId(user);
+                    approvalDeviceDto.setProjectId(
+                            Optional.ofNullable(project)
+                                    .map(Projects::getId)
+                                    .orElse(null)
+                    );
+                    approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                }
             } else {
                 device.setUserId(user);
                 device.setIsUsable(false);

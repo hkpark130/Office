@@ -115,6 +115,17 @@
 			<version>1.8</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-ldap</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -133,30 +144,6 @@
 				</configuration>
 			</plugin>
 
-			<!--			<plugin>-->
-			<!--				<groupId>org.codehaus.mojo</groupId>-->
-			<!--				<artifactId>exec-maven-plugin</artifactId>-->
-			<!--				<version>1.3.2</version>-->
-			<!--				<executions>-->
-			<!--					<execution>-->
-			<!--						<id>npm run build (compile)</id>-->
-			<!--						<goals>-->
-			<!--							<goal>exec</goal>-->
-			<!--						</goals>-->
-			<!--						<phase>compile</phase>-->
-			<!--						<configuration>-->
-			<!--							<executable>npm</executable>-->
-			<!--							<arguments>-->
-			<!--								<argument>run</argument>-->
-			<!--								<argument>build</argument>-->
-			<!--							</arguments>-->
-			<!--						</configuration>-->
-			<!--					</execution>-->
-			<!--				</executions>-->
-			<!--				<configuration>-->
-			<!--					<workingDirectory>${basedir}/frontend</workingDirectory>-->
-			<!--				</configuration>-->
-			<!--			</plugin>-->
 		</plugins>
 	</build>
 

@@ -138,6 +138,34 @@
             <span> 장비 지도 </span>
           </router-link>
         </a-menu-item>
+
+        <a-sub-menu key="users">
+          <template v-slot:title
+            ><sdFeatherIcons type="users" /><span>
+              유저 관리
+            </span></template
+          >
+          <a-menu-item @click="toggleCollapsed" key="list-user">
+            <router-link to="/list-user"> 
+              유저 목록 
+            </router-link>
+          </a-menu-item>
+          <a-menu-item @click="toggleCollapsed" key="add-user">
+            <router-link to="/add-user"> 
+              유저 추가 
+            </router-link>
+          </a-menu-item>
+          <a-menu-item @click="toggleCollapsed" key="edit-user">
+            <router-link to="/edit-user">
+              유저 편집
+            </router-link>
+          </a-menu-item>
+          <a-menu-item @click="toggleCollapsed" key="delete-user">
+            <router-link to="/delete-user">
+              유저 삭제
+            </router-link>
+          </a-menu-item>
+        </a-sub-menu>
       </a-sub-menu>
 
       <a-sub-menu key="users">

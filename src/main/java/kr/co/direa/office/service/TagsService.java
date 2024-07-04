@@ -1,6 +1,5 @@
 package kr.co.direa.office.service;
 
-import jakarta.transaction.Transactional;
 import kr.co.direa.office.domain.DeviceTag;
 import kr.co.direa.office.domain.Devices;
 import kr.co.direa.office.domain.Tags;
@@ -11,17 +10,13 @@ import kr.co.direa.office.repository.DevicesRepository;
 import kr.co.direa.office.repository.TagsRepository;
 import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TagsService {
     private final DevicesRepository devicesRepository;
     private final TagsRepository tagsRepository;

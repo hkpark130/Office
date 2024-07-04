@@ -64,15 +64,16 @@
                                 <a-form-item name="price" label="가격">
                                 <div class="input-prepend-wrap">
                                   <span class="input-prepend">
-                                    <sdFeatherIcons
-                                      type="dollar-sign"
-                                      size="14"
+                                    <font-awesome-icon
+                                    :icon=wonIcon
+                                    size=14
                                     />
                                   </span>
                                   <a-input-number
                                     v-model:value="formState.price"
                                     style="width: 100%"
                                   />
+                                  <span><b>{{ formState.printPrice }}</b></span>
                                 </div>
                               </a-form-item>
   
@@ -121,7 +122,7 @@
                                 >
                                   <a-textarea
                                     v-model:value="formState.reason"
-                                    placeholder="상세용도 및 신청사유, 프로젝트투입 장비사용기간 등을 상세히 작성해주세요."
+                                    placeholder="상세용도 및 구매신청사유, 필요대수, 사용예정자 등을 상세히 작성해주세요."
                                     :rows="5"
                                   />
                                 </a-form-item>
@@ -176,14 +177,17 @@
   import { Main, BasicFormWrapper, DatePickerWrapper } from "../styled";
   import { DatePickerWrap } from './ui-elements-styled';
   import { AddProductForm } from "./style";
-  import { toRef, ref, reactive, defineComponent, computed } from "vue";
+  import { toRef, ref, reactive, defineComponent, computed, watch } from "vue";
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
   import { projectList } from '@/vuex/modules/projects/load-data';
+  import * as FontAwesomeIcon from '@fortawesome/free-solid-svg-icons';
   
   const AddProduct = defineComponent({
     name: "AddProduct",
-    components: { Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap },
+    components: { 
+      Main, BasicFormWrapper, AddProductForm, DatePickerWrapper, DatePickerWrap,
+     },
     setup() {
       const { state, dispatch } = useStore();
       const file = ref(null);
@@ -191,6 +195,7 @@
       const submitValues = ref({});
       const formRef = ref();
       const projectTmp = ref();
+      const wonIcon = FontAwesomeIcon['faWonSign'];
 
       const { push, go } = useRouter();
       const popoverVisible = ref(false); 
@@ -226,6 +231,7 @@
       const formState = reactive({
         category: "노트북",
         price: 0,
+        printPrice: "0 원",
         projectName: "본사",
         purpose: "개발",
         userName: username,
@@ -234,6 +240,12 @@
         type: "구매",
         layout: "vertical",
         file: "",        
+      });
+
+      watch(() => formState.price, (newId, oldId) => {
+        if (newId !== oldId) {
+          formState.printPrice = `${formState.price.toLocaleString()} 원`;
+        }
       });
 
       const disabledDate = (current) => {
@@ -295,6 +307,7 @@
         handleCancel,
         popoverVisible,
         openPopover,
+        wonIcon,
       };
     },
   });

@@ -19,6 +19,7 @@ import getActivities from './modules/activities/actionCreator';
 import approvals from './modules/approvals/actionCreator';
 import comments from './modules/comments/actionCreator';
 import addCategory from './modules/categories/addCategory';
+import ldap from './modules/ldap/actionCreator';
 
 export default createStore({
   modules: {
@@ -42,5 +43,6 @@ export default createStore({
     comments,
     addCategory,
     editDevice,
+    ldap,
   },
 });

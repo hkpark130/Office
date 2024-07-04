@@ -12,7 +12,9 @@ public enum CustomErrorCode {
 
     METHOD_NOT_ALLOWED(500, "D009", "해당 API에서 지원하지 않는 Method 입니다."),
     LOAD_BALANCER_ERROR(500, "D006", "LoadBalancer Error!"),
-
+    NOT_FOUND_LDAP_USER(404, "L001", "해당 LDAP 유저가 없습니다."),
+    NOT_FOUND_LDAP_GROUP(404, "L002", "해당 LDAP 그룹이 없습니다."),
+    NOT_FOUND_LDAP_DN(404, "L003", "객체를 찾을 수 없습니다."),
 
     INTERNAL_SERVER_ERROR(500, "D099", "서버 에러");
 

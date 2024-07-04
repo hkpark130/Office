@@ -2,6 +2,19 @@
 spring:
   profiles:
     active: local
+  mail:
+    host: "smtps.hiworks.com"
+    port: 465
+    username: "infra@direa.co.kr"
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+          ssl:
+            enable: true
+            trust: "smtps.hiworks.com"
 
 server:
   port: 80
@@ -32,6 +45,8 @@ constants:
 
 # keycloak
 spring:
+  mail:
+    password: ENC(WtQfQBoQV/vZxGBeLl92fDcKZIuHo9uBwvMPBmdIn3bphPar4DZGjer/C3mfLupf)
   config:
     activate:
       on-profile: local
@@ -76,6 +91,11 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  ldap:
+    urls: "ldap://192.168.2.59:389"
+    base: "dc=direa,dc=co,dc=kr"
+    username: "cn=admin,dc=direa,dc=co,dc=kr"
+    password: "admin"
 
 ---
 jasypt:
@@ -93,6 +113,8 @@ constants:
   realm: ENC(rW4Ij4d66yAHbzdxzQnWAcPib/iNmYJloRByJHiG0Qqm0bNDbjNzp5LrSdzvL7QG)
 
 spring:
+  mail:
+    password: ENC(C8EfnqJMehXy5H+XL/SoDuBxWQUXgBvS/Sq0FyGh9brVkFt1xdGIZH+aGw4zESgs)
   config:
     activate:
       on-profile: prod

@@ -19,5 +19,8 @@ public class Constants {
     public static final String EDIT_TYPE = "수정";
     public static final String PURCHASE_TYPE = "구매";
     public static final String SUCCESS = "success";
+    public static final String LDAP_BASE_DN = "dc=direa,dc=co,dc=kr";
+    public static final String LDAP_USER_BASE_DN = "cn=Users," + LDAP_BASE_DN;
+    public static final String LDAP_GROUP_BASE_DN = "ou=Groups," + LDAP_BASE_DN;
 
 }

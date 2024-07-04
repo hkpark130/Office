@@ -1747,21 +1747,23 @@ const TableWrapper = Styled.div`
     }
 
     .spnTooltip {
-        display:none; padding:14px 20px;
+        display:none; 
+        padding:14px 20px;
         margin-top:-30px; margin-left:28px;
         width:250px; line-height:16px;
         max-width: 250px;
         word-wrap:break-word;
-        white-space: normal
+        white-space: normal;
     }
     td:hover .spnTooltip{
-        z-index:9999;
-        display:inline-block; color:#111;
+        display:flex; 
+        color:#111;
         border:1px solid #DCA; background:#fffAF0;
         overflow-y: auto;
         width:250px;
         max-height: 250px;
         word-wrap:break-word;
+        z-index: 9999;
         position: fixed;
     }
     .historyTable{

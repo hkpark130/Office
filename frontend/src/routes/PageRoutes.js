@@ -123,6 +123,26 @@ export default [
     path: '/user/myDevice',
     component: () => import(/* webpackChunkName: "MyDevice" */ '@/view/user/MyDevice.vue'),
   },
+  {
+    name: 'list-user',
+    path: '/list-user',
+    component: () => import(/* webpackChunkName: "ListUser" */ '@/view/ldap/ListLdapUser.vue'),
+  },
+  {
+    name: 'add-user',
+    path: '/add-user',
+    component: () => import(/* webpackChunkName: "AddUser" */ '@/view/ldap/AddLdapUser.vue'),
+  },
+  {
+    name: 'edit-user',
+    path: '/edit-user',
+    component: () => import(/* webpackChunkName: "EditUser" */ '@/view/ldap/EditLdapUser.vue'),
+  },
+  {
+    name: 'delete-user',
+    path: '/delete-user',
+    component: () => import(/* webpackChunkName: "DeleteUser" */ '@/view/ldap/DeleteLdapUser.vue'),
+  },
   
   {
     name: 'forbidden',
