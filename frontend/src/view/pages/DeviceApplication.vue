@@ -244,6 +244,7 @@
         deviceId: router.currentRoute.value.params.deviceId,
         category: getDeviceById.value.categoryName,
         price: getDeviceById.value.price,
+        approvers: ['test', '박현경'],
         auto: "auto",
         status: getDeviceById.value.status,
         manageDep: "",

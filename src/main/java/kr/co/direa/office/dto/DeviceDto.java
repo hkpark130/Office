@@ -28,7 +28,7 @@ public class DeviceDto implements Serializable {
     private String model;
     private String description;
     private String adminDescription;
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
     private String company;
     private String sn;
     private String status;
@@ -42,7 +42,7 @@ public class DeviceDto implements Serializable {
     private String approvalType;
     private Long approvalId;
     private LocalDateTime deadline;
-    private List<Map<String, Object>> history;
+    private List<Map<String, Object>> history = new ArrayList<Map<String, Object>>();
 
     @Builder
     public DeviceDto(Devices entity) {

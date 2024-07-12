@@ -32,6 +32,7 @@ public class DeviceApplicationVo {
     private Boolean isUsable;
     private LocalDateTime createdDate;
     private LocalDateTime deadline;
-    private List<String> tag;
+    private List<String> tag = new ArrayList<>();
+    private List<String> approvers = new ArrayList<>();
 
 }

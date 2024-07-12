@@ -25,6 +25,7 @@ import static kr.co.direa.office.constant.Constants.*;
 @Service
 public class DevicesService {
     private final ApprovalDevicesRepository approvalDevicesRepository;
+    private final ApprovalDevicesService approvalDevicesService;
     private final DevicesRepository devicesRepository;
     private final ProjectsService projectsService;
     private final CategoriesService categoriesService;
@@ -81,10 +82,9 @@ public class DevicesService {
     private void saveApprovalDeviceRecord(
                 ApprovalDeviceDto approvalDeviceDto,
                   String deviceId, String info,
-                  Users adminObj, String type, Users user, Projects project) {
+                  String type, Users user, Projects project) {
         approvalDeviceDto.setDeviceId(deviceId);
         approvalDeviceDto.setApprovalInfo(info);
-        approvalDeviceDto.setApproverId(adminObj);
         approvalDeviceDto.setType(type);
         approvalDeviceDto.setUserId(user);
         if (project != null) {
@@ -107,9 +107,6 @@ public class DevicesService {
         requestDto.setUserId(user);
         requestDto.setIsUsable(!DISPOSE_TYPE.equals(requestDto.getStatus()) && username == null);
         Devices device = devicesRepository.findById(requestDto.getId()).orElse(null);
-        Users adminObj = usersRepository.findByUsername(admin)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username="+admin));
         ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
 
         if (device == null && username == null) { // 신규 장비
@@ -120,10 +117,11 @@ public class DevicesService {
                     DISPOSE_TYPE : APPROVAL_RENTAL;
             saveApprovalDeviceRecord(
                         approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
-                        adminObj, type, user, project
+                        type, user, project
                     );
 //            approvalDeviceDto.setCreatedDate(null);
-            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            approvalDevicesService.createApproverByCurrentAdmin(ad);
         } else if (user != null) { // 기존 장비에 대한 대여 or 폐기 이력 남기기
             device.update(user, requestDto.getStatus(), requestDto.getIsUsable(), requestDto.getProjectId(),
                     requestDto.getManageDep(), requestDto.getDescription(), requestDto.getAdminDescription());
@@ -131,10 +129,11 @@ public class DevicesService {
                     DISPOSE_TYPE : APPROVAL_RENTAL;
             saveApprovalDeviceRecord(
                     approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
-                    adminObj, type, user, project
+                    type, user, project
             );
 //            approvalDeviceDto.setCreatedDate(null);
-            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            approvalDevicesService.createApproverByCurrentAdmin(ad);
         } else if (username == null)  { // 기존 장비에 대한 반납
             Users preUser = device.getUserId();
             if (device.getProjectId() != null) {
@@ -146,9 +145,10 @@ public class DevicesService {
 
             saveApprovalDeviceRecord(
                     approvalDeviceDto, requestDto.getId(), APPROVAL_COMPLETED,
-                    adminObj, APPROVAL_RETURN, preUser, project
+                    APPROVAL_RETURN, preUser, project
             );
-            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            approvalDevicesService.createApproverByCurrentAdmin(ad);
         }
     }
 
@@ -162,8 +162,15 @@ public class DevicesService {
                 .toList();
     }
 
+    public void setNewApprovalFromLatest(ApprovalDevices latestApproval, ApprovalDeviceDto approvalDeviceDto,
+        String info, String type) {
+        approvalDeviceDto.setDeviceId(latestApproval.getDeviceId().getId());
+        approvalDeviceDto.setApprovalInfo(info);
+        approvalDeviceDto.setType(type);
+    }
+
     @Transactional
-    public void update(DeviceDto requestDto) {
+    public void update(DeviceDto requestDto) { // 관리자 장비편집 -> 대여 기능까지 가능
         Devices device = devicesRepository.findById(requestDto.getId()).orElseThrow(() ->
                 new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
                         "해당 기기가 없습니다. deviceId=" + requestDto.getId()));
@@ -187,6 +194,7 @@ public class DevicesService {
                             Comparator.nullsFirst(Comparator.naturalOrder())));
 
             if(latestApprovalDevice.isPresent() && latestApprovalDevice.get().getUserId() == user) {
+                // 신청이 있고 유저가 같을때
                 if(!Optional.ofNullable(latestApprovalDevice.get().getDeviceId().getRealUser()).
                         equals(Optional.ofNullable(requestDto.getRealUser()))) {
                     device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
@@ -194,20 +202,57 @@ public class DevicesService {
                 }
 
                 if(!Optional.ofNullable(latestApprovalDevice.get().getProjectId()).
-                        equals(Optional.ofNullable(project))) {
-                    approvalDeviceDto.setDeviceId(requestDto.getId());
-                    approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
-                    approvalDeviceDto.setApproverId(adminObj);
-                    approvalDeviceDto.setType(APPROVAL_RENTAL);
+                        equals(Optional.ofNullable(project))) { // 프로젝트 변경 히스토리 남기기 위함
                     approvalDeviceDto.setUserId(user);
+                    setNewApprovalFromLatest(latestApprovalDevice.get(), approvalDeviceDto, APPROVAL_COMPLETED,
+                            APPROVAL_RENTAL);
                     approvalDeviceDto.setProjectId(
                             Optional.ofNullable(project)
                                     .map(Projects::getId)
                                     .orElse(null)
                     );
-                    approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                    ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                    approvalDevicesService.createApproverByCurrentAdmin(ad);
                 }
             } else {
+                if(latestApprovalDevice.isPresent()) { // 다른 유저에게 대여 시키는 경우 (슈퍼 관리자 기능)
+                    switch (latestApprovalDevice.get().getType()) {
+                        case APPROVAL_RENTAL:
+                            if (latestApprovalDevice.get().getApprovalInfo().equals(APPROVAL_WAITING)) {
+                                approvalDevicesService.setApprovalInfoByEntity(latestApprovalDevice.get(), APPROVAL_REJECT);
+                            } else if (latestApprovalDevice.get().getApprovalInfo().equals(APPROVAL_COMPLETED)) {
+                                approvalDeviceDto.setUserId(latestApprovalDevice.get().getUserId());
+                                setNewApprovalFromLatest(latestApprovalDevice.get(), approvalDeviceDto, APPROVAL_COMPLETED,
+                                        APPROVAL_RETURN);
+                                ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                                approvalDevicesService.createApproverByCurrentAdmin(ad);
+                            }
+                            break;
+                        case APPROVAL_RETURN:
+                            if (latestApprovalDevice.get().getApprovalInfo().equals(APPROVAL_WAITING)) {
+                                approvalDevicesService.allApprovedByCurrentAdmin(latestApprovalDevice.get());
+                                approvalDevicesService.setApprovalInfoByEntity(latestApprovalDevice.get(), APPROVAL_COMPLETED);
+                            } else if (latestApprovalDevice.get().getApprovalInfo().equals(APPROVAL_REJECT)) {
+                                approvalDeviceDto.setUserId(latestApprovalDevice.get().getUserId());
+                                setNewApprovalFromLatest(latestApprovalDevice.get(), approvalDeviceDto, APPROVAL_COMPLETED,
+                                        APPROVAL_RETURN);
+                                ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                                approvalDevicesService.createApproverByCurrentAdmin(ad);
+                            }
+                            break;
+                        case DISPOSE_TYPE:
+                            if (latestApprovalDevice.get().getApprovalInfo().equals(APPROVAL_WAITING)) {
+                                approvalDevicesService.setApprovalInfoByEntity(latestApprovalDevice.get(), APPROVAL_REJECT);
+                            } else if (latestApprovalDevice.get().getApprovalInfo().equals(APPROVAL_REJECT)) {
+                                approvalDeviceDto.setUserId(latestApprovalDevice.get().getUserId());
+                                setNewApprovalFromLatest(latestApprovalDevice.get(), approvalDeviceDto, APPROVAL_COMPLETED,
+                                        APPROVAL_RETURN);
+                                ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                                approvalDevicesService.createApproverByCurrentAdmin(ad);
+                            }
+                            break;
+                    }
+                }
                 device.setUserId(user);
                 device.setIsUsable(false);
                 device.setRealUser((requestDto.getRealUser() != null && !requestDto.getRealUser().isEmpty())?
@@ -215,7 +260,6 @@ public class DevicesService {
 
                 approvalDeviceDto.setDeviceId(requestDto.getId());
                 approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
-                approvalDeviceDto.setApproverId(adminObj);
                 approvalDeviceDto.setType(APPROVAL_RENTAL);
                 approvalDeviceDto.setUserId(user);
                 approvalDeviceDto.setProjectId(
@@ -223,7 +267,8 @@ public class DevicesService {
                                 .map(Projects::getId)
                                 .orElse(null)
                 );
-                approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+                approvalDevicesService.createApproverByCurrentAdmin(ad);
             }
         }
 

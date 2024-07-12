@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,7 +21,6 @@ public class ApprovalDeviceDto implements Serializable {
     private String userName;
     private String realUser;
     private String reason;
-    private Users approverId;
     private String deviceId;
     private String deviceStatus;
     private String devicePurpose;
@@ -34,6 +36,7 @@ public class ApprovalDeviceDto implements Serializable {
     private String tmpProjectName;
     private Long tmpDepartmentId;
     private String tmpDepartmentName;
+    private List<ApproverDto> approvers = new ArrayList<>();
 
     public ApprovalDeviceDto() {
         this.createdDate = LocalDateTime.now();
@@ -47,7 +50,11 @@ public class ApprovalDeviceDto implements Serializable {
         this.userName = (this.userId != null) ? this.userId.getUsername() : null;
         this.realUser = (entity.getDeviceId() != null) ? entity.getDeviceId().getRealUser() : null;
         this.reason = entity.getReason();
-        this.approverId = entity.getApproverId();
+        if (entity.getApprovers() != null) {
+            for (Approver approver : entity.getApprovers()) {
+                approvers.add(new ApproverDto(approver));
+            }
+        }
         this.deviceId = (entity.getDeviceId() != null) ? entity.getDeviceId().getId() : null;
         this.categoryName = (entity.getDeviceId() != null) ? entity.getDeviceId().getCategoryId().getName() : null;
         this.deviceStatus = (entity.getDeviceId() != null) ? entity.getDeviceId().getStatus() : null;
@@ -68,7 +75,7 @@ public class ApprovalDeviceDto implements Serializable {
     public ApprovalDevices toEntity() {
         return ApprovalDevices.builder()
                 .approvalInfo(approvalInfo)
-                .approverId((approverId != null) ? approverId : null)
+                .approvers(approvers.stream().map(ApproverDto::toEntity).collect(Collectors.toList()))
                 .userId((userId != null) ? userId : null)
                 .deviceId((deviceId != null) ? Devices.builder().id(deviceId).build() : null )
                 .reason(reason)

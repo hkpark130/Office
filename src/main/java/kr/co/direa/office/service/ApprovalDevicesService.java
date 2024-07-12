@@ -1,19 +1,17 @@
 package kr.co.direa.office.service;
 
 import kr.co.direa.office.domain.*;
-import kr.co.direa.office.dto.ApprovalDeviceDto;
-import kr.co.direa.office.dto.DeviceDto;
-import kr.co.direa.office.dto.NotificationDto;
+import kr.co.direa.office.dto.*;
 import kr.co.direa.office.exception.CustomException;
 import kr.co.direa.office.exception.code.CustomErrorCode;
-import kr.co.direa.office.repository.ApprovalDevicesRepository;
-import kr.co.direa.office.repository.DevicesRepository;
-import kr.co.direa.office.repository.NotificationsRepository;
-import kr.co.direa.office.repository.UsersRepository;
+import kr.co.direa.office.repository.*;
 import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,9 +23,11 @@ import static kr.co.direa.office.constant.Constants.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApprovalDevicesService {
     private final ApprovalDevicesRepository approvalDevicesRepository;
     private final NotificationsRepository notificationsRepository;
+    private final ApproverRepository approverRepository;
     private final DevicesRepository devicesRepository;
     private final UsersRepository usersRepository;
     private final UsersService usersService;
@@ -43,7 +43,8 @@ public class ApprovalDevicesService {
                                   UsersRepository usersRepository,
                                   UsersService usersService, ProjectsService projectsService,
                                   DepartmentsService departmentsService,
-                                  TagsService tagsService
+                                  TagsService tagsService,
+                                  ApproverRepository approverRepository
     ) {
         this.notificationsRepository = notificationsRepository;
         this.approvalDevicesRepository = approvalDevicesRepository;
@@ -53,6 +54,7 @@ public class ApprovalDevicesService {
         this.projectsService = projectsService;
         this.departmentsService = departmentsService;
         this.tagsService = tagsService;
+        this.approverRepository = approverRepository;
     }
 
     public List<ApprovalDeviceDto> findAsAdmin() {
@@ -64,7 +66,23 @@ public class ApprovalDevicesService {
 
     public Long save(ApprovalDeviceDto requestDto) {
         ApprovalDevices approvalDevices = approvalDevicesRepository.save(requestDto.toEntity());
+        setApproverByDto(requestDto, approvalDevices.getId());
         return approvalDevices.getId();
+    }
+
+    public void setApproverByDto(ApprovalDeviceDto requestDto, long approvalId) {
+        ApprovalDevices approvalDevice = approvalDevicesRepository.findById(approvalId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + approvalId));
+
+        List<Approver> approverList = new ArrayList<>();
+        requestDto.getApprovers().forEach( approver -> {
+            approverList.add(createApprover(approver.getUsername(), approvalDevice, approver.getStep()));
+        });
+
+        approverRepository.saveAll(approverList);
+        approvalDevice.setApprovers(approverList);
+        approvalDevicesRepository.save(approvalDevice);
     }
 
     public void setApprovalInfoById(DeviceApplicationVo request, String approvalInfo) {
@@ -81,22 +99,59 @@ public class ApprovalDevicesService {
             updateDeviceStatus(device, approvalType, isUsable, user,
                         approvalDevices.getTmpProject(), approvalDevices.getTmpDepartment()
                     );
+            updateApprovedByCurrentAdmin(approvalDevices.getId(), true);
             devicesRepository.save(device);
         }
-
         approvalDevices.setApprovalInfo(approvalInfo);
 
-//        TODO: 누가 승인했는지 Approver 설성해줘야 함
-        Users adminObj = usersRepository.findByUsername(admin)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username="+admin));
-        approvalDevices.setApproverId(adminObj);
-//        OAuth2User user = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String username = user.getUsername()??;
-//        Users approver = usersService.findByUsername(username);
-//        approvalDevices.setApproverId(approver);
-
         approvalDevicesRepository.save(approvalDevices);
+    }
+
+    public void setApprovalInfoByEntity(ApprovalDevices approvalDevices, String approvalInfo) {
+        approvalDevices.setApprovalInfo(approvalInfo);
+        approvalDevicesRepository.save(approvalDevices);
+    }
+
+    public int getLastStepNum(Approvals approvals) {
+        Optional<Approver> lastStepApprover = approverRepository.findByApprovalsId(approvals.getId())
+                .stream().max(Comparator.comparing(Approver::getStep));
+        if (lastStepApprover.isPresent()) {
+            return lastStepApprover.get().getStep();
+        } else {
+            return 0;
+        }
+    }
+
+    public Approver createApproverByCurrentAdmin(Approvals approvals) {
+        Users adminObj = usersService.getCurrentAdmin();
+        Approver approver = new Approver();
+        approver.setUsers(adminObj);
+        approver.setApprovals(approvals);
+        approver.setIsApproved(true); // this means that approver created by current admin is implied approval
+        approver.setStep(getLastStepNum(approvals)+1);
+        approverRepository.save(approver);
+
+        return approver;
+    }
+
+    public void allApprovedByCurrentAdmin(Approvals approvals) {
+        // TODO: 여러 케이스 고려해야함
+        List<Approver> approvers = approverRepository.findByApprovalsId(approvals.getId());
+        if (approvers != null && !approvers.isEmpty()) {
+            approvers.forEach(approver -> approver.setIsApproved(true));
+            approverRepository.saveAll(approvers);
+        } else {
+            createApproverByCurrentAdmin(approvals);
+        }
+    }
+
+    public void updateApprovedByCurrentAdmin(Long approvalId, Boolean isApproved) {
+        Users adminObj = usersService.getCurrentAdmin();
+        Approver approver = approverRepository.findByApprovalsIdAndUsersId(approvalId, adminObj.getId()).
+                orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVER,
+                "해당 승인자가 없습니다. username="+adminObj.getUsername()));
+        approver.setIsApproved(isApproved);
+        approverRepository.save(approver);
     }
 
     private void updateDeviceStatus(Devices device, String approvalType, Boolean isUsable, Users user,
@@ -173,6 +228,25 @@ public class ApprovalDevicesService {
         return notificationDto;
     }
 
+    private Approver createApprover(String username, ApprovalDevices approvalDevice, int step) {
+        Users user = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER));
+        return new Approver(user, approvalDevice, false, step);
+    }
+
+    public void setFixedApprover(long approvalId) {
+        ApprovalDevices approvalDevice = approvalDevicesRepository.findById(approvalId)
+                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_APPROVAL,
+                        "해당 신청 없음 approval_id=" + approvalId));
+
+        List<Approver> approverList = new ArrayList<>();
+        approverList.add(createApprover(admin, approvalDevice, 1));
+        approverList.add(createApprover(FIXED_APPROVER, approvalDevice, 2));
+
+        approvalDevice.setApprovers(approverList);
+        approvalDevicesRepository.save(approvalDevice);
+    }
+
     public ApprovalDeviceDto convertFromRequest(DeviceApplicationVo request) {
         Devices device = devicesRepository.findById(request.getDeviceId())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_DEVICE,
@@ -193,7 +267,7 @@ public class ApprovalDevicesService {
         approvalDeviceDto.setApprovalId((request.getApprovalId()!=null)?
                 request.getApprovalId():null);
         approvalDeviceDto.setUserId(user);
-        approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING);
+        approvalDeviceDto.setApprovalInfo(APPROVAL_WAITING); // 신규 신청
         approvalDeviceDto.setReason(request.getReason());
         approvalDeviceDto.setDeviceId(device.getId());
         approvalDeviceDto.setType(request.getType());
@@ -204,8 +278,23 @@ public class ApprovalDevicesService {
         );
         approvalDeviceDto.setTmpProjectId((project != null)?project.getId():null);
         approvalDeviceDto.setTmpDepartmentId((department != null)?department.getId():null);
+        approvalDeviceDto.setApprovers(setApproversByUsername(request.getApprovers(), request.getApprovalId()));
 
         return approvalDeviceDto;
+    }
+
+    public List<ApproverDto> setApproversByUsername(List<String> approvers, Long approvalId) {
+        List<ApproverDto> approverDtoList = new ArrayList<>();
+        for (int i = 0; i < approvers.size(); i++) {
+            String approver = approvers.get(i);
+            Users user = usersRepository.findByUsername(approvers.get(i))
+                    .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
+                            "해당 유저가 없습니다. username=" + approver));
+            ApproverDto approverDto = new ApproverDto(user, approvalId, false, i+1);
+            approverDtoList.add(approverDto);
+        }
+
+        return approverDtoList;
     }
 
     public ApprovalDeviceDto convertFromRequestWithOutDeviceId(DeviceApplicationVo request) {
@@ -337,24 +426,22 @@ public class ApprovalDevicesService {
     }
 
     private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
-        Users adminObj = usersRepository.findByUsername(admin)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_USER,
-                        "해당 유저가 없습니다. username="+admin));
+        Users adminObj = usersService.getCurrentAdmin();
 
         if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
-            approvalDevices.setApproverId(adminObj);
+            updateApprovedByCurrentAdmin(approvalDevices.getId(), true);
             approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
             approvalDevicesRepository.save(approvalDevices);
-        }
+        } // 기존 결제 신청은 완료처리
 
         if (!type.equals(approvalDevices.getType())) {
             ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();
             approvalDeviceDto.setUserId(adminObj);
-            approvalDeviceDto.setApproverId(adminObj);
             approvalDeviceDto.setType(type);
             approvalDeviceDto.setApprovalInfo(APPROVAL_COMPLETED);
             approvalDeviceDto.setDeviceId(device.getId());
-            approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            ApprovalDevices ad = approvalDevicesRepository.save(approvalDeviceDto.toEntity());
+            createApproverByCurrentAdmin(ad);
         }
     }
 
@@ -390,5 +477,23 @@ public class ApprovalDevicesService {
                 .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                         Comparator.nullsFirst(Comparator.naturalOrder())));
         return latestApprovalDevice.map(ApprovalDeviceDto::new).orElse(null);
+    }
+
+    public void setToApproval(DeviceApplicationVo request) {
+        Users adminObj = usersService.getCurrentAdmin();
+        Optional<Approver> approver = approverRepository.findByApprovalsIdAndUsersId(request.getApprovalId(), adminObj.getId());
+        if (approver.isPresent()) {
+            approver.get().setIsApproved(true);
+            approverRepository.save(approver.get());
+        }
+    }
+
+    public Boolean checkCompleted(DeviceApplicationVo request) {
+        List<Approver> approvers = approverRepository.findByApprovalsId(request.getApprovalId());
+        if (approvers != null && !approvers.isEmpty()) {
+            return approvers.stream().allMatch(Approver::getIsApproved);
+        } else {
+            return true;
+        }
     }
 }

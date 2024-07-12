@@ -1,29 +1,25 @@
 package kr.co.direa.office.controller;
 
-import kr.co.direa.office.domain.Notifications;
-import kr.co.direa.office.dto.NotificationDto;
-import kr.co.direa.office.dto.ProjectDto;
-import kr.co.direa.office.service.ProjectsService;
+import kr.co.direa.office.dto.UserDto;
+import kr.co.direa.office.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
-class UserController {
+public class UserController {
+    private final UsersService usersService;
 
     @GetMapping(value = "/user")
     ResponseEntity<?> getUser(Principal principal) {
@@ -39,5 +35,14 @@ class UserController {
 //        return ResponseEntity.ok(
 //                jsonContent
 //        );
+    }
+
+    @GetMapping(value = "/admin")
+    ResponseEntity<?> getAdmin() {
+        List<UserDto> userDtoList = usersService.getAdminList();
+
+        return ResponseEntity.ok(
+                userDtoList
+        );
     }
 }

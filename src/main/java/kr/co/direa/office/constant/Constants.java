@@ -32,5 +32,7 @@ public class Constants {
     public static final String LDAP_HOMEDIR_ATTR = "homeDirectory";
     public static final String LDAP_OU_ATTR = "ou";
     public static final String DIREA_DOMAIN = "direa.co.kr";
+    public static final String ADMIN_GROUP_NAME = "Admin";
+    public static final String FIXED_APPROVER = "조고은";
 
 }

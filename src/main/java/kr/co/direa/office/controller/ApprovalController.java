@@ -5,6 +5,7 @@ import kr.co.direa.office.dto.NotificationDto;
 import kr.co.direa.office.service.ApprovalDevicesService;
 import kr.co.direa.office.service.NotificationsService;
 import kr.co.direa.office.service.TagsService;
+import kr.co.direa.office.service.UsersService;
 import kr.co.direa.office.util.DecryptRunner;
 import kr.co.direa.office.vo.DeviceApplicationVo;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class ApprovalController {
     private final ApprovalDevicesService approvalDevicesService;
     private final NotificationsService notificationsService;
     private final TagsService tagsService;
+    private final UsersService usersService;
     @Value("${constants.admin}") private String admin;
 
     @PostMapping(value = "/device-application")
@@ -33,6 +35,7 @@ public class ApprovalController {
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
         Long approvalId = approvalDevicesService.save(approvalDeviceDto);
+//        approvalDevicesService.setFixedApprover(approvalId);
 
         NotificationDto notificationDto = new NotificationDto();
         approvalDevicesService.convertNotificationFromApproval(
@@ -54,6 +57,7 @@ public class ApprovalController {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
         tagsService.updateByDeviceId(request);
         Long approvalId = approvalDevicesService.save(approvalDeviceDto);
+        approvalDevicesService.setFixedApprover(approvalId);
 
         NotificationDto notificationDto = new NotificationDto();
         approvalDevicesService.convertNotificationFromApproval(
@@ -74,6 +78,7 @@ public class ApprovalController {
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
         Long approvalId = approvalDevicesService.save(approvalDeviceDto);
+        approvalDevicesService.setFixedApprover(approvalId);
 
         NotificationDto notificationDto = new NotificationDto();
         approvalDevicesService.convertNotificationFromApproval(
@@ -94,6 +99,7 @@ public class ApprovalController {
     ) {
         ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequestWithOutDeviceId(request);
         Long approvalId = approvalDevicesService.save(approvalDeviceDto);
+        approvalDevicesService.setFixedApprover(approvalId);
 
         NotificationDto notificationDto = new NotificationDto();
         approvalDevicesService.convertNotificationFromApproval(
@@ -112,8 +118,9 @@ public class ApprovalController {
     ResponseEntity<?> myApprovalList(
             @PathVariable String username
     ) {
+        boolean isAdmin = usersService.isAdmin();
         List<ApprovalDeviceDto> approvalDeviceDtoList;
-        if (admin.equals(username)) {
+        if (isAdmin) {
             approvalDeviceDtoList = approvalDevicesService.findAsAdmin();
         } else {
             approvalDeviceDtoList = approvalDevicesService.findAllByUsername(username);
@@ -146,17 +153,21 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceFinish(
             @RequestBody DeviceApplicationVo request
     ) {
-        approvalDevicesService.setApprovalInfoById(request, APPROVAL_COMPLETED);
+        approvalDevicesService.setToApproval(request);
+        Boolean isCompleted = approvalDevicesService.checkCompleted(request);
+        if (isCompleted) {
+            approvalDevicesService.setApprovalInfoById(request, APPROVAL_COMPLETED);
 
-        // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
-        ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
-        NotificationDto notificationDto = new NotificationDto();
-        approvalDevicesService.convertNotificationFromApproval(
-                notificationDto, approvalDeviceDto, approvalDeviceDto.getApprovalId(), APPROVAL_COMPLETED);
+            // TODO: 승인완료 시 유저에게 알림 보내기 (유저별 토픽으로 알림 보내기 구현해야함)
+            ApprovalDeviceDto approvalDeviceDto = approvalDevicesService.convertFromRequest(request);
+            NotificationDto notificationDto = new NotificationDto();
+            approvalDevicesService.convertNotificationFromApproval(
+                    notificationDto, approvalDeviceDto, approvalDeviceDto.getApprovalId(), APPROVAL_COMPLETED);
 
-        notificationsService.save(notificationDto);
-        notificationsService.sendNotification("/topic/"+notificationDto.getReceiver(),
-                notificationsService.findByUsername(notificationDto.getReceiver()));
+            notificationsService.save(notificationDto);
+            notificationsService.sendNotification("/topic/"+notificationDto.getReceiver(),
+                    notificationsService.findByUsername(notificationDto.getReceiver()));
+        }
 
         return ResponseEntity.ok(
                 SUCCESS
@@ -199,6 +210,7 @@ public class ApprovalController {
     ResponseEntity<?> approvalDeviceReturn(
             @PathVariable Long approvalId
     ) {
+
         approvalDevicesService.setReturnByIdAsAdmin(approvalId);
 
         return ResponseEntity.ok(

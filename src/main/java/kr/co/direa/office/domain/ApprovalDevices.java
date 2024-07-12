@@ -10,6 +10,7 @@ import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "approval_devices")
 @Table(name = "approval_devices")
@@ -43,10 +44,10 @@ public class ApprovalDevices extends Approvals {
     private Departments tmpDepartment;
 
     @Builder
-    public ApprovalDevices(Users userId, String approvalInfo, String reason, Users approverId,
+    public ApprovalDevices(Long id, Users userId, String approvalInfo, String reason, List<Approver> approvers,
                            Devices deviceId, String img, String type, LocalDateTime deadline,
                             Projects projectId, Projects tmpProject, Departments tmpDepartment) {
-        super(userId, approvalInfo, reason, approverId, deadline);
+        super(id, userId, approvalInfo, reason, approvers, deadline);
         this.deviceId = deviceId;
         this.img = img;
         this.type = type;

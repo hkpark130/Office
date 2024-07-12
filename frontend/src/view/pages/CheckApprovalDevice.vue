@@ -101,7 +101,7 @@
                       </a-row>
                     </div>
 
-                    <div class="add-form-action">
+                    <div class="add-form-action" v-if="isReviewer">
                       <a-form-item>
                         <sdButton 
                           type="danger" 
@@ -149,13 +149,13 @@ const AddProduct = defineComponent({
     const list = ref(null);
     const submitValues = ref({});
     const formRef = ref();
+    const isReviewer = ref(false);
 
     await dispatch('getApprovalById', router.currentRoute.value.params.approvalId)
     .catch(() => {
       alert("신청 정보를 불러오는 과정에서 에러가 발생하였습니다.");
       window.location.href = "/";
     });
-    
     
     const getApprovalById = computed(() => state.approvals.data);
     const getUser = computed(() => state.getUser.data);
@@ -168,6 +168,7 @@ const AddProduct = defineComponent({
       approvalInfo: getApprovalById.value.approvalInfo,
       status: getApprovalById.value.deviceStatus,
       purpose: getApprovalById.value.devicePurpose,
+      approvers: getApprovalById.value.approvers.map(approver => approver.username),
       manageDep: "",
       project: "",
       userName: getApprovalById.value.userName,
@@ -180,6 +181,16 @@ const AddProduct = defineComponent({
       deadline: (new Date(getApprovalById.value.deadline)).toISOString(),
       layout: "vertical",
     });
+
+    const unapprovedApprovers = getApprovalById.value.approvers.filter(approver => !approver.isApproved);
+    if (unapprovedApprovers.length > 0) {
+      const lowestStepApprover = unapprovedApprovers.reduce((lowest, current) =>
+        current.step < lowest.step ? current : lowest, unapprovedApprovers[0]
+      );
+      isReviewer.value = lowestStepApprover.username === getUser.value.name;
+    } else {
+      isReviewer.value = false;
+    }
 
     if (getApprovalById.value.approvalInfo === '승인완료' || getApprovalById.value.approvalInfo === '반려') {
       alert("승인완료 또는 반려된 신청입니다.");
@@ -223,6 +234,7 @@ const AddProduct = defineComponent({
       approvalReturn,
       formRef,
       disabled,
+      isReviewer,
     };
   },
 });

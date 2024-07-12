@@ -42,6 +42,7 @@ constants:
   admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
   admin-pw: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
   realm: ENC(kbWdaszp7HSheIPFaLRmc0NBJLbEmCrnVWVQmNM7QcX057IeT3I3wDU7ufjNWnCX)
+  admin-group-id: ENC(j264nBfm3L46eTho2ivWb6pLBRQ8zUAhru38+ld2p8YxB3aZTJzOWcqbre8NL8ZZvhWlBfNAZ6tt2fLa0YR63YZJU9M7QEsiEMfr6zuCXM8=)
 
 #logging:
 #  level:
@@ -112,6 +113,7 @@ constants:
   admin-id: ENC(RNu0pvdPsdYlgv4rJqH5rvYY55pIddi3gCSyTzutMRqo1DeqeNN+ukCsRIqPYoGd9EXaSxr20rYjHpm+hc+CvfpJ//0TgFjnoe5+JxtqcGY=)
   admin-pw: ENC(9wsj63HOG5z6ursBEi7VzmwGMd/8jH/TyD1IRngtWqDvUvL04TtKPEFQxyIAY0OA)
   realm: ENC(rW4Ij4d66yAHbzdxzQnWAcPib/iNmYJloRByJHiG0Qqm0bNDbjNzp5LrSdzvL7QG)
+  admin-group-id: ENC(WmXJE0dvsIouiJP9uimG+4VciSGhTPusYQ/PCYBMItQwTtK0q5CNYrmdLCkuf5VNk/fTZC4E3TaWGcoAZMtKIVD30J15WSM+83YPygVJv8s=)
 
 spring:
   mail:

@@ -1,12 +1,12 @@
 package kr.co.direa.office.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 @Entity(name = "approvals")
 @Table(name = "approvals")
@@ -29,28 +29,25 @@ public abstract class Approvals extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", name = "reason")
     private String reason;
 
-    @ManyToOne
-    @JoinColumn(name ="approver_id", referencedColumnName = "id")
-    private Users approverId;
+    @OneToMany(mappedBy = "approvals", cascade = CascadeType.REMOVE)
+    private List<Approver> approvers;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
-//    @ManyToMany(cascade = CascadeType.PERSIST)
-//    private Set<Tag> tags = new HashSet<>();
-
     public Approvals() {
 
     }
 
-    public Approvals(Users userId, String approvalInfo, String reason,
-                     Users approverId, LocalDateTime deadline) {
+    public Approvals(Long id, Users userId, String approvalInfo, String reason,
+                     List<Approver> approvers, LocalDateTime deadline) {
+        this.id = id;
         this.userId = userId;
         this.approvalInfo = approvalInfo;
         this.reason = reason;
-        this.approverId = approverId;
         this.deadline = deadline;
+        this.approvers = approvers;
     }
 
 }

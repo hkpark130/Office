@@ -130,9 +130,15 @@ public class SecurityConfig {
 
                     List<String> group = userInfo.getClaim("groups");
                     Optional.ofNullable(group).ifPresent(
-                        groupList -> groupList.forEach(it -> mappedAuthorities.add(
-                            new SimpleGrantedAuthority(it.replace("/", ""))
-                        )
+                        groupList -> groupList.forEach(it -> {
+//                            mappedAuthorities.add(
+//                                new SimpleGrantedAuthority(it.replace("/", ""))
+//                            );
+                            if (it.replace("/", "").equals("Admin")) {
+                                mappedAuthorities.add(new SimpleGrantedAuthority("Admin"));
+                                // 그룹 리스트 중에 Admin 이 포함되면 관리자로 매핑
+                            }
+                        }
                     ));
                 }
             });

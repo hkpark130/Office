@@ -97,7 +97,7 @@ public class LdapUserService {
         attrs.put(LDAP_SN_ATTR, user.getSn());
         attrs.put(LDAP_UID_ATTR, user.getUid());
         attrs.put(LDAP_GID_NUMBER_ATTR, String.valueOf(user.getGidNumber()));
-        attrs.put(LDAP_UID_NUMBER_ATTR, String.valueOf(user.getUidNumber()));
+        attrs.put(LDAP_UID_NUMBER_ATTR, String.valueOf(1000+user.getUidNumber()));
         attrs.put(LDAP_EMAIL_ATTR, user.getMail());
         attrs.put(LDAP_PASSWORD_ATTR, user.getUserPassword());
         attrs.put(LDAP_HOMEDIR_ATTR, "/home/" + user.getCn());
