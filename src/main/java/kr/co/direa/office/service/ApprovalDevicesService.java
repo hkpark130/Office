@@ -102,6 +102,14 @@ public class ApprovalDevicesService {
             updateApprovedByCurrentAdmin(approvalDevices.getId(), true);
             devicesRepository.save(device);
         }
+
+        if (APPROVAL_REJECT.equals(approvalInfo) && APPROVAL_RENTAL.equals(approvalType)) {
+            device.setIsUsable(true);
+            device.setRealUser(null);
+            device.setUserId(null);
+            devicesRepository.save(device);
+        }
+
         approvalDevices.setApprovalInfo(approvalInfo);
 
         approvalDevicesRepository.save(approvalDevices);
@@ -392,9 +400,35 @@ public class ApprovalDevicesService {
                     "해당 기기 없음 deviceId=" + approvalDevices.getDeviceId());
         }
 
-        updateApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
+        switch (approvalDevices.getType()) {
+            case APPROVAL_RETURN:
+                if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) { // 기존 반납 신청은 완료처리
+                    updateApprovedByCurrentAdmin(approvalDevices.getId(), true);
+                    allApprovedByCurrentAdmin(approvalDevices);
+                    approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
+                    approvalDevicesRepository.save(approvalDevices);
+                } else if (APPROVAL_REJECT.equals(approvalDevices.getApprovalInfo())) {
+                    newApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
+                }
+                break;
+            case DISPOSE_TYPE:
+                if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
+                    approvalDevices.setApprovalInfo(APPROVAL_REJECT);
+                    approvalDevicesRepository.save(approvalDevices);
+                }
+                newApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
+                break;
+            case APPROVAL_RENTAL:
+                if (APPROVAL_COMPLETED.equals(approvalDevices.getApprovalInfo())) {
+                    newApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device);
+                }
+                break;
+        }
+
         device.setIsUsable(true);
-        devicesRepository.save(approvalDevices.getDeviceId());
+        device.setRealUser(null);
+        device.setUserId(null);
+        devicesRepository.save(device);
     }
 
     public void setDisposeByIdAsAdmin(String deviceId) {
@@ -408,7 +442,29 @@ public class ApprovalDevicesService {
         Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
                 .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                         Comparator.nullsFirst(Comparator.naturalOrder())));
-        latestApprovalDevice.ifPresent(approvalDevices -> updateApprovalTypeAsAdmin(approvalDevices, DISPOSE_TYPE, device));
+        if (latestApprovalDevice.isPresent()) {
+            switch (latestApprovalDevice.get().getType()) {
+                case APPROVAL_RENTAL, APPROVAL_RETURN:
+                    if (APPROVAL_WAITING.equals(latestApprovalDevice.get().getApprovalInfo())) {
+                        latestApprovalDevice.get().setApprovalInfo(APPROVAL_REJECT);
+                        approvalDevicesRepository.save(latestApprovalDevice.get());
+                    }
+                    newApprovalTypeAsAdmin(latestApprovalDevice.get(), DISPOSE_TYPE, device);
+                    break;
+                case DISPOSE_TYPE:
+                    if (APPROVAL_WAITING.equals(latestApprovalDevice.get().getApprovalInfo())) { // 기존 폐기 신청은 완료처리
+                        updateApprovedByCurrentAdmin(latestApprovalDevice.get().getId(), true);
+                        allApprovedByCurrentAdmin(latestApprovalDevice.get());
+                        latestApprovalDevice.get().setApprovalInfo(APPROVAL_COMPLETED);
+                        approvalDevicesRepository.save(latestApprovalDevice.get());
+                    } else if (APPROVAL_REJECT.equals(latestApprovalDevice.get().getApprovalInfo())) {
+                        newApprovalTypeAsAdmin(latestApprovalDevice.get(), DISPOSE_TYPE, device);
+                    }
+                    break;
+            }
+        } else {
+            newApprovalTypeAsAdmin(latestApprovalDevice.get(), DISPOSE_TYPE, device);
+        }
     }
 
     public void setRecoveryByIdAsAdmin(String deviceId) {
@@ -422,17 +478,11 @@ public class ApprovalDevicesService {
         Optional<ApprovalDevices> latestApprovalDevice = device.getApprovalDevices().stream()
                 .max(Comparator.comparing(ApprovalDevices::getCreatedDate,
                         Comparator.nullsFirst(Comparator.naturalOrder())));
-        latestApprovalDevice.ifPresent(approvalDevices -> updateApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device));
+        latestApprovalDevice.ifPresent(approvalDevices -> newApprovalTypeAsAdmin(approvalDevices, APPROVAL_RETURN, device));
     }
 
-    private void updateApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
+    private void newApprovalTypeAsAdmin(ApprovalDevices approvalDevices, String type, Devices device) {
         Users adminObj = usersService.getCurrentAdmin();
-
-        if (APPROVAL_WAITING.equals(approvalDevices.getApprovalInfo())) {
-            updateApprovedByCurrentAdmin(approvalDevices.getId(), true);
-            approvalDevices.setApprovalInfo(APPROVAL_COMPLETED);
-            approvalDevicesRepository.save(approvalDevices);
-        } // 기존 결제 신청은 완료처리
 
         if (!type.equals(approvalDevices.getType())) {
             ApprovalDeviceDto approvalDeviceDto = new ApprovalDeviceDto();

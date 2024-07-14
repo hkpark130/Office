@@ -62,8 +62,8 @@ INSERT INTO projects (name, code) VALUES ('MG손해보험 플랫폼 보험비교
 INSERT INTO projects (name, code) VALUES ('신한금융그룹 공통 AI컨텍센터 플랫폼 구축', '0219');
 INSERT INTO projects (name, code) VALUES ('농협(은행)금융상품 비교 플랫폼 구축', '0220');
 
--- INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, company, sn, status, is_usable, purpose, purchase_date, category_id, project_id)
--- values ('DIR-N-101', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'SAMSUNG', 'ND6179NBK', '정상', true, '개발', '2021-09-01', 1, 1);
+INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, company, sn, status, is_usable, purpose, purchase_date, category_id, project_id)
+values ('DIR-N-101', null, 1, 'RAM: 16G CPU: 8core', 1000, 'LSBX2433', '부팅 느림', 'SAMSUNG', 'ND6179NBK', '정상', true, '개발', '2021-09-01', 1, 1);
 -- INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, company, sn, status, is_usable, purpose, purchase_date, category_id, project_id)
 -- values ('DIR-N-102', null, 1, 'RAM: 8G CPU: 4core', 1000, 'LSBX2434', 'OS 설치 필요', 'LG', 'ND6179NBJ', '정상', true, '사무', '2021-09-02', 2, 1);
 -- INSERT INTO devices (id, user_id, manage_dep, spec, price, model, description, company, sn, status, is_usable, purpose, purchase_date, category_id, project_id)
@@ -108,6 +108,7 @@ INSERT INTO tags (name) values ('부팅 느림');
 
 INSERT INTO "PUBLIC"."USERS" VALUES
                                  (NULL, NULL, 1, NULL, 'Admin', NULL, 'test'),
+                                 (NULL, NULL, 101, NULL, 'Admin', NULL, 'test2'),
                                  (TIMESTAMP '2024-04-09 11:57:40.219031', NULL, 2, TIMESTAMP '2024-04-09 11:57:40.219031', NULL, 'qwer@test.test', 'qwer'),
                                  (TIMESTAMP '2024-04-09 11:57:40.261858', 2, 3, TIMESTAMP '2024-04-09 11:57:40.261858', NULL, 'dhko@direa.co.kr', U&'\ace0\b3c4\d615'),
                                  (TIMESTAMP '2024-04-09 11:57:40.266751', 1, 4, TIMESTAMP '2024-04-09 11:57:40.266751', NULL, 'smgoo@direa.co.kr', U&'\ad6c\c120\bbf8'),

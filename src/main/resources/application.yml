@@ -3,13 +3,13 @@ spring:
   profiles:
     active: local
   ldap:
-    urls: "ldap://192.168.2.59:389"
+    urls: "ldap://192.168.2.111:389"
     base: "dc=direa,dc=co,dc=kr"
     username: "cn=admin,dc=direa,dc=co,dc=kr"
   mail:
     host: "smtps.hiworks.com"
     port: 465
-    username: "infra@direa.co.kr"
+    username: "hkpark@direa.co.kr"
     properties:
       mail:
         smtp:
@@ -33,15 +33,15 @@ jasypt:
     password: mySecretKey
 
 constants:
-  keycloak-url: ENC(6UeJ0QC/B9zHz+T/wXKKWgXJ5/FYBK7xF/dWVCpNweN14MZNdJ9fXbDYax1nBwyWg8X1huwRtyE5IhPrn9V7SQ==)
-  client-secret: ENC(qSvRXUFAk4C9Xtt/B1jEA0G7+0hvvhg1mdmeTAKTrAAOMrv1kGy3XGTuASCtksADAtj9/EUh3Lo9fEIKZV+hOuZEYOLKTKWYWVXTynEStSg=)
+  keycloak-url: http://192.168.2.111:8080
+  client-secret: 9HjW0l2RRUiJk7qx2pgHIacN4Rkm0OMM
 #  frontend: ENC(nSc9Szy0v11B08V5HWEZXSvjgsVpFtr2r4ZVvoDFvF0xVrsjRFJcK0zCfYzxzla6Erz+VePthW79MC00oZ/+Aw==)
-  frontend: http://192.168.0.4:8080
+  frontend: http://192.168.2.110:8080
 #  frontend: http://backoffice.maas:8080
-  admin: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
-  admin-id: ENC(Mv+/QM86KSgI4sKMd6H0MOMXmJytZXHxYnpQazXNTpuisSCF9MSKbZhRrsljmKAIX02HMqjUQML3u6+3kfKWWUbfW1TgfqFHQnEEsXoO6co=)
-  admin-pw: ENC(kmAns6E2fjAJYZ+VJ55DTR6Ig9qQwUMJqIy6kRIiDRGxDYnC3tHjjE+lhDXpWWE6)
-  realm: ENC(kbWdaszp7HSheIPFaLRmc0NBJLbEmCrnVWVQmNM7QcX057IeT3I3wDU7ufjNWnCX)
+  admin: test
+  admin-id: fad4b5b4-7072-4c5d-b721-0cb4b8e87b45
+  admin-pw: test
+  realm: sso-test
   admin-group-id: ENC(j264nBfm3L46eTho2ivWb6pLBRQ8zUAhru38+ld2p8YxB3aZTJzOWcqbre8NL8ZZvhWlBfNAZ6tt2fLa0YR63YZJU9M7QEsiEMfr6zuCXM8=)
 
 #logging:
@@ -53,7 +53,7 @@ spring:
   mail:
     password: ENC(WtQfQBoQV/vZxGBeLl92fDcKZIuHo9uBwvMPBmdIn3bphPar4DZGjer/C3mfLupf)
   ldap:
-    password: ENC(WAncVZKBnkwISmBzO6QwmJgmmkkcAoherm9HWwttHmwlx/uRbHmvSw8adPcG9e0X)
+    password: admin
   config:
     activate:
       on-profile: local

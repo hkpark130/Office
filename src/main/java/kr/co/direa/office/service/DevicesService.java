@@ -65,8 +65,12 @@ public class DevicesService {
                                 (
                                     APPROVAL_RETURN.equals(approvalDevices.getType()) &&
                                     APPROVAL_COMPLETED.equals(approvalDevices.getApprovalInfo())
+                                ) ||
+                                (
+                                    APPROVAL_RENTAL.equals(approvalDevices.getType()) &&
+                                    APPROVAL_REJECT.equals(approvalDevices.getApprovalInfo())
                                 )
-                            ) // 최근 신청기록이 있으면 (반납/승인[대기,완료]) 만 가져오기 <- 반납예정 상태
+                            ) // 최근 신청기록이 있으면 (반납/승인[대기,완료] or 대여/반려) 만 가져오기
                     ).orElse(device.getIsUsable()); // 최근 신청기록이 없어도 가져오기 <- 사용가능 상태
                 })
                 .map(DeviceDto::new).toList();
